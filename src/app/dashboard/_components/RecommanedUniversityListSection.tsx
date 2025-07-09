@@ -1,5 +1,5 @@
 import { FC, memo, useState, useMemo, useCallback } from 'react';
-import type { SchoolRecommendationResponse, DepartmentRecommendation } from '@/app/types/school-recommendation';
+import type { SchoolRecommendationResponse } from '@/app/types/school-recommendation';
 
 interface RecommanedUniversityListSectionProps {
     data: SchoolRecommendationResponse | null;
@@ -156,6 +156,7 @@ const RecommanedUniversityListSection: FC<RecommanedUniversityListSectionProps> 
                                 <th className="w-20 px-4 py-3 text-left text-sm font-semibold text-gray-700 border-r border-gray-200">모집인원</th>
                                 <th className="w-24 px-4 py-3 text-left text-sm font-semibold text-gray-700 border-r border-gray-200">24년 입결</th>
                                 <th className="w-20 px-4 py-3 text-left text-sm font-semibold text-gray-700">판정</th>
+                                <th className="w-24 px-4 py-3 text-left text-sm font-semibold text-gray-700 border-r border-gray-200">25년 입결</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white">
@@ -221,6 +222,10 @@ const RecommanedUniversityListSection: FC<RecommanedUniversityListSectionProps> 
                                         <td className="px-4 py-3 border-r border-gray-200">
                                             <div className="text-sm font-medium text-gray-900">{u.grade_cutoff_current}</div>
                                         </td>
+                                        <td className="px-4 py-3 border-r border-gray-200">
+                                            <div className="text-sm font-medium text-gray-900">{u.grade_cutoff_prev1}</div>
+                                        </td>
+
                                         <td className="px-4 py-3">
                                             <span className={`inline-flex px-2 py-1 rounded text-xs font-medium ${RECOMMEND_TYPE_COLOR[u.recommendation_type] || 'bg-gray-200 text-gray-700 border-gray-300'
                                                 }`}>

@@ -1,5 +1,3 @@
-import { SemesterTrendCategory } from '@/app/types/semesterTrend';
-
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const GRADES = [1, 2, 3];

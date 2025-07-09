@@ -12,6 +12,7 @@ export function useUpdateConsultationDate(studentId: number) {
             await updateConsultationDateAction(studentId, date);
         } catch (e) {
             setIsError(true);
+            console.error(e);
         } finally {
             setIsLoading(false);
         }

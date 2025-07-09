@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Student, StudentsListParams, StudentsListResponse } from '@/app/types/student';
+import { StudentsListParams, StudentsListResponse } from '@/app/types/student';
 import { API_URL } from '@/app/constants';
 
 const api = axios.create({

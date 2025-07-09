@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from "next/navigation";
 import { useStudentContext } from "@/app/dashboard/_contexts/StudentContext";
 
