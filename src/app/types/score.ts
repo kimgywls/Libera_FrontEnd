@@ -1,0 +1,43 @@
+export interface Score {
+    id: number;
+    student_id: number;
+    grade: number;
+    semester: number;
+    curriculum: string;
+    subject: string;
+    subject_type: string;
+    raw_score: number | null;
+    subject_average: number | null;
+    standard_deviation?: number;
+    achievement_level?: string;
+    student_count?: number | null;
+    grade_rank?: string | null;
+    achievement_distribution?: string;
+    credit_hours?: number;
+    notes?: string | null;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface ScoreForm {
+    grade: number;
+    semester: number;
+    subject_type: string;
+    curriculum: string;
+    subject: string;
+    raw_score: string | number | null;
+    subject_average: string | number | null;
+    standard_deviation?: string | number | null;
+    achievement_level?: string;
+    student_count?: string | number | null;
+    grade_rank?: string | null;
+    achievement_distribution?: string;
+    credit_hours?: string | number | null;
+    notes?: string | null;
+}
+
+export interface ScoresResponse {
+    student_id: number;
+    scores: Score[];
+    total_count: number;
+} 
