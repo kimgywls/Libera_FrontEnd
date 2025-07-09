@@ -31,4 +31,5 @@ export interface StudentInfo {
     desired_department: string;
     consultation_date: Date;
     overall_score: number;
+    main_subjects_score: number;
 }

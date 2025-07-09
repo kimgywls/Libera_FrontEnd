@@ -17,6 +17,7 @@ interface StudentInfoProps {
         desired_department: string;
         consultation_date: Date;
         overall_score: number;
+        main_subjects_score: number;
     };
     onUpdateConsultationDate: (date: Date) => void;
     isConsultationLoading?: boolean;
@@ -25,7 +26,6 @@ interface StudentInfoProps {
 const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, isConsultationLoading }) => {
     const [inputDate, setInputDate] = useState<string>(student.consultation_date ? student.consultation_date.toISOString().slice(0, 10) : '');
     const [editMode, setEditMode] = useState(false);
-
     const formatDate = (date: Date) => {
         return date.toLocaleDateString('ko-KR', {
             year: 'numeric',
@@ -46,6 +46,7 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, 
         }
     };
 
+    console.log(student);
     return (
         <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden px-6 pt-6 pb-4 ">
             <div className="flex flex-row space-x-2 w-full justify-between">
@@ -109,14 +110,27 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, 
                         </div>
                     </div>
 
-                    <div className="bg-gray-50 rounded-lg p-4 flex-1">
-                        <div className="flex items-start space-x-3">
-                            <TrendingUp className="w-5 h-5 text-blue-500 mt-0.5" />
-                            <div>
-                                <p className="font-semibold text-gray-700">전학기 전체교과 내신 성적</p>
-                                <p className="text-gray-900 mt-1">
-                                    {student?.overall_score}등급
-                                </p>
+                    <div className="flex flex-row space-x-2">
+                        <div className="bg-gray-50 rounded-lg p-4 flex-1">
+                            <div className="flex items-start space-x-3">
+                                <TrendingUp className="w-5 h-5 text-blue-500 mt-0.5" />
+                                <div>
+                                    <p className="font-semibold text-gray-700">전학기 전체교과 내신 성적</p>
+                                    <p className="text-gray-900 mt-1">
+                                        {student?.overall_score} 등급
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-4 flex-1">
+                            <div className="flex items-start space-x-3">
+                                <TrendingUp className="w-5 h-5 text-blue-500 mt-0.5" />
+                                <div>
+                                    <p className="font-semibold text-gray-700">전학기 주요과목 내신 성적</p>
+                                    <p className="text-gray-900 mt-1">
+                                        {student?.main_subjects_score} 등급
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -157,7 +171,7 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, 
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     );
 };
 

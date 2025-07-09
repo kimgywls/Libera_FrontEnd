@@ -21,7 +21,7 @@ export default function ScorePage() {
     const { id } = useParams();
     const studentId = Number(id);
     const { student } = useStudentContext();
-    const { overallGpa } = useOverallGpa(studentId);
+    const { overallGpa, mainSubjectsGpa } = useOverallGpa(studentId);
     const { attendance, isLoading: isAttendanceLoading, isError: isAttendanceError } = useAttendance(studentId);
     const { scores, isLoading: isScoresLoading, isError: isScoresError } = useStudentScores(studentId);
     const { semesterTrend, isLoading: isTrendLoading, isError: isTrendError } = useSemesterTrend(studentId);
@@ -63,6 +63,7 @@ export default function ScorePage() {
                     ...student!,
                     consultation_date: consultationDate, // 또는 student?.consultation_date
                     overall_score: overallGpa ?? 0,     // 또는 student?.overall_score
+                    main_subjects_score: mainSubjectsGpa ?? 0,
                 }}
                 consultationDate={consultationDate}
                 onUpdateConsultationDate={handleUpdateConsultationDate}

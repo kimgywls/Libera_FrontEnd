@@ -20,6 +20,7 @@ const StudentInfoSection: FC<StudentInfoSectionProps> = ({ student, consultation
                 desired_department: student.desired_department,
                 consultation_date: consultationDate,
                 overall_score: student.overall_score ?? 0,
+                main_subjects_score: student.main_subjects_score ?? 0,
             }}
             onUpdateConsultationDate={onUpdateConsultationDate}
             isConsultationLoading={isConsultationLoading}

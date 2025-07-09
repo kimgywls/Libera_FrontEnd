@@ -5,9 +5,11 @@ import StudentInfoSection from '@/app/dashboard/_components/StudentInfoSection';
 import RecommanedUniversityListSection from '@/app/dashboard/_components/RecommanedUniversityListSection';
 import { useSchoolRecommendations } from './_hooks/useSchoolRecommendations';
 import { useState, useCallback } from 'react';
+import { useOverallGpa } from '../scores/_hooks/use-overall-gpa';
 
 export default function UniversityListPage() {
     const { student } = useStudentContext();
+    const { overallGpa, mainSubjectsGpa } = useOverallGpa(student!.id);
     const [consultationDate, setConsultationDate] = useState<Date>(new Date());
     const [isConsultationLoading, setIsConsultationLoading] = useState(false);
 
@@ -31,7 +33,8 @@ export default function UniversityListPage() {
                         desired_school: student.desired_school,
                         desired_department: student.desired_department,
                         consultation_date: consultationDate,
-                        overall_score: 0, // TODO: 실제 점수로 교체
+                        overall_score: overallGpa ?? 0,
+                        main_subjects_score: mainSubjectsGpa ?? 0,
                     }}
                     consultationDate={consultationDate}
                     onUpdateConsultationDate={onUpdateConsultationDate}
