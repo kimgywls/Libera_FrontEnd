@@ -19,12 +19,3 @@ export function useStudentsList(params: StudentsListParams) {
         mutate,
     };
 }
-
-export function useStudentByPhone(phone_number: number | string) {
-    const { data, error, isLoading } = useSWR(
-        phone_number ? ['student', phone_number] : null,
-        () => fetchStudentByPhone(phone_number)
-    );
-    //console.log('[useStudentByPhone] data:', data, 'error:', error, 'isLoading:', isLoading);
-    return { student: data, isLoading, isError: !!error };
-}
