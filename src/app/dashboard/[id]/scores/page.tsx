@@ -25,7 +25,7 @@ export default function ScorePage() {
     const { attendance, isLoading: isAttendanceLoading, isError: isAttendanceError } = useAttendance(studentId);
     const { scores, isLoading: isScoresLoading, isError: isScoresError } = useStudentScores(studentId);
     const { semesterTrend, isLoading: isTrendLoading, isError: isTrendError } = useSemesterTrend(studentId);
-    const { updateConsultationDate, isLoading: isConsultationLoading } = useUpdateConsultationDate(studentId);
+    const { updateConsultationDate } = useUpdateConsultationDate(studentId);
 
     const { openModal, closeModal, isModalOpen } = useModalState();
 
@@ -51,7 +51,7 @@ export default function ScorePage() {
             grade_rank: score.grade_rank ?? '',
             achievement_level: score.achievement_level ?? '',
             standard_deviation: score.standard_deviation ?? null,
-            achievement_distribution: score.achievement_distribution ?? '',
+            achievement_distribution: score.achievement_distribution ?? null,
             notes: score.notes ?? '',
         };
     }

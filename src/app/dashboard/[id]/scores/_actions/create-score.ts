@@ -1,14 +1,13 @@
 import axios from 'axios';
-import { ScoreForm } from '@/app/types/score';
 import { API_URL } from '@/app/constants';
+import type { CreateScoreRequest } from '@/app/types/score';
 
 const api = axios.create({ baseURL: API_URL });
 
-export async function putBulkScores(studentId: number, scores: ScoreForm[]) {
+export async function createScore(studentId: number, score: CreateScoreRequest) {
     try {
-        console.log('전송 데이터:', scores);
-        const response = await api.put(`/api/v1/scores/students/${studentId}/scores/bulk`, scores);
-        console.log('[디버그] putBulkScores 응답', response.data);
+        const response = await api.post(`/api/v1/scores/students/${studentId}/scores`, score);
+        console.log('[디버그] createScore 응답', response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -17,4 +16,4 @@ export async function putBulkScores(studentId: number, scores: ScoreForm[]) {
         }
         throw error;
     }
-} 
+}
