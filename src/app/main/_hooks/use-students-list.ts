@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { fetchStudents, fetchStudentByPhone } from '../_actions/fetch-students';
+import { fetchStudents } from '../_actions/fetch-students';
 import { StudentsListParams, StudentsListResponse } from '@/app/types/student';
 
 const fetcher = (params: StudentsListParams) => fetchStudents(params);

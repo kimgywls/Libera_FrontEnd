@@ -14,11 +14,11 @@ const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
     raw_score: null,
     subject_average: null,
     credit_hours: null,
-    student_count: '',
+    student_count: null,
     grade_rank: '',
     achievement_level: '',
     standard_deviation: null,
-    achievement_distribution: { property1: 0, property2: 0 },
+    achievement_distribution: null,
     notes: '',
 });
 
@@ -41,9 +41,7 @@ const UpdateScoresModal: FC<UpdateScoresModalProps> = ({
     scores,
     onSuccess
 }) => {
-    const [scoresForm, setScoresForm] = useState<ScoreForm[]>(
-        scores.length ? scores : [DEFAULT_ROW(grade, semester)]
-    );
+    const [scoresForm, setScoresForm] = useState<ScoreForm[]>(scores.length ? scores : [DEFAULT_ROW(grade, semester)]);
     const { mutate: saveScores, isPending: isSaving } = usePutBulkScores();
 
     useEffect(() => {
@@ -57,13 +55,15 @@ const UpdateScoresModal: FC<UpdateScoresModalProps> = ({
             setScoresForm(prev =>
                 prev.map((row, i) => {
                     if (i !== idx) return row;
-                    if ([
-                        'raw_score',
-                        'subject_average',
-                        'credit_hours',
-                        'student_count',
-                        'standard_deviation',
-                    ].includes(field)) {
+                    if (
+                        [
+                            'raw_score',
+                            'subject_average',
+                            'credit_hours',
+                            'student_count',
+                            'standard_deviation',
+                        ].includes(field)
+                    ) {
                         return { ...row, [field]: value === '' ? null : Number(value) };
                     }
                     return { ...row, [field]: value };
@@ -79,15 +79,9 @@ const UpdateScoresModal: FC<UpdateScoresModalProps> = ({
 
     const handleSaveForm = useCallback(async () => {
         try {
-            saveScores({ studentId, scores: scoresForm }, {
-                onSuccess: () => {
-                    onSuccess();
-                    onClose();
-                },
-                onError: (error) => {
-                    console.error('Error saving scores:', error);
-                }
-            });
+            await saveScores({ studentId, scores: scoresForm });
+            onSuccess();
+            onClose();
         } catch (error) {
             console.error('Error saving scores:', error);
         }

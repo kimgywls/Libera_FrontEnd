@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
+import { UniversityItem } from '@/app/types/university';
 
-export function useUniversityListFilter(displayUniversityList: any[]) {
+export function useUniversityListFilter(displayUniversityList: UniversityItem[]) {
     const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
     const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
     const [showRegionFilter, setShowRegionFilter] = useState(false);

@@ -4,7 +4,6 @@ import { fetchOverallGpa, OverallGpaResponse } from '../_actions/fetch-overall-g
 export function useOverallGpa(studentId: number) {
     const {
         data,
-        error,
         isLoading,
         isError,
     } = useQuery<OverallGpaResponse>({

@@ -4,7 +4,6 @@ import {
     CATEGORY_OPTIONS,
     CATEGORY_COLUMNS,
     ALL_COLUMNS,
-    CategoryOption
 } from '@/app/constants';
 import ScoresModalTableBody from './ScoresModalTableBody';
 

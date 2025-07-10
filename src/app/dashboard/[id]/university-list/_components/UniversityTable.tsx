@@ -1,10 +1,11 @@
 import { FC, memo, useCallback } from 'react';
-import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import FilterPopover from './FilterPopover';
 import type { Dispatch, SetStateAction } from 'react';
+import type { UniversityItem } from '@/app/types/university';
 
 export interface UniversityTableProps {
-    universityList: any[];
+    universityList: UniversityItem[];
     selectedItems: number[];
     handleSelectItem: (id: number) => void;
     handleSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;

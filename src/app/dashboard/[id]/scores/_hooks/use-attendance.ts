@@ -5,7 +5,6 @@ import { AttendanceApiResponse } from '@/app/types/attendance';
 export function useAttendance(studentId: number) {
     const {
         data,
-        error,
         isLoading,
         isError,
     } = useQuery<AttendanceApiResponse>({

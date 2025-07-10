@@ -1,5 +1,6 @@
 import { FC, memo, useState, useCallback } from 'react';
 import type { SchoolRecommendationResponse } from '@/app/types/school-recommendation';
+import type { UniversityItem } from '@/app/types/university';
 import TabNav from './TabNav';
 import SearchBar from './SearchBar';
 import UniversityTable from './UniversityTable';
@@ -32,10 +33,9 @@ const RecommendedUniversityListSection: FC<RecommendedUniversityListSectionProps
         // 탭 관련 훅
         const {
             selectedTab,
-            setSelectedTab,
+            //setSelectedTab,
             handleTabClick,
             displayTabLabels,
-            displayDepartments,
             displayUniversityList,
         } = useUniversityListTab(data);
 
@@ -47,7 +47,6 @@ const RecommendedUniversityListSection: FC<RecommendedUniversityListSectionProps
             searchInput,
             setSearchInput,
             searchText,
-            setSearchText,
             handleSearch,
             handleInputKeyDown,
             handleResetSearchBar,
@@ -71,10 +70,10 @@ const RecommendedUniversityListSection: FC<RecommendedUniversityListSectionProps
         } = useUniversityListFilter(displayUniversityList);
 
         // 검색/필터/탭 적용된 리스트
-        const filteredUniversityList = useFilteredUniversityList(
+        const filteredUniversityList: UniversityItem[] = useFilteredUniversityList(
             displayUniversityList,
             searchText,
-            searchField,
+            searchField as keyof UniversityItem,
             selectedRegions,
             selectedTypes
         );

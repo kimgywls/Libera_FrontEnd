@@ -5,7 +5,6 @@ import { ScoresResponse } from '@/app/types/score';
 export function useStudentScores(studentId: number) {
     const {
         data,
-        error,
         isLoading,
         isError,
     } = useQuery<ScoresResponse>({

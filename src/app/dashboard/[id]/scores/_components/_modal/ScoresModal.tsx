@@ -1,9 +1,10 @@
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Loader2, X } from 'lucide-react';
-import { ScoreForm, CreateScoreRequest } from '@/app/types/score';
-import { useCreateScore } from '../../_hooks/use-create-score';
+import { ScoreForm } from '@/app/types/score';
+import { usePutBulkScores } from '../../_hooks/use-put-bulk-scores';
 import ScoresModalTable from './_contents/ScoresModalTable';
+
 
 const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
     grade,
@@ -14,39 +15,45 @@ const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
     raw_score: null,
     subject_average: null,
     credit_hours: null,
-    student_count: '',
+    student_count: null,
     grade_rank: '',
     achievement_level: '',
     standard_deviation: null,
-    achievement_distribution: { property1: 0, property2: 0 },
+    achievement_distribution: null,
     notes: '',
 });
 
-interface CreateScoresModalProps {
+interface ScoresModalProps {
     open: boolean;
     onClose: () => void;
     studentId: number;
     grade: number;
     semester: number;
+    scores: ScoreForm[];
     onSuccess: () => void;
 }
 
-const CreateScoresModal: FC<CreateScoresModalProps> = ({
+const ScoresModal: FC<ScoresModalProps> = ({
     open,
     onClose,
     studentId,
     grade,
     semester,
-    onSuccess,
+    scores,
+    onSuccess
 }) => {
-    const [scoresForm, setScoresForm] = useState<ScoreForm[]>([
-        DEFAULT_ROW(grade, semester),
-    ]);
-    const { mutate: createScore, isPending: isSaving } = useCreateScore();
+    const [scoresForm, setScoresForm] = useState<ScoreForm[]>(scores.length ? scores : [DEFAULT_ROW(grade, semester)]);
+    const { mutate: saveScores, isPending: isSaving } = usePutBulkScores();
+
+    useEffect(() => {
+        if (open) {
+            setScoresForm(scores.length ? scores : [DEFAULT_ROW(grade, semester)]);
+        }
+    }, [open, scores, grade, semester]);
 
     const handleChange = useCallback(
         (idx: number, field: keyof ScoreForm, value: ScoreForm[keyof ScoreForm]) => {
-            setScoresForm((prev) =>
+            setScoresForm(prev =>
                 prev.map((row, i) => {
                     if (i !== idx) return row;
                     if (
@@ -68,45 +75,18 @@ const CreateScoresModal: FC<CreateScoresModalProps> = ({
     );
 
     const handleAddSubject = useCallback(() => {
-        setScoresForm((prev) => [...prev, DEFAULT_ROW(grade, semester)]);
+        setScoresForm(prev => [...prev, DEFAULT_ROW(grade, semester)]);
     }, [grade, semester]);
 
-    // ScoreForm -> CreateScoreRequest 변환
-    const toCreateScoreRequest = (form: ScoreForm): CreateScoreRequest => ({
-        grade: form.grade,
-        semester: form.semester,
-        subject_type: form.subject_type,
-        curriculum: form.curriculum,
-        subject: form.subject,
-        raw_score: Number(form.raw_score) ?? null,
-        subject_average: Number(form.subject_average) ?? null,
-        standard_deviation: Number(form.standard_deviation) ?? null,
-        achievement_level: form.achievement_level ?? '',
-        student_count: String(form.student_count) ?? null,
-        grade_rank: form.grade_rank ?? '',
-        achievement_distribution: { A: 0, B: 0, C: 0 }, // 기본값
-        credit_hours: Number(form.credit_hours) ?? null,
-        notes: form.notes ?? '',
-        student_id: studentId,
-    });
-
-    const handleSaveForm = useCallback(() => {
-        // 여러 과목 입력 시 모두 등록
-        scoresForm.forEach((form) => {
-            createScore(
-                { studentId, score: toCreateScoreRequest(form) },
-                {
-                    onSuccess: () => {
-                        onSuccess();
-                        onClose();
-                    },
-                    onError: (error) => {
-                        console.error('Error creating score:', error);
-                    },
-                }
-            );
-        });
-    }, [createScore, scoresForm, studentId, onSuccess, onClose, toCreateScoreRequest]);
+    const handleSaveForm = useCallback(async () => {
+        try {
+            await saveScores({ studentId, scores: scoresForm });
+            onSuccess();
+            onClose();
+        } catch (error) {
+            console.error('Error saving scores:', error);
+        }
+    }, [saveScores, studentId, scoresForm, onSuccess, onClose]);
 
     if (!open) return null;
 
@@ -117,7 +97,7 @@ const CreateScoresModal: FC<CreateScoresModalProps> = ({
                 <div className="bg-violet-100 border-b border-gray-200 px-8 pt-6 pb-4 text-black">
                     <div className="flex items-center justify-between text-black">
                         <div className="text-black">
-                            <h2 className="text-2xl font-bold mb-1">성적 추가</h2>
+                            <h2 className="text-2xl font-bold mb-1">성적 입력</h2>
                             <p className="text-gray-500 text-sm">
                                 {grade}학년 {semester}학기 • {scoresForm.length}개 과목
                             </p>
@@ -130,6 +110,7 @@ const CreateScoresModal: FC<CreateScoresModalProps> = ({
                         </button>
                     </div>
                 </div>
+
                 {/* 컨텐츠 영역 */}
                 <div className="flex-1 overflow-auto pb-3">
                     <ScoresModalTable
@@ -138,6 +119,7 @@ const CreateScoresModal: FC<CreateScoresModalProps> = ({
                         onAddSubject={handleAddSubject}
                     />
                 </div>
+
                 {/* 하단 버튼 영역 */}
                 <div className="bg-gray-50 px-8 py-6 border-t border-gray-200">
                     <div className="flex justify-end space-x-3">
@@ -156,10 +138,10 @@ const CreateScoresModal: FC<CreateScoresModalProps> = ({
                             {isSaving ? (
                                 <>
                                     <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
-                                    저장 중...
+                                    제출 중...
                                 </>
                             ) : (
-                                '저장하기'
+                                '제출하기'
                             )}
                         </button>
                     </div>
@@ -169,4 +151,4 @@ const CreateScoresModal: FC<CreateScoresModalProps> = ({
     );
 };
 
-export default CreateScoresModal; 
+export default ScoresModal;

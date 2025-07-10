@@ -6,9 +6,7 @@ import { useAttendance } from './_hooks/use-attendance';
 import { useStudentScores } from './_hooks/use-student-scores';
 import { useSemesterTrend } from './_hooks/use-semester-trend';
 import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
-import { useState } from 'react';
 import { useOverallGpa } from './_hooks/use-overall-gpa';
-import { useUpdateConsultationDate } from './_hooks/use-update-consultation-date';
 import { useModalState } from '@/app/hooks/useModalState';
 import { Score, ScoreForm } from '@/app/types/score';
 import StudentInfoSection from '@/app/dashboard/_components/StudentInfoSection';
@@ -25,17 +23,8 @@ export default function ScorePage() {
     const { attendance, isLoading: isAttendanceLoading, isError: isAttendanceError } = useAttendance(studentId);
     const { scores, isLoading: isScoresLoading, isError: isScoresError } = useStudentScores(studentId);
     const { semesterTrend, isLoading: isTrendLoading, isError: isTrendError } = useSemesterTrend(studentId);
-    const { updateConsultationDate } = useUpdateConsultationDate(studentId);
 
     const { openModal, closeModal, isModalOpen } = useModalState();
-
-    // 상담일 상태 관리 (초기값: 오늘)
-    const [consultationDate, setConsultationDate] = useState<Date>(new Date());
-
-    const handleUpdateConsultationDate = async (date: Date) => {
-        setConsultationDate(date);
-        await updateConsultationDate(date);
-    };
 
     function toScoreForm(score: Score): ScoreForm {
         return {

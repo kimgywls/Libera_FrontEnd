@@ -1,32 +1,34 @@
 import { useMemo } from 'react';
+import type { UniversityItem } from '@/app/types/university';
+
+const SEARCHABLE_FIELDS: Array<keyof UniversityItem> = [
+    'university_name',
+    'admission_type',
+    'major_name',
+];
 
 export function useFilteredUniversityList(
-    displayUniversityList: any[],
+    displayUniversityList: UniversityItem[],
     searchText: string,
-    searchField: string,
+    searchField: keyof UniversityItem,
     selectedRegions: string[],
     selectedTypes: string[]
-) {
+): UniversityItem[] {
     return useMemo(() => {
         return displayUniversityList.filter(u => {
-            // 검색
             const search = searchText.trim().toLowerCase();
             let matchesSearch = true;
             if (search) {
-                if ([
-                    'university_name',
-                    'admission_type',
-                    'major_name',
-                ].includes(searchField)) {
-                    matchesSearch = (u as any)[searchField]?.toLowerCase().includes(search);
+                if (SEARCHABLE_FIELDS.includes(searchField)) {
+                    const value = u[searchField];
+                    matchesSearch =
+                        typeof value === 'string' && value.toLowerCase().includes(search);
                 } else {
                     matchesSearch = false;
                 }
             }
-            // 지역 필터
             const matchesRegion =
                 selectedRegions.length === 0 || selectedRegions.includes(u.region);
-            // 판정 필터
             const matchesType =
                 selectedTypes.length === 0 || selectedTypes.includes(u.recommendation_type);
             return matchesSearch && matchesRegion && matchesType;

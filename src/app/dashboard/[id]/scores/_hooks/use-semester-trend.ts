@@ -5,7 +5,6 @@ import { SemesterTrendResponse } from '@/app/types/semesterTrend';
 export function useSemesterTrend(studentId: number) {
     const {
         data,
-        error,
         isLoading,
         isError,
     } = useQuery<SemesterTrendResponse>({
