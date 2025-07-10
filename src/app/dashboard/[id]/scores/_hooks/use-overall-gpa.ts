@@ -1,16 +1,21 @@
-import useSWR from 'swr';
+import { useQuery } from '@tanstack/react-query';
 import { fetchOverallGpa, OverallGpaResponse } from '../_actions/fetch-overall-gpa';
 
 export function useOverallGpa(studentId: number) {
-    const { data, error, isLoading } = useSWR<OverallGpaResponse>(
-        studentId ? [`overall-gpa`, studentId] : null,
-        () => fetchOverallGpa(studentId)
-    );
-    //console.log("overallGpa", data);
+    const {
+        data,
+        error,
+        isLoading,
+        isError,
+    } = useQuery<OverallGpaResponse>({
+        queryKey: ['overall-gpa', studentId],
+        queryFn: () => fetchOverallGpa(studentId),
+        enabled: !!studentId,
+    });
     return {
         overallGpa: data?.gpa,
         mainSubjectsGpa: data?.main_subjects_gpa,
         isLoading,
-        isError: !!error,
+        isError,
     };
 } 
