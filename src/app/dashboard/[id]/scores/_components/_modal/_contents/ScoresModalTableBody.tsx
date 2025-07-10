@@ -42,7 +42,7 @@ const ScoresModalTableBody: FC<ScoresModalTableBodyProps> = ({
                                         <td key={key} className={`px-4 py-3 border-r border-gray-200 ${getMinWidth(key)}`}>
                                             <select
                                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                                                value={row.subject_type}
+                                                value={row.subject_type ?? ''}
                                                 onChange={e => onChange(idx, 'subject_type', e.target.value)}
                                             >
                                                 {CATEGORY_OPTIONS.map((opt) => (

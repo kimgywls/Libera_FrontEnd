@@ -15,12 +15,6 @@ interface ScoresModalTableProps {
 }
 
 const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onAddSubject }) => {
-    // 정렬
-    const sortedForm = [...scoresForm].sort((a, b) =>
-        CATEGORY_OPTIONS.indexOf(a.subject_type as CategoryOption) -
-        CATEGORY_OPTIONS.indexOf(b.subject_type as CategoryOption)
-    );
-
     function getMinWidth(key: string) {
         if ([
             'credit_hours', 'raw_score', 'subject_average', 'standard_deviation', 'student_count', 'grade_rank'
@@ -37,7 +31,6 @@ const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onA
         }
         return value !== undefined && value !== null && value !== '' ? String(value) : '';
     }
-
 
     return (
         <div>
@@ -57,7 +50,7 @@ const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onA
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                         <ScoresModalTableBody
-                            sortedForm={sortedForm}
+                            sortedForm={scoresForm}
                             onChange={onChange}
                             getMinWidth={getMinWidth}
                             getDisplayValue={getDisplayValue}
