@@ -35,4 +35,13 @@ export interface UniversityInfo {
     university_id?: number;
     university_location?: string;
     university_type?: string;
-} 
+}
+
+export interface DesiredSchool {
+    school_name: string;
+    department_name: string;
+    priority: number;
+    id: number;
+    student_id: number;
+}
+

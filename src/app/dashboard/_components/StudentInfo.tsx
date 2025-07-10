@@ -8,22 +8,13 @@ import {
     GraduationCap,
     Calendar
 } from "lucide-react";
+import { StudentInfo as StudentInfoType } from "@/app/types/student";
 
 interface StudentInfoProps {
-    student: {
-        name: string;
-        current_school_name: string;
-        desired_school: string;
-        desired_department: string;
-        consultation_date: Date;
-        overall_score: number;
-        main_subjects_score: number;
-    };
-    onUpdateConsultationDate: (date: Date) => void;
-    isConsultationLoading?: boolean;
+    student: StudentInfoType;
 }
 
-const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, isConsultationLoading }) => {
+const StudentInfo: FC<StudentInfoProps> = ({ student }) => {
     const [inputDate, setInputDate] = useState<string>(student.consultation_date ? student.consultation_date.toISOString().slice(0, 10) : '');
     const [editMode, setEditMode] = useState(false);
     const formatDate = (date: Date) => {
@@ -41,12 +32,11 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, 
 
     const handleSave = () => {
         if (inputDate) {
-            onUpdateConsultationDate(new Date(inputDate));
+            //onUpdateConsultationDate(new Date(inputDate));
             setEditMode(false);
         }
     };
 
-    console.log(student);
     return (
         <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden px-6 pt-6 pb-4 ">
             <div className="flex flex-row space-x-2 w-full justify-between">
@@ -70,9 +60,10 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, 
                             <button
                                 className="px-2 py-2 text-gray-500 font-bold rounded-md hover:bg-green-100 whitespace-nowrap"
                                 onClick={handleSave}
-                                disabled={isConsultationLoading}
+                            //disabled={isConsultationLoading}
                             >
-                                {isConsultationLoading ? '저장 중...' : '저장'}
+                                {/* {isConsultationLoading ? '저장 중...' : '저장'} */}
+                                저장
                             </button>
                         </>
                     ) : (
@@ -150,7 +141,7 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, 
                             <div className="flex-1">
                                 <p className="font-semibold text-gray-700">목표 대학</p>
                                 {student?.desired_school
-                                    ? <span className="text-gray-900">{student?.desired_school}</span>
+                                    ? <span className="text-gray-900">{student?.desired_school.map(school => school.school_name).join(', ')}</span>
                                     : <span>-</span>
                                 }
                             </div>
@@ -163,7 +154,7 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, onUpdateConsultationDate, 
                             <div className="flex-1">
                                 <p className="font-semibold text-gray-700">희망 전공</p>
                                 {student?.desired_department
-                                    ? <span className="text-gray-900">{student?.desired_department}</span>
+                                    ? <span className="text-gray-900">{student?.desired_department.map(department => department.department_name).join(', ')}</span>
                                     : <span>-</span>
                                 }
                             </div>

@@ -1,47 +1,23 @@
 "use client";
 
-import { useStudentContext } from '@/app/dashboard/_contexts/StudentContext';
+import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
 import StudentInfoSection from '@/app/dashboard/_components/StudentInfoSection';
-import RecommanedUniversityListSection from '@/app/dashboard/_components/RecommanedUniversityListSection';
+import RecommendedUniversityListSection from './_components/RecommendedUniversityListSection';
 import { useSchoolRecommendations } from './_hooks/useSchoolRecommendations';
-import { useState, useCallback } from 'react';
-import { useOverallGpa } from '../scores/_hooks/use-overall-gpa';
 
 export default function UniversityListPage() {
-    const { student } = useStudentContext();
-    const { overallGpa, mainSubjectsGpa } = useOverallGpa(student!.id);
-    const [consultationDate, setConsultationDate] = useState<Date>(new Date());
-    const [isConsultationLoading, setIsConsultationLoading] = useState(false);
+    const { studentInfo } = useStudentInfoContext();
 
-    const onUpdateConsultationDate = useCallback((date: Date) => {
-        setIsConsultationLoading(true);
-        setTimeout(() => {
-            setConsultationDate(date);
-            setIsConsultationLoading(false);
-        }, 500); // TODO: 실제 저장 로직으로 교체
-    }, []);
-
-    const { data, loading, error } = useSchoolRecommendations(student?.id);
+    const { data, loading, error } = useSchoolRecommendations(studentInfo!.id);
 
     return (
         <div className="flex flex-col gap-8">
-            {student && (
+            {studentInfo && (
                 <StudentInfoSection
-                    student={{
-                        name: student.name,
-                        current_school_name: student.current_school_name,
-                        desired_school: student.desired_school,
-                        desired_department: student.desired_department,
-                        consultation_date: consultationDate,
-                        overall_score: overallGpa ?? 0,
-                        main_subjects_score: mainSubjectsGpa ?? 0,
-                    }}
-                    consultationDate={consultationDate}
-                    onUpdateConsultationDate={onUpdateConsultationDate}
-                    isConsultationLoading={isConsultationLoading}
+                    student={studentInfo}
                 />
             )}
-            <RecommanedUniversityListSection data={data} loading={loading} error={error} />
+            <RecommendedUniversityListSection data={data} loading={loading} error={error} />
         </div>
     );
 }

@@ -4,26 +4,14 @@ import { StudentInfo as StudentInfoType } from '@/app/types/student';
 
 interface StudentInfoSectionProps {
     student: StudentInfoType;
-    consultationDate: Date;
-    onUpdateConsultationDate: (date: Date) => void;
-    isConsultationLoading: boolean;
 }
 
-const StudentInfoSection: FC<StudentInfoSectionProps> = ({ student, consultationDate, onUpdateConsultationDate, isConsultationLoading }) => {
+const StudentInfoSection: FC<StudentInfoSectionProps> = ({ student }) => {
+
     if (!student) return null;
     return (
         <StudentInfo
-            student={{
-                name: student.name,
-                current_school_name: student.current_school_name,
-                desired_school: student.desired_school,
-                desired_department: student.desired_department,
-                consultation_date: consultationDate,
-                overall_score: student.overall_score ?? 0,
-                main_subjects_score: student.main_subjects_score ?? 0,
-            }}
-            onUpdateConsultationDate={onUpdateConsultationDate}
-            isConsultationLoading={isConsultationLoading}
+            student={student}
         />
     );
 };

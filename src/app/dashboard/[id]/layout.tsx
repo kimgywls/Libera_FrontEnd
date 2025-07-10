@@ -12,7 +12,7 @@ import {
 import { useParams } from "next/navigation";
 import { useAllStudentsList } from "@/app/main/_hooks/use-all-students-list";
 import { ReactNode } from "react";
-import { StudentProvider } from "@/app/dashboard/_contexts/StudentContext";
+import { StudentInfoProvider } from "@/app/dashboard/_contexts/StudentInfoContext";
 
 // 타입 정의
 interface NavItem {
@@ -137,9 +137,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 {/* 페이지 컨텐츠 */}
                 <main className="flex-1 p-6">
                     {selectedStudent ? (
-                        <StudentProvider studentId={selectedStudent.id}>
+                        <StudentInfoProvider student={selectedStudent}>
                             {children}
-                        </StudentProvider>
+                        </StudentInfoProvider>
                     ) : (
                         <div>학생을 찾을 수 없습니다.</div>
                     )}

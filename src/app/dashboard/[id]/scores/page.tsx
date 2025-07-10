@@ -5,7 +5,7 @@ import { PERIODS } from '@/app/constants';
 import { useAttendance } from './_hooks/use-attendance';
 import { useStudentScores } from './_hooks/use-student-scores';
 import { useSemesterTrend } from './_hooks/use-semester-trend';
-import { useStudentContext } from '@/app/dashboard/_contexts/StudentContext';
+import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
 import { useState } from 'react';
 import { useOverallGpa } from './_hooks/use-overall-gpa';
 import { useUpdateConsultationDate } from './_hooks/use-update-consultation-date';
@@ -20,8 +20,8 @@ import SemesterTrendChartSection from './_components/SemesterTrendChartSection';
 export default function ScorePage() {
     const { id } = useParams();
     const studentId = Number(id);
-    const { student } = useStudentContext();
-    const { overallGpa, mainSubjectsGpa } = useOverallGpa(studentId);
+    const { studentInfo } = useStudentInfoContext();
+    const { overallGpa } = useOverallGpa(studentId);
     const { attendance, isLoading: isAttendanceLoading, isError: isAttendanceError } = useAttendance(studentId);
     const { scores, isLoading: isScoresLoading, isError: isScoresError } = useStudentScores(studentId);
     const { semesterTrend, isLoading: isTrendLoading, isError: isTrendError } = useSemesterTrend(studentId);
@@ -59,15 +59,7 @@ export default function ScorePage() {
     return (
         <div className="space-y-10">
             <StudentInfoSection
-                student={{
-                    ...student!,
-                    consultation_date: consultationDate, // 또는 student?.consultation_date
-                    overall_score: overallGpa ?? 0,     // 또는 student?.overall_score
-                    main_subjects_score: mainSubjectsGpa ?? 0,
-                }}
-                consultationDate={consultationDate}
-                onUpdateConsultationDate={handleUpdateConsultationDate}
-                isConsultationLoading={isConsultationLoading}
+                student={studentInfo!}
             />
             <AttendanceSection
                 attendance={attendance!}
