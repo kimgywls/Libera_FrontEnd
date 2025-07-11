@@ -65,3 +65,17 @@ export const ALL_COLUMNS = Array.from(
 );
 
 export type CategoryOption = (typeof CATEGORY_OPTIONS)[number];
+
+
+export const CHECKLIST_SCORE_LABELS = [
+    { label: '탁월(A)', value: 5 },
+    { label: '우수(B)', value: 4 },
+    { label: '보통(C)', value: 3 },
+    { label: '미흡(D)', value: 2 },
+    { label: '부족(E)', value: 1 },
+];
+
+export const CHECKLIST_OX_SCORE_LABELS = [
+    { label: 'O', value: 5 },
+    { label: 'X', value: 3 },
+];
