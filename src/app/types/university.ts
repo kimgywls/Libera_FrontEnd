@@ -9,4 +9,5 @@ export interface UniversityItem {
     grade_cutoff_prev1: string;
     region: string;
     recommendation_type: string;
+    is_hidden?: boolean;
 } 

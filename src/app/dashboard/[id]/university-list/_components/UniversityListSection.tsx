@@ -1,0 +1,178 @@
+import { FC, memo } from 'react';
+import type { SchoolRecommendationResponse } from '@/app/types/school-recommendation';
+import type { UniversityItem } from '@/app/types/university';
+import MajorTabNav from './MajorTabNav';
+import SearchBar from './SearchBar';
+import UniversityTable from './UniversityTable';
+import UniversityListStatus from './UniversityListStatus';
+import { useUniversityListTab } from '../_hooks/useUniversityListTab';
+import { useUniversityListSearch } from '../_hooks/useUniversityListSearch';
+import { useUniversityListFilter } from '../_hooks/useUniversityListFilter';
+import { useFilteredUniversityList } from '../_hooks/useFilteredUniversityList';
+import HiddenToggleButton from './HiddenToggleButton';
+import { AlertModal } from '@/app/components/modal/AlertModal';
+import UniversityTableActions from './UniversityTableActions';
+import { useUniversityHide } from '../_hooks/useUniversityHide';
+
+interface UniversityListSectionProps {
+    data: SchoolRecommendationResponse | null;
+    loading: boolean;
+    error: Error | null;
+}
+
+const RECOMMEND_TYPE_LABEL: Record<string, string> = {
+    '도전': '도전',
+    '적정': '적정',
+    '안정': '안정',
+};
+const RECOMMEND_TYPE_COLOR: Record<string, string> = {
+    '도전': 'bg-red-100 text-red-600',
+    '적정': 'bg-blue-100 text-blue-600',
+    '안정': 'bg-green-100 text-green-600',
+};
+
+const UniversityListSection: FC<UniversityListSectionProps> = memo(
+    ({ data, loading, error }) => {
+        // 탭/검색/필터 관련 훅
+        const {
+            selectedTab,
+            handleTabClick,
+            displayTabLabels,
+            displayUniversityList,
+        } = useUniversityListTab(data);
+        const {
+            searchFields,
+            searchField,
+            setSearchField,
+            searchInput,
+            setSearchInput,
+            searchText,
+            handleSearch,
+            handleInputKeyDown,
+            handleResetSearchBar,
+        } = useUniversityListSearch();
+        const {
+            selectedRegions,
+            setSelectedRegions,
+            selectedTypes,
+            setSelectedTypes,
+            showRegionFilter,
+            setShowRegionFilter,
+            showTypeFilter,
+            setShowTypeFilter,
+            clearRegionFilter,
+            clearTypeFilter,
+            allRegions,
+            allTypes,
+            handleResetFilters,
+        } = useUniversityListFilter(displayUniversityList);
+
+        // 필터/탭/검색 적용 + 숨김 적용된 리스트
+        const filteredUniversityList: UniversityItem[] = useFilteredUniversityList(
+            displayUniversityList,
+            searchText,
+            searchField as keyof UniversityItem,
+            selectedRegions,
+            selectedTypes
+        );
+
+        // 숨기기 관련 통합 훅
+        const {
+            hiddenList, showHidden, setShowHidden,
+            handleHideList, handleUnhide,
+            selectedItems, setSelectedItems, handleSelectItem, handleSelectAll,
+            alert, setAlert
+        } = useUniversityHide(data, displayUniversityList, filteredUniversityList);
+
+        // 숨긴 학교 제외된 리스트
+        const visibleUniversityList = filteredUniversityList.filter(u => !hiddenList.some(h => h.admission_id === u.admission_id));
+
+        const regionCount = selectedRegions.length;
+        const typeCount = selectedTypes.length;
+        const hasActiveFilters = regionCount > 0 || typeCount > 0;
+        const hasData = !!data && data.departments.length > 0;
+
+        if (loading || error || !hasData) {
+            return (
+                <UniversityListStatus loading={loading} error={error} hasData={hasData} />
+            );
+        }
+
+        return (
+            <section className="w-full bg-white rounded-lg min-h-[800px] overflow-hidden">
+                {/* 헤더 */}
+                <div className="px-8 py-6 border-b border-gray-200">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">추천 학교 리스트</h2>
+                    <p className="text-gray-600 text-sm">
+                        총 {visibleUniversityList.length}개의 추천 학교가 있습니다
+                    </p>
+                </div>
+                <div className="border-b border-gray-200">
+                    <div className="flex flex-col px-4 pt-4 pb-2 gap-2">
+                        <SearchBar
+                            searchFields={searchFields}
+                            searchField={searchField}
+                            setSearchField={setSearchField}
+                            searchInput={searchInput}
+                            setSearchInput={setSearchInput}
+                            handleSearch={handleSearch}
+                            handleInputKeyDown={handleInputKeyDown}
+                            handleResetSearchBar={handleResetSearchBar}
+                        />
+                        <div className="flex items-center justify-between">
+                            <MajorTabNav labels={displayTabLabels} selected={selectedTab} onSelect={handleTabClick} />
+                            <UniversityTableActions
+                                hasActiveFilters={hasActiveFilters}
+                                regionCount={regionCount}
+                                typeCount={typeCount}
+                                handleResetFilters={handleResetFilters}
+                                onHide={handleHideList}
+                            />
+                        </div>
+
+                    </div>
+                </div>
+                <UniversityTable
+                    universityList={visibleUniversityList}
+                    selectedItems={selectedItems}
+                    handleSelectItem={handleSelectItem}
+                    handleSelectAll={handleSelectAll}
+                    recommendTypeLabel={RECOMMEND_TYPE_LABEL}
+                    recommendTypeColor={RECOMMEND_TYPE_COLOR}
+                    showRegionFilter={showRegionFilter}
+                    setShowRegionFilter={setShowRegionFilter}
+                    allRegions={allRegions}
+                    clearRegionFilter={clearRegionFilter}
+                    selectedRegions={selectedRegions}
+                    setSelectedRegions={setSelectedRegions}
+                    showTypeFilter={showTypeFilter}
+                    setShowTypeFilter={setShowTypeFilter}
+                    allTypes={allTypes}
+                    clearTypeFilter={clearTypeFilter}
+                    selectedTypes={selectedTypes}
+                    setSelectedTypes={setSelectedTypes}
+                />
+
+                {/* 숨긴 학교 토글 버튼 및 목록 */}
+                <HiddenToggleButton
+                    showHidden={showHidden}
+                    setShowHidden={setShowHidden}
+                    hiddenListLength={hiddenList.length}
+                    hiddenList={hiddenList}
+                    handleUnhide={handleUnhide}
+                />
+                <AlertModal
+                    open={alert.open}
+                    title={alert.title}
+                    description={alert.description}
+                    onConfirm={alert.onConfirm}
+                    onCancel={alert.onConfirm}
+                />
+            </section >
+        );
+    }
+);
+
+UniversityListSection.displayName = 'UniversityListSection';
+
+export default UniversityListSection; 
