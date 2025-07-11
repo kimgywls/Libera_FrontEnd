@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { fetchDesiredSchools } from '../_actions/fetch-desired-schools';
-import { DesiredSchool } from '@/app/types/school-recommendation';
+import { DesiredSchool } from '@/app/types/university';
 
 export function useDesiredSchools(studentId: number | undefined) {
     const { data, error, isLoading } = useSWR<DesiredSchool[]>(

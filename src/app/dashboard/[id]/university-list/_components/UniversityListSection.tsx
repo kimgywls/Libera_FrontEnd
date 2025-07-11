@@ -1,18 +1,18 @@
 import { FC, memo } from 'react';
-import type { SchoolRecommendationResponse } from '@/app/types/school-recommendation';
+import type { SchoolRecommendationResponse } from '@/app/types/university';
 import type { UniversityItem } from '@/app/types/university';
 import MajorTabNav from './MajorTabNav';
 import SearchBar from './SearchBar';
 import UniversityTable from './UniversityTable';
 import UniversityListStatus from './UniversityListStatus';
-import { useUniversityListTab } from '../_hooks/useUniversityListTab';
-import { useUniversityListSearch } from '../_hooks/useUniversityListSearch';
-import { useUniversityListFilter } from '../_hooks/useUniversityListFilter';
-import { useFilteredUniversityList } from '../_hooks/useFilteredUniversityList';
+import { useUniversityListTab } from '../_hooks/use-university-list-tab';
+import { useUniversityHide } from '../_hooks/use-university-hide';
+import { useFilteredUniversityList } from '../_hooks/use-filtered-university-list';
+import { useUniversityListFilter } from '../_hooks/use-university-list-filter';
+import { useUniversityListSearch } from '../_hooks/use-university-list-search';
 import HiddenToggleButton from './HiddenToggleButton';
 import { AlertModal } from '@/app/components/modal/AlertModal';
 import UniversityTableActions from './UniversityTableActions';
-import { useUniversityHide } from '../_hooks/useUniversityHide';
 
 interface UniversityListSectionProps {
     data: SchoolRecommendationResponse | null;
