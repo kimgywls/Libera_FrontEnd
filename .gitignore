@@ -42,4 +42,6 @@ next-env.d.ts
 
 # docker
 Dockerfile
+Dockerfile.dev
 docker-compose.yml
+docker-compose.prod.yml
