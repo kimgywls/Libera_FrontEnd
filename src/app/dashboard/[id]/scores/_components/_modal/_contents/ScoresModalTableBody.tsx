@@ -26,7 +26,7 @@ const ScoresModalTableBody: FC<ScoresModalTableBodyProps> = ({
             {sortedForm.map((row, idx) => {
                 const columns = CATEGORY_COLUMNS[row.subject_type as keyof typeof CATEGORY_COLUMNS];
                 return (
-                    <tr key={idx} className="hover:bg-gray-50 transition-colors duration-150">
+                    <tr key={idx} className="hover:bg-gray-50 transition-colors duration-150 text-black">
                         {ALL_COLUMNS.map((key) => {
                             const col = columns.find((c) => c.key === key);
                             if (!col)

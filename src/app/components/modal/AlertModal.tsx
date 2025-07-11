@@ -21,7 +21,7 @@ export const AlertModal: React.FC<AlertModalProps> = React.memo(({
 }) => {
     if (!open) return null;
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
                 <div className="font-bold text-lg mb-2">{title}</div>
                 <div className="text-gray-700 mb-6 whitespace-pre-line">{description}</div>

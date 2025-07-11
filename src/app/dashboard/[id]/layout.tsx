@@ -78,7 +78,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return (
         <div className="min-h-screen bg-violet-50 flex">
             {/* 사이드바 */}
-            <div className="w-60 bg-white shadow-lg flex flex-col">
+            <div className="w-60 min-w-[240px] max-w-[240px] bg-white shadow-lg flex flex-col flex-shrink-0">
                 {/* 사이드바 헤더 */}
                 <div className="flex items-center h-16 px-6 border-b border-gray-200">
                     <div className="flex items-center ">
@@ -135,7 +135,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </header>
 
                 {/* 페이지 컨텐츠 */}
-                <main className="flex-1 p-6">
+                <main className="flex-1 p-3">
                     {selectedStudent ? (
                         <StudentInfoProvider student={selectedStudent}>
                             {children}

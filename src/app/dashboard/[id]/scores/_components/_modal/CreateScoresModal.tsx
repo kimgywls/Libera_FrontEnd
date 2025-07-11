@@ -14,11 +14,11 @@ const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
     raw_score: null,
     subject_average: null,
     credit_hours: null,
-    student_count: '',
+    student_count: null,
     grade_rank: '',
     achievement_level: '',
     standard_deviation: null,
-    achievement_distribution: { property1: 0, property2: 0 },
+    achievement_distribution: null,
     notes: '',
 });
 
