@@ -1,20 +1,20 @@
 import { FC, memo } from 'react';
-import { Filter, RefreshCcw, Send } from 'lucide-react';
+import { EyeOff, Filter, RefreshCcw } from 'lucide-react';
 
-interface ActiveFilterButtonsProps {
+interface UniversityTableActionsProps {
     hasActiveFilters: boolean;
     regionCount: number;
     typeCount: number;
     handleResetFilters: () => void;
-    onSend: () => void;
+    onHide: () => void;
 }
 
-const ActiveFilterButtons: FC<ActiveFilterButtonsProps> = ({
+const UniversityTableActions: FC<UniversityTableActionsProps> = ({
     hasActiveFilters,
     regionCount,
     typeCount,
     handleResetFilters,
-    onSend
+    onHide
 }) => (
     <div className="flex items-center justify-end gap-2">
         {/* 활성 필터 표시 */}
@@ -28,21 +28,19 @@ const ActiveFilterButtons: FC<ActiveFilterButtonsProps> = ({
         )}
         <button
             onClick={handleResetFilters}
-            className="flex items-center gap-2 px-4 py-3 bg-slate-500 text-white rounded-lg transition-all duration-200 transform hover:scale-105 group"
-            aria-label="필터 초기화"
-            title="모든 필터 초기화"
+            className="flex items-center gap-2 px-3 py-2 text-sm bg-slate-500 text-white rounded-lg transition-all duration-200 transform hover:scale-105 group"
         >
             <RefreshCcw className="w-4 h-4 transition-transform duration-300" />
-            필터 초기화
+            초기화
         </button>
         <button
-            onClick={onSend}
-            className="flex items-center gap-2 bg-blue-500 text-white px-4 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 group"
+            onClick={onHide}
+            className="flex items-center gap-2 bg-blue-500 text-white px-3 py-2 text-sm rounded-lg transition-all duration-200 transform hover:scale-105 group"
         >
-            <Send className="w-4 h-4 transition-transform duration-300 " />
-            추천 학교 전송
+            <EyeOff className="w-4 h-4 transition-transform duration-300 " />
+            숨김
         </button>
     </div>
 );
 
-export default memo(ActiveFilterButtons); 
+export default memo(UniversityTableActions); 

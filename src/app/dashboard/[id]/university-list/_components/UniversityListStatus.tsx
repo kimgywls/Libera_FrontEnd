@@ -1,12 +1,12 @@
 import { FC, memo } from 'react';
 
-interface RecommendationStatusProps {
+interface UniversityListStatusProps {
     loading: boolean;
     error: Error | null;
     hasData: boolean;
 }
 
-const RecommendationStatus: FC<RecommendationStatusProps> = ({ loading, error, hasData }) => {
+const UniversityListStatus: FC<UniversityListStatusProps> = ({ loading, error, hasData }) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center py-16">
@@ -50,4 +50,4 @@ const RecommendationStatus: FC<RecommendationStatusProps> = ({ loading, error, h
     return null;
 };
 
-export default memo(RecommendationStatus); 
+export default memo(UniversityListStatus); 

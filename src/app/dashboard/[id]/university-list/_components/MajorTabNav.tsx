@@ -1,12 +1,12 @@
 import { FC, memo } from 'react';
 
-export interface TabNavProps {
+export interface MajorTabNavProps {
     labels: string[];
     selected: number;
     onSelect: (idx: number) => void;
 }
 
-const TabNav: FC<TabNavProps> = ({ labels, selected, onSelect }) => (
+const MajorTabNav: FC<MajorTabNavProps> = ({ labels, selected, onSelect }) => (
     <div className="flex flex-wrap gap-2 mb-1">
         {labels.map((label, idx) => (
             <button
@@ -23,4 +23,4 @@ const TabNav: FC<TabNavProps> = ({ labels, selected, onSelect }) => (
     </div>
 );
 
-export default memo(TabNav); 
+export default memo(MajorTabNav); 
