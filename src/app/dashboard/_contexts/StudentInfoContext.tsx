@@ -2,9 +2,9 @@
 
 import { createContext, useContext, ReactNode } from 'react';
 import { useOverallGpa } from '@/app/dashboard/[id]/scores/_hooks/use-overall-gpa';
-import { useDesiredSchools } from '@/app/dashboard/[id]/university-list/_hooks/useDesiredSchools';
+import { useDesiredSchools } from '@/app/dashboard/[id]/university-list/_hooks/use-desired-schools';
 import { Student, StudentInfo } from '@/app/types/student';
-import { DesiredSchool } from '@/app/types/school-recommendation';
+import { DesiredSchool } from '@/app/types/university';
 
 interface StudentInfoProviderProps {
     student: Student;

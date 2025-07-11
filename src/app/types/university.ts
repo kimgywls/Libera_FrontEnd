@@ -1,13 +1,62 @@
-export interface UniversityItem {
+// 대학 및 추천 관련 타입
+
+export interface UniversityInfo {
     admission_id: number;
     university_name: string;
-    admission_type: string;
     major_name: string;
+    region: string;
+    admission_category: string;
+    admission_type: string;
     admission_method: string;
     recruitment_count: string;
     grade_cutoff_current: string;
     grade_cutoff_prev1: string;
-    region: string;
+    grade_cutoff_prev2: string | null;
     recommendation_type: string;
-    is_hidden?: boolean;
+    student_grade: number;
+    cutoff_grade_numeric: number;
+    grade_difference: number;
+    competition_ratio: string;
+    is_desired: boolean;
+    is_hidden: boolean;
+    university_id?: number;
+    university_location?: string;
+    university_type?: string;
+}
+
+export type UniversityItem = Pick<UniversityInfo,
+    'admission_id' |
+    'university_name' |
+    'admission_type' |
+    'major_name' |
+    'admission_method' |
+    'recruitment_count' |
+    'grade_cutoff_current' |
+    'grade_cutoff_prev1' |
+    'region' |
+    'recommendation_type' |
+    'is_hidden'
+>;
+
+export interface DepartmentRecommendation {
+    department_name: string;
+    priority: number;
+    challenge: UniversityInfo[];
+    suitable: UniversityInfo[];
+    safe: UniversityInfo[];
+}
+
+export interface SchoolRecommendationResponse {
+    student_id: number;
+    student_name: string;
+    student_grade: number;
+    departments: DepartmentRecommendation[];
+}
+
+export interface DesiredSchool {
+    school_name: string;
+    department_name: string;
+    priority: number;
+    id: number;
+    student_id: number;
 } 

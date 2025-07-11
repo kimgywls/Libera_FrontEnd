@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { SchoolRecommendationResponse } from '@/app/types/school-recommendation';
+import type { SchoolRecommendationResponse } from '@/app/types/university';
 import { API_URL } from '@/app/constants';
 
 const api = axios.create({ baseURL: API_URL });

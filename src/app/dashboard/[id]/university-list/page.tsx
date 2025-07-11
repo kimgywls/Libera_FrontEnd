@@ -3,7 +3,7 @@
 import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
 import StudentInfoSection from '@/app/dashboard/_components/StudentInfoSection';
 import UniversityListSection from './_components/UniversityListSection';
-import { useSchoolRecommendations } from './_hooks/useSchoolRecommendations';
+import { useSchoolRecommendations } from './_hooks/use-school-recommendations';
 
 export default function UniversityListPage() {
     const { studentInfo } = useStudentInfoContext();
