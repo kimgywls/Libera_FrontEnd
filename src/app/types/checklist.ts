@@ -54,7 +54,30 @@ export interface ChecklistSubmitRequest {
     responses: ChecklistResponseItem[];
 }
 
+export interface ChecklistResultScores {
+    "학업역량": number;
+    "진로역량": number;
+    "공동체역량": number;
+    total: number;
+}
+
 export interface ChecklistSubmitResponse {
-    success: boolean;
-    message?: string;
+    student_id: number;
+    responses: Array<{
+        checklist_question_id: number;
+        score: number;
+        question: {
+            question_text: string;
+            main_category_id: number;
+            sub_category_id: number;
+            is_active: boolean;
+            checklist_question_id: number;
+        };
+    }>;
+    result_scores: ChecklistResultScores;
+}
+
+export interface ChecklistResultResponse {
+    student_id: number;
+    result_scores: ChecklistResultScores;
 }
