@@ -66,6 +66,7 @@ const ScoresModalTableBody: FC<ScoresModalTableBodyProps> = ({
                                                 <option value="B">B</option>
                                                 <option value="C">C</option>
                                                 <option value="D">D</option>
+                                                <option value="P">P</option>
                                             </select>
                                         </td>
                                     );
@@ -93,10 +94,38 @@ const ScoresModalTableBody: FC<ScoresModalTableBodyProps> = ({
                                     return (
                                         <td key={key} className={`px-4 py-3 border-r border-gray-200 ${getMinWidth(key)}`}>
                                             <input
+                                                type="number"
+                                                step="0.01"
                                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                                                 placeholder="표준편차"
                                                 value={row.standard_deviation ?? ''}
                                                 onChange={e => onChange(idx, 'standard_deviation', e.target.value)}
+                                            />
+                                        </td>
+                                    );
+                                case 'raw_score':
+                                    return (
+                                        <td key={key} className={`px-4 py-3 border-r border-gray-200 ${getMinWidth(key)}`}>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                                                placeholder="원점수"
+                                                value={row.raw_score ?? ''}
+                                                onChange={e => onChange(idx, 'raw_score', e.target.value)}
+                                            />
+                                        </td>
+                                    );
+                                case 'subject_average':
+                                    return (
+                                        <td key={key} className={`px-4 py-3 border-r border-gray-200 ${getMinWidth(key)}`}>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                                                placeholder="과목평균"
+                                                value={row.subject_average ?? ''}
+                                                onChange={e => onChange(idx, 'subject_average', e.target.value)}
                                             />
                                         </td>
                                     );

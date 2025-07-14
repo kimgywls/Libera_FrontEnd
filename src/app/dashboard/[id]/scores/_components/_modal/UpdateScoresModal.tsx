@@ -1,26 +1,16 @@
 import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
-import { Loader2, X } from 'lucide-react';
-import { ScoreForm } from '@/app/types/score';
+import { ScoreForm, CreateScoreRequest } from '@/app/types/score';
 import { usePutBulkScores } from '../../_hooks/use-put-bulk-scores';
+import { useCreateScore } from '../../_hooks/use-create-score';
+import { useScoreForm } from '../../_hooks/use-score-form';
+import { DebouncedSave } from '../../_utils/debounced-save';
+import { convertAchievementDistributionForCreate, safeParseNumber } from '../../_utils/score-form-utils';
+import BaseModal from '../../../../_components/_modal/BaseModal';
+import ModalHeader from '../../../../_components/_modal/ModalHeader';
+import ModalButtons from '../../../../_components/_modal/ModalButtons';
+import AutoSaveStatus from '../../../../_components/_modal/AutoSaveStatus';
 import ScoresModalTable from './_contents/ScoresModalTable';
-
-const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
-    grade,
-    semester,
-    subject_type: '일반선택',
-    curriculum: '',
-    subject: '',
-    raw_score: null,
-    subject_average: null,
-    credit_hours: null,
-    student_count: null,
-    grade_rank: '',
-    achievement_level: '',
-    standard_deviation: null,
-    achievement_distribution: null,
-    notes: '',
-});
 
 interface UpdateScoresModalProps {
     open: boolean;
@@ -41,112 +31,139 @@ const UpdateScoresModal: FC<UpdateScoresModalProps> = ({
     scores,
     onSuccess
 }) => {
-    const [scoresForm, setScoresForm] = useState<ScoreForm[]>(scores.length ? scores : [DEFAULT_ROW(grade, semester)]);
-    const { mutate: saveScores, isPending: isSaving } = usePutBulkScores();
+    const [isAutoSaving, setIsAutoSaving] = useState(false);
+    const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
+    const { mutateAsync: saveScores, isPending: isSaving } = usePutBulkScores();
+    const { mutateAsync: createScore, isPending: isCreating } = useCreateScore();
+
+    // 성적 폼 로직
+    const { scoresForm, resetForm, handleChange, handleAddSubject } = useScoreForm({
+        initialScores: scores,
+        grade,
+        semester,
+        onFormChange: () => debouncedSave()
+    });
+
+    // ScoreForm -> CreateScoreRequest 변환
+    const toCreateScoreRequest = useCallback((form: ScoreForm): CreateScoreRequest => ({
+        grade: form.grade,
+        semester: form.semester,
+        subject_type: form.subject_type,
+        curriculum: form.curriculum,
+        subject: form.subject,
+        raw_score: safeParseNumber(form.raw_score),
+        subject_average: safeParseNumber(form.subject_average),
+        standard_deviation: safeParseNumber(form.standard_deviation),
+        achievement_level: form.achievement_level ?? '',
+        student_count: form.student_count ? String(form.student_count) : null,
+        grade_rank: form.grade_rank ?? '',
+        achievement_distribution: convertAchievementDistributionForCreate(form.achievement_distribution),
+        credit_hours: safeParseNumber(form.credit_hours),
+        notes: form.notes ?? '',
+        student_id: studentId,
+    }), [studentId]);
+
+    // 자동 저장 함수 (기존 성적만)
+    const handleAutoSave = useCallback(async () => {
+        const existingScores = scoresForm.filter(score => score.id);
+        if (existingScores.length === 0) return;
+
+        setIsAutoSaving(true);
+        try {
+            await saveScores({ studentId, scores: existingScores });
+            setLastSaved(new Date());
+            onSuccess();
+        } catch (error) {
+            console.error('자동 저장 중 오류:', error);
+        } finally {
+            setIsAutoSaving(false);
+        }
+    }, [saveScores, studentId, scoresForm, onSuccess]);
+
+    // 디바운스 자동 저장
+    const { debouncedSave, cancelSave } = DebouncedSave({
+        onSave: handleAutoSave,
+        delay: 10000
+    });
+
+    // 모달 열림/닫힘 처리
     useEffect(() => {
         if (open) {
-            setScoresForm(scores.length ? scores : [DEFAULT_ROW(grade, semester)]);
+            resetForm();
+            setLastSaved(null);
+        } else {
+            cancelSave();
         }
-    }, [open, scores, grade, semester]);
+    }, [open, resetForm, cancelSave]);
 
-    const handleChange = useCallback(
-        (idx: number, field: keyof ScoreForm, value: ScoreForm[keyof ScoreForm]) => {
-            setScoresForm(prev =>
-                prev.map((row, i) => {
-                    if (i !== idx) return row;
-                    if (
-                        [
-                            'raw_score',
-                            'subject_average',
-                            'credit_hours',
-                            'student_count',
-                            'standard_deviation',
-                        ].includes(field)
-                    ) {
-                        return { ...row, [field]: value === '' ? null : Number(value) };
-                    }
-                    return { ...row, [field]: value };
-                })
-            );
-        },
-        []
-    );
-
-    const handleAddSubject = useCallback(() => {
-        setScoresForm(prev => [...prev, DEFAULT_ROW(grade, semester)]);
-    }, [grade, semester]);
-
+    // 최종 저장 함수
     const handleSaveForm = useCallback(async () => {
+        cancelSave();
+
         try {
-            await saveScores({ studentId, scores: scoresForm });
+            const newScores = scoresForm.filter(score => !score.id);
+            const existingScores = scoresForm.filter(score => score.id);
+
+            // 새로운 성적 생성
+            if (newScores.length > 0) {
+                await Promise.all(
+                    newScores.map(scoreForm =>
+                        createScore({
+                            studentId,
+                            score: toCreateScoreRequest(scoreForm)
+                        })
+                    )
+                );
+            }
+
+            // 기존 성적 업데이트
+            if (existingScores.length > 0) {
+                await saveScores({ studentId, scores: existingScores });
+            }
+
             onSuccess();
             onClose();
         } catch (error) {
             console.error('Error saving scores:', error);
         }
-    }, [saveScores, studentId, scoresForm, onSuccess, onClose]);
+    }, [saveScores, createScore, studentId, scoresForm, onSuccess, onClose, cancelSave, toCreateScoreRequest]);
 
-    if (!open) return null;
+    const isLoading = isSaving || isCreating;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-md w-full max-w-7xl max-h-[95vh] flex flex-col overflow-hidden">
-                {/* 헤더 */}
-                <div className="bg-violet-100 border-b border-gray-200 px-8 pt-6 pb-4 text-black">
-                    <div className="flex items-center justify-between text-black">
-                        <div className="text-black">
-                            <h2 className="text-2xl font-bold mb-1">성적 입력</h2>
-                            <p className="text-gray-500 text-sm">
-                                {grade}학년 {semester}학기 • {scoresForm.length}개 과목
-                            </p>
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="text-gray-500 hover:text-gray-700 transition-colors duration-200 p-2 hover:bg-white hover:bg-opacity-20 rounded-full"
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
-                    </div>
-                </div>
-
-                {/* 컨텐츠 영역 */}
-                <div className="flex-1 overflow-auto pb-3">
-                    <ScoresModalTable
-                        scoresForm={scoresForm}
-                        onChange={handleChange}
-                        onAddSubject={handleAddSubject}
-                    />
-                </div>
-
-                {/* 하단 버튼 영역 */}
-                <div className="bg-gray-50 px-8 py-6 border-t border-gray-200">
-                    <div className="flex justify-end space-x-3">
-                        <button
-                            className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium"
-                            onClick={onClose}
-                            disabled={isSaving}
-                        >
-                            취소
-                        </button>
-                        <button
-                            className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:bg-violet-400 transition-all duration-200 font-medium flex items-center"
-                            onClick={handleSaveForm}
-                            disabled={isSaving}
-                        >
-                            {isSaving ? (
-                                <>
-                                    <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
-                                    제출 중...
-                                </>
-                            ) : (
-                                '제출하기'
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <BaseModal
+            open={open}
+            onClose={onClose}
+            header={
+                <ModalHeader
+                    title="성적 입력"
+                    subtitle={`${grade}학년 ${semester}학기 • ${scoresForm.length}개 과목`}
+                    onClose={onClose}
+                    rightContent={
+                        <AutoSaveStatus
+                            isAutoSaving={isAutoSaving}
+                            lastSaved={lastSaved}
+                        />
+                    }
+                />
+            }
+            footer={
+                <ModalButtons
+                    onCancel={onClose}
+                    onSave={handleSaveForm}
+                    isLoading={isLoading}
+                    saveText="제출하기"
+                    loadingText="제출 중..."
+                />
+            }
+        >
+            <ScoresModalTable
+                scoresForm={scoresForm}
+                onChange={handleChange}
+                onAddSubject={handleAddSubject}
+            />
+        </BaseModal>
     );
 };
 

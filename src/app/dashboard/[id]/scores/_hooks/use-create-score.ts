@@ -12,9 +12,8 @@ export function useCreateScore() {
     return useMutation({
         mutationFn: ({ studentId, score }: CreateScoreParams) =>
             createScore(studentId, score),
-        onSuccess: (newScore, { studentId }) => {
-            const prev = queryClient.getQueryData<any[]>(['studentScores', studentId]) ?? [];
-            queryClient.setQueryData(['studentScores', studentId], [...prev, newScore]);
+        onSuccess: ({ studentId }) => {
+            queryClient.invalidateQueries({ queryKey: ['student-scores', studentId] });
         },
     });
 } 
