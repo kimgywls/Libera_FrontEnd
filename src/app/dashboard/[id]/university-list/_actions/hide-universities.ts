@@ -94,7 +94,7 @@ export async function fetchHiddenUniversities(studentId: number): Promise<Univer
         const res = await api.get<FetchHiddenUniversitiesResponse>(`/api/v1/school-recommendations/hidden/${studentId}`);
         // console.log('[fetchHiddenUniversities] response:', res.data);
         return res.data.hidden_schools;
-    } catch (error) {
+    } catch {
         // console.error('[fetchHiddenUniversities] error:', error);
         return [];
     }

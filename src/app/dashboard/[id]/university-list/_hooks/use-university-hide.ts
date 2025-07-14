@@ -41,7 +41,7 @@ export function useUniversityHide(
     const queryClient = useQueryClient();
 
     // 숨긴 학교 목록 useQuery
-    const { data: hiddenList = [], refetch } = useQuery({
+    const { data: hiddenList = [] } = useQuery({
         queryKey: ['hiddenUniversities', studentId],
         queryFn: () => studentId ? fetchHiddenUniversities(studentId) : Promise.resolve([]),
         enabled: !!studentId,

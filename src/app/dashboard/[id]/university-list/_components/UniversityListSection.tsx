@@ -80,8 +80,8 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
         const {
             hiddenList, showHidden, setShowHidden,
             handleHideList, handleUnhide,
-            selectedItems, setSelectedItems, handleSelectItem, handleSelectAll,
-            alert, setAlert
+            selectedItems, handleSelectItem, handleSelectAll,
+            alert
         } = useUniversityHide(data, displayUniversityList, filteredUniversityList);
 
         // 숨긴 학교 제외된 리스트

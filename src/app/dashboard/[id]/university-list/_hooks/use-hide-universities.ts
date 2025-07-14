@@ -31,7 +31,7 @@ export function useHideUniversities(): UseHideUniversitiesResult {
             return res;
         } catch (e) {
             // console.error('[useHideUniversities] hide 에러', e);
-            setError('숨기기 요청 중 오류 발생');
+            setError((e as Error).message || '숨기기 요청 중 오류 발생');
             setSuccess(false);
             return { success: false, message: '숨기기 요청 중 오류 발생' };
         } finally {
@@ -69,7 +69,7 @@ export function useUnhideUniversities(): UseUnhideUniversitiesResult {
             return res;
         } catch (e) {
             // console.error('[useUnhideUniversities] unhide 에러', e);
-            setError('숨기기 해제 요청 중 오류 발생');
+            setError((e as Error).message || '숨기기 해제 요청 중 오류 발생');
             setSuccess(false);
             return { success: false, message: '숨기기 해제 요청 중 오류 발생' };
         } finally {
@@ -103,7 +103,7 @@ export function useHiddenUniversities(studentId: number | undefined): UseHiddenU
             setHiddenList(data);
         } catch (e) {
             // console.error('[useHiddenUniversities] fetchList 에러', e);
-            setError('숨긴 학교 목록 조회 실패');
+            setError((e as Error).message || '숨긴 학교 목록 조회 실패');
         } finally {
             setLoading(false);
         }
