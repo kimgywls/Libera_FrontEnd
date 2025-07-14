@@ -1,5 +1,7 @@
 import { FC, memo } from 'react';
 import { AttendanceApiResponse } from '@/app/types/attendance';
+import BaseTable from '../../../_components/BaseTable';
+import DataState from '../../../_components/DataState';
 
 interface AttendanceTableProps {
     attendance: AttendanceApiResponse;
@@ -26,33 +28,21 @@ const columns = [
 ];
 
 const AttendanceTable: FC<AttendanceTableProps> = memo(({ attendance, isLoading, isError }) => {
-    if (isLoading) return <div className="py-4 text-center text-gray-500">로딩 중...</div>;
-    if (isError) return <div className="py-4 text-center text-red-500">출결 정보를 불러오는 데 실패했습니다.</div>;
-    if (!attendance || !attendance.records || !attendance.records.length) return <div className="py-4 text-center text-gray-400">출결 정보를 찾을 수 없습니다.</div>;
+    const isEmpty = !attendance || !attendance.records || !attendance.records.length;
 
     return (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                    <tr>
-                        {columns.map(col => (
-                            <th key={col.key} className="px-4 py-2 text-sm font-semibold text-gray-700 border-x border-gray-200 whitespace-pre-line">{col.label}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                    {attendance.records.map((record, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50">
-                            {columns.map(col => (
-                                <td key={col.key} className="px-4 py-2 whitespace-nowrap text-gray-900 border-x border-gray-200">
-                                    {record[col.key] ?? '-'}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+        <DataState
+            isLoading={isLoading}
+            isError={isError}
+            isEmpty={isEmpty}
+            errorMessage="출결 정보를 불러오는 데 실패했습니다."
+            emptyMessage="출결 정보를 찾을 수 없습니다."
+        >
+            <BaseTable
+                columns={columns}
+                data={attendance.records || []}
+            />
+        </DataState>
     );
 });
 

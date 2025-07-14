@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import AttendanceTable from './AttendanceTable';
 import { AttendanceApiResponse } from '@/app/types/attendance';
+import Section from '../../../_components/Section';
 
 interface AttendanceSectionProps {
     attendance: AttendanceApiResponse;
@@ -9,10 +10,9 @@ interface AttendanceSectionProps {
 }
 
 const AttendanceSection: FC<AttendanceSectionProps> = ({ attendance, isLoading, isError }) => (
-    <section className="mb-10 bg-white rounded-lg p-4">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">출결</h2>
+    <Section title="출결">
         <AttendanceTable attendance={attendance} isLoading={isLoading} isError={isError} />
-    </section>
+    </Section>
 );
 
 export default AttendanceSection; 
