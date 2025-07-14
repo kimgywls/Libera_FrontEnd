@@ -2,15 +2,20 @@ import AcademicCompetencySection from "./AcademicCompetencySection";
 import CareerCompetencySection from "./CareerCompetencySection";
 import CommunityCompetencySection from "./CommunityCompetencySection";
 import ChecklistSubmitButton from "./ChecklistSubmitButton";
-import type { ChecklistQuestion, ChecklistResponseItem } from "@/app/types/checklist";
-import { useState, useMemo } from "react";
+import type { ChecklistQuestion, ChecklistResponseItem, ChecklistSubmitResponse } from "@/app/types/checklist";
+import { useState, useMemo, useEffect } from "react";
+import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
+import { useChecklistResponses } from '../_hooks/use-checklist-responses';
 
 interface ChecklistSectionProps {
     questions: ChecklistQuestion[];
 }
 
 export default function ChecklistSection({ questions }: ChecklistSectionProps) {
-    // 질문 분류
+    const { studentInfo } = useStudentInfoContext();
+    const studentId = studentInfo.id;
+    const { data: prevResponses } = useChecklistResponses(studentId);
+
     const academicQuestions = useMemo(
         () => questions.filter(q => q.main_category_id === 1),
         [questions]
@@ -18,15 +23,23 @@ export default function ChecklistSection({ questions }: ChecklistSectionProps) {
     const careerQuestions = useMemo(() => questions.filter(q => q.main_category_id === 2), [questions]);
     const communityQuestions = useMemo(() => questions.filter(q => q.main_category_id === 3), [questions]);
 
-    // 전체 점수 상태: { [checklist_question_id]: score }
     const [scores, setScores] = useState<Record<number, number>>({});
 
-    // 각 Section에 전달할 핸들러
+    useEffect(() => {
+        const safePrevResponses = prevResponses as ChecklistSubmitResponse | undefined;
+        const responses = (safePrevResponses && Array.isArray((safePrevResponses as any).responses)) ? (safePrevResponses as any).responses : [];
+        if (responses.length > 0) {
+            const restored = Object.fromEntries(
+                responses.map((r: ChecklistResponseItem) => [r.checklist_question_id, r.score])
+            );
+            setScores(restored);
+        }
+    }, [prevResponses]);
+
     const handleScoreChange = (questionId: number, score: number) => {
         setScores(prev => ({ ...prev, [questionId]: score }));
     };
 
-    // responses 변환
     const responses: ChecklistResponseItem[] = useMemo(
         () => Object.entries(scores).map(([id, score]) => ({ checklist_question_id: Number(id), score })),
         [scores]
@@ -49,7 +62,7 @@ export default function ChecklistSection({ questions }: ChecklistSectionProps) {
                 scores={scores}
                 onScoreChange={handleScoreChange}
             />
-            <ChecklistSubmitButton responses={responses} />
+            <ChecklistSubmitButton responses={responses} totalQuestions={questions.length} />
         </div>
     );
 }
