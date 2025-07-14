@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import CareerCompetencyChecklist from './CareerCompetencyChecklist';
 import type { ChecklistQuestion } from '@/app/types/checklist';
 import { CHECKLIST_SCORE_LABELS as SCORE_LABELS } from '@/app/constants';
