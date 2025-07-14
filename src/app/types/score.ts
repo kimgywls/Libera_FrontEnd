@@ -20,6 +20,7 @@ export interface Score {
 }
 
 export interface ScoreForm {
+    id?: number;
     grade: number;
     semester: number;
     subject_type: string | null;
