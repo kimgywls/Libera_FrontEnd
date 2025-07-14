@@ -12,28 +12,27 @@ interface StudentInfoProviderProps {
 }
 
 interface StudentInfoContextValue {
-    studentInfo: StudentInfo | null;
+    studentInfo: StudentInfo;
     desiredSchools: DesiredSchool[];
 }
 
 const StudentInfoContext = createContext<StudentInfoContextValue | null>(null);
 
 export const StudentInfoProvider = ({ student, children }: StudentInfoProviderProps) => {
-    const { overallGpa, mainSubjectsGpa } = useOverallGpa(student?.id);
-    const { desiredSchools } = useDesiredSchools(student?.id);
+    if (!student) throw new Error('StudentInfoProvider에는 student가 반드시 필요합니다.');
+    const { overallGpa, mainSubjectsGpa } = useOverallGpa(student.id);
+    const { desiredSchools } = useDesiredSchools(student.id);
 
-    const studentInfo: StudentInfo | null = student
-        ? {
-            id: student.id,
-            name: student.name,
-            current_school_name: student.current_school_name,
-            desired_school: desiredSchools ?? [],
-            desired_department: desiredSchools ?? [],
-            consultation_date: new Date(), // 필요시 별도 관리
-            overall_score: overallGpa ?? 0,
-            main_subjects_score: mainSubjectsGpa ?? 0,
-        }
-        : null;
+    const studentInfo: StudentInfo = {
+        id: student.id,
+        name: student.name,
+        current_school_name: student.current_school_name,
+        desired_school: desiredSchools ?? [],
+        desired_department: desiredSchools ?? [],
+        consultation_date: new Date() ?? null,
+        overall_score: overallGpa ?? 0,
+        main_subjects_score: mainSubjectsGpa ?? 0,
+    };
 
     const value: StudentInfoContextValue = {
         studentInfo,

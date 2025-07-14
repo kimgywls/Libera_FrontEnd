@@ -1,4 +1,4 @@
-import { DesiredSchool } from "./school-recommendation";
+import { DesiredSchool } from "./university";
 
 export interface Student {
     id: number;
@@ -32,7 +32,7 @@ export interface StudentInfo {
     current_school_name: string;
     desired_school: DesiredSchool[];
     desired_department: DesiredSchool[];
-    consultation_date: Date;
-    overall_score: number;
-    main_subjects_score: number;
+    consultation_date?: Date | null;
+    overall_score?: number | null;
+    main_subjects_score?: number | null;
 }

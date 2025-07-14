@@ -17,7 +17,8 @@ interface StudentInfoProps {
 const StudentInfo: FC<StudentInfoProps> = ({ student }) => {
     const [inputDate, setInputDate] = useState<string>(student.consultation_date ? student.consultation_date.toISOString().slice(0, 10) : '');
     const [editMode, setEditMode] = useState(false);
-    const formatDate = (date: Date) => {
+    const formatDate = (date: Date | null | undefined) => {
+        if (!date) return '-';
         return date.toLocaleDateString('ko-KR', {
             year: 'numeric',
             month: 'long',
