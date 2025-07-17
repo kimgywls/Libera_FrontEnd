@@ -7,31 +7,29 @@ const api = axios.create({
     baseURL: API_URL,
 });
 
+// 에러 응답 타입 정의
+interface ChecklistMetaErrorResponse {
+    detail?: { msg: string }[];
+    message?: string;
+}
 
 export async function saveChecklistMeta(body: SaveChecklistMetaRequest): Promise<{ success: boolean; message?: string; }> {
     try {
-        // [디버깅] 요청 body 출력
-        //console.log('[saveChecklistMeta] 요청 body:', body);
         const res = await api.post('/api/v1/checklist/meta', body);
-        // [디버깅] 응답 데이터 출력
-        //console.log('[saveChecklistMeta] 응답 데이터:', res.data);
         return { success: true, message: res.data?.message || '저장 성공' };
     } catch (error) {
-        // [디버깅] 에러 전체 객체 출력
-        //console.log('[saveChecklistMeta] 에러:', error);
-        const err = error as AxiosError<any>;
-        // [디버깅] 에러 응답 데이터 출력
-        //console.log('[saveChecklistMeta] 에러 응답 데이터:', err.response?.data);
+        const err = error as AxiosError<ChecklistMetaErrorResponse>;
         let message = '저장 실패';
         const data = err.response?.data;
         if (data) {
             // 422 Validation Error 상세 메시지 파싱
             if (Array.isArray(data.detail)) {
-                message = data.detail.map((d: any) => d.msg).join(', ');
+                message = data.detail.map((d) => d.msg).join(', ');
             } else if (typeof data.message === 'string') {
                 message = data.message;
             }
         }
+        console.error('체크리스트 메타 저장 실패:', message);
         return { success: false, message };
     }
 }

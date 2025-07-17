@@ -27,7 +27,7 @@ export default function ChecklistSection({ questions }: ChecklistSectionProps) {
 
     useEffect(() => {
         const safePrevResponses = prevResponses as ChecklistSubmitResponse | undefined;
-        const responses = (safePrevResponses && Array.isArray((safePrevResponses as any).responses)) ? (safePrevResponses as any).responses : [];
+        const responses = (safePrevResponses && Array.isArray(safePrevResponses.responses)) ? safePrevResponses.responses : [];
         if (responses.length > 0) {
             const restored = Object.fromEntries(
                 responses.map((r: ChecklistResponseItem) => [r.checklist_question_id, r.score])

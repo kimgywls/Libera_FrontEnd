@@ -6,7 +6,7 @@ import ChecklistScoreSummary from './ChecklistScoreSummary';
 import { useChecklistMetaMutation, useChecklistMetaQuery } from '../_hooks/use-checklist-meta';
 import { useChecklistQuestions } from '../_hooks/use-checklist-questions';
 import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
-import { ChecklistResultScores, HighschoolTypeEnum } from '@/app/types/checklist';
+import { HighschoolTypeEnum } from '@/app/types/checklist';
 import { useState } from 'react';
 import { useModalState } from '@/app/hooks/useModalState';
 import { useChecklistResult } from '../_hooks/use-checklist-result';
