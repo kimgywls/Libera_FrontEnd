@@ -57,7 +57,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             name: "체크리스트",
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist` : "/main",
             icon: ListCheck,
-            description: "진학 준비 체크리스트"
+            description: "학생부 종합 체크리스트"
         },
         {
             name: "종합 평가",
@@ -141,7 +141,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                             {children}
                         </StudentInfoProvider>
                     ) : (
-                        <div>학생을 찾을 수 없습니다.</div>
+                        <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-sm" />
                     )}
                 </main>
             </div>
