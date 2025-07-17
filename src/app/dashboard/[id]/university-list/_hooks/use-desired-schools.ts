@@ -1,16 +1,11 @@
-import useSWR from 'swr';
+import { useQuery } from '@tanstack/react-query';
 import { fetchDesiredSchools } from '../_actions/fetch-desired-schools';
 import { DesiredSchool } from '@/app/types/university';
 
 export function useDesiredSchools(studentId: number | undefined) {
-    const { data, error, isLoading } = useSWR<DesiredSchool[]>(
-        studentId ? [`desired-schools`, studentId] : null,
-        () => fetchDesiredSchools(studentId!)
-    );
-    //console.log('[useDesiredSchools] data:', data);
-    return {
-        desiredSchools: data,
-        isLoading,
-        isError: !!error,
-    };
+    return useQuery<DesiredSchool[]>({
+        queryKey: ['desired-schools', studentId],
+        queryFn: () => fetchDesiredSchools(studentId!),
+        enabled: !!studentId,
+    });
 } 

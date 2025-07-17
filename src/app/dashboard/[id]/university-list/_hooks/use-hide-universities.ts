@@ -3,43 +3,36 @@ import { hideUniversities, HideUniversitiesResponse } from '../_actions/hide-uni
 import { unhideUniversities } from '../_actions/hide-universities';
 import { fetchHiddenUniversities } from '../_actions/hide-universities';
 import type { UniversityItem } from '@/app/types/university';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-interface UseHideUniversitiesResult {
-    hide: (studentId: number, admissionIds: number[]) => Promise<HideUniversitiesResponse>;
-    loading: boolean;
-    error: string | null;
-    success: boolean;
-}
+export function useHideUniversities(studentId: number) {
+    const queryClient = useQueryClient();
+    const { data: hiddenUniversities = [], isLoading } = useQuery({
+        queryKey: ['hide-universities', studentId],
+        queryFn: () => fetchHiddenUniversities(studentId),
+        enabled: !!studentId,
+    });
 
-export function useHideUniversities(): UseHideUniversitiesResult {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
+    const hideMutation = useMutation({
+        mutationFn: (ids: number[]) => hideUniversities(studentId, ids),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['hide-universities', studentId] });
+        },
+    });
 
-    const hide = useCallback(async (studentId: number, admissionIds: number[]) => {
-        setLoading(true);
-        setError(null);
-        setSuccess(false);
-        try {
-            // console.log('[useHideUniversities] hide 호출', { studentId, admissionIds });
-            const res = await hideUniversities(studentId, admissionIds);
-            // console.log('[useHideUniversities] hide 결과', res);
-            setSuccess(res.success);
-            if (!res.success) {
-                setError(res.message || '숨기기 실패');
-            }
-            return res;
-        } catch (e) {
-            // console.error('[useHideUniversities] hide 에러', e);
-            setError((e as Error).message || '숨기기 요청 중 오류 발생');
-            setSuccess(false);
-            return { success: false, message: '숨기기 요청 중 오류 발생' };
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    const unhideMutation = useMutation({
+        mutationFn: (ids: number[]) => unhideUniversities(studentId, ids),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['hide-universities', studentId] });
+        },
+    });
 
-    return { hide, loading, error, success };
+    return {
+        hiddenUniversities,
+        isLoading,
+        hide: hideMutation.mutate,
+        unhide: unhideMutation.mutate,
+    };
 }
 
 interface UseUnhideUniversitiesResult {
