@@ -11,6 +11,7 @@ import ScoresSection from './ScoresSection';
 import SemesterTrendSection from './SemesterTrendSection';
 import SemesterTrendChartSection from './SemesterTrendChartSection';
 import type { Score, ScoreForm } from '@/app/types/score';
+import { useModalState } from '@/app/hooks/useModalState';
 
 const ScoresWidget: FC = () => {
     const { studentInfo } = useStudentInfoContext();
@@ -40,10 +41,8 @@ const ScoresWidget: FC = () => {
         };
     }
 
-    // 모달 관련 상태는 상위에서 관리하므로, 필요시 prop으로 받을 수 있음. (여기선 생략)
-    const openModal = () => { };
-    const closeModal = () => { };
-    const isModalOpen = () => false;
+    // useModalState 훅으로 모달 상태 관리
+    const { openModal, closeModal, isModalOpen } = useModalState();
     const onScoreChange = () => { };
 
     return (
