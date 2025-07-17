@@ -9,6 +9,7 @@ import { StudentsPagination } from './StudentsPagination';
 import { AddStudentModal } from './_modal/AddStudentModal';
 import { AlertModal } from '../../components/modal/AlertModal';
 import { useModalState } from '../../hooks/useModalState';
+import { StudentsListButtons } from './StudentsListButtons';
 
 const LIMIT = 20;
 
@@ -47,28 +48,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
             <div className="flex justify-between items-center mb-2">
                 <div className="w-full flex justify-start">
                     <StudentsSearchForm value={search} onChange={handleSearchChange} /></div>
-                <div className="flex items-center gap-2 mr-4">
-                    <button
-                        type="button"
-                        className="px-4 py-2 bg-violet-500 text-white rounded hover:bg-violet-600 mr-2 whitespace-nowrap"
-                        onClick={() => openModal('addStudent')}
-                    >
-                        학생 추가
-                    </button>
-                    <button
-                        type="button"
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 whitespace-nowrap"
-                        onClick={() => {
-                            if (!selectedIds.length) {
-                                alert('삭제할 학생을 선택하세요.');
-                                return;
-                            }
-                            openModal('deleteStudent');
-                        }}
-                    >
-                        학생 삭제
-                    </button>
-                </div>
+                <StudentsListButtons openModal={openModal} students={students} />
             </div>
             <div className="h-[600px] overflow-y-auto mb-4">
                 {isLoading ? (
