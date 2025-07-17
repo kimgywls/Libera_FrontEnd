@@ -7,7 +7,7 @@ const api = axios.create({ baseURL: API_URL });
 export async function createScore(studentId: number, score: CreateScoreRequest) {
     try {
         const response = await api.post(`/api/v1/scores/students/${studentId}/scores`, score);
-        console.log('[디버그] createScore 응답', response.data);
+        //console.log('[디버그] createScore 응답', response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {

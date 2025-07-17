@@ -6,9 +6,8 @@ const api = axios.create({ baseURL: API_URL });
 
 export async function putBulkScores(studentId: number, scores: ScoreForm[]) {
     try {
-        console.log('전송 데이터:', scores);
         const response = await api.put(`/api/v1/scores/students/${studentId}/scores/bulk`, scores);
-        console.log('[디버그] putBulkScores 응답', response.data);
+        //console.log('[디버그] putBulkScores 응답', response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {

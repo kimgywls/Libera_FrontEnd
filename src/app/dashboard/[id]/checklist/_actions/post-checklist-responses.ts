@@ -8,10 +8,10 @@ export async function postChecklistResponses(body: ChecklistSubmitRequest): Prom
     //console.log('[postChecklistResponses] 요청 바디:', JSON.stringify(body, null, 2));
     try {
         const res = await api.post('/api/v1/checklist/responses', body);
-        console.log('[postChecklistResponses] 응답:', res.data);
+        //console.log('[postChecklistResponses] 응답:', res.data);
         return res.data;
     } catch (error) {
-        console.error('[postChecklistResponses] 에러:', error);
+        //console.error('[postChecklistResponses] 에러:', error);
         if (axios.isAxiosError(error)) {
             console.error('[postChecklistResponses] 서버 응답:', error.response?.data);
         }
