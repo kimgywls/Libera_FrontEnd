@@ -53,7 +53,11 @@ export default function ChecklistMetaSection({
                         {SCHOOL_TYPES.map((type) => (
                             <label
                                 key={type}
-                                className={`flex items-center justify-center px-3 py-1.5 rounded-md border cursor-pointer transition ${(meta?.highschool_type === type)
+                                className={`flex items-center justify-center px-3 py-1.5 rounded-md border cursor-pointer transition ${(
+                                    meta
+                                        ? meta.highschool_type === type
+                                        : schoolType === type
+                                )
                                     ? 'bg-violet-600 text-white border-violet-600'
                                     : 'bg-white text-gray-700 border-gray-300 hover:bg-violet-50'
                                     }`}
@@ -80,8 +84,12 @@ export default function ChecklistMetaSection({
                         {['YES', 'NO'].map((value) => (
                             <label
                                 key={value}
-                                className={`flex items-center justify-center px-4 py-1.5 rounded-md border cursor-pointer transition ${(meta?.is_subject_sequence_completed !== null && meta?.is_subject_sequence_completed !== undefined &&
-                                    ((meta.is_subject_sequence_completed && value === 'YES') || (!meta.is_subject_sequence_completed && value === 'NO')))
+                                className={`flex items-center justify-center px-4 py-1.5 rounded-md border cursor-pointer transition ${(
+                                    meta
+                                        ? (meta.is_subject_sequence_completed !== null && meta.is_subject_sequence_completed !== undefined &&
+                                            ((meta.is_subject_sequence_completed && value === 'YES') || (!meta.is_subject_sequence_completed && value === 'NO')))
+                                        : curriculumCompleted === value
+                                )
                                     ? 'bg-violet-600 text-white border-violet-600'
                                     : 'bg-white text-gray-700 border-gray-300 hover:bg-violet-50'
                                     }`}

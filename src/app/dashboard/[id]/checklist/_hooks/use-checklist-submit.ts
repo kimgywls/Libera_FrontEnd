@@ -9,14 +9,14 @@ export function useChecklistSubmit() {
         onSuccess: (data: ChecklistSubmitResponse, variables) => {
             // checklist-responses 쿼리 캐시 갱신
             if (variables?.student_id) {
-                queryClient.setQueryData(['checklist-responses', variables.student_id], (prev) => ({
+                queryClient.setQueryData<ChecklistSubmitResponse>(['checklist-responses', variables.student_id], (prev) => ({
                     ...(prev || {}),
                     student_id: variables.student_id,
                     responses: data.responses,
                     result_scores: data.result_scores,
                 }));
                 // checklist-result 쿼리 캐시 갱신
-                queryClient.setQueryData(['checklist-result', variables.student_id], (prev) => ({
+                queryClient.setQueryData<Partial<ChecklistSubmitResponse>>(['checklist-result', variables.student_id], (prev) => ({
                     ...(prev || {}),
                     student_id: variables.student_id,
                     result_scores: data.result_scores,

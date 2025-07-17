@@ -7,12 +7,12 @@ import { useSchoolRecommendations } from '../_hooks/use-school-recommendations';
 
 export default function UniversityListWidget() {
     const { studentInfo } = useStudentInfoContext();
-    const { data, loading, error } = useSchoolRecommendations(studentInfo!.id);
+    const { data, isLoading, error } = useSchoolRecommendations(studentInfo!.id);
 
     return (
         <div className="space-y-10 ">
             <StudentInfoSection student={studentInfo!} />
-            <UniversityListSection data={data} loading={loading} error={error} />
+            <UniversityListSection data={data ?? null} loading={isLoading} error={error} />
         </div>
     );
 }

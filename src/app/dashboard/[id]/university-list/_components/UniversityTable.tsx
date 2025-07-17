@@ -115,7 +115,7 @@ const UniversityTable: FC<UniversityTableProps> = ({
                 <tbody className="divide-y divide-gray-100">
                     {universityList.map((u, index) => (
                         <tr
-                            key={u.admission_id}
+                            key={u.admission_id ? `uni-${u.admission_id}-${index}` : `uni-tmp-${index}`}
                             className={`hover:bg-gray-50 ${selectedItems.includes(u.admission_id) ? 'bg-violet-50' : ''}`}
                         >
                             <td className="px-4 py-2">

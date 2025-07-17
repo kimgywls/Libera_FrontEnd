@@ -12,8 +12,9 @@ export function useCreateScore() {
     return useMutation({
         mutationFn: ({ studentId, score }: CreateScoreParams) =>
             createScore(studentId, score),
-        onSuccess: ({ studentId }) => {
-            queryClient.invalidateQueries({ queryKey: ['student-scores', studentId] });
+        onSuccess: (_data, variables) => {
+            // 정확히 ['student-scores', studentId] 쿼리키를 무효화
+            queryClient.invalidateQueries({ queryKey: ['student-scores', variables.studentId] });
         },
     });
 } 
