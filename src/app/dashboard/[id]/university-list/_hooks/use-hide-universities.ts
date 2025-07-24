@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+import type { UniversityItem } from '@/app/types/university';
+
 import { hideUniversities, HideUniversitiesResponse } from '../_actions/hide-universities';
 import { unhideUniversities } from '../_actions/hide-universities';
 import { fetchHiddenUniversities } from '../_actions/hide-universities';
-import type { UniversityItem } from '@/app/types/university';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useHideUniversities(studentId: number) {
     const queryClient = useQueryClient();

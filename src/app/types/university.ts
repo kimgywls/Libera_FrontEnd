@@ -27,6 +27,7 @@ export interface UniversityInfo {
 export type UniversityItem = Pick<UniversityInfo,
     'admission_id' |
     'university_name' |
+    'admission_category' |
     'admission_type' |
     'major_name' |
     'admission_method' |

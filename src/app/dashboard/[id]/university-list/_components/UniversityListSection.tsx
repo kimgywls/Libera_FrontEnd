@@ -1,17 +1,20 @@
 import { FC, memo } from 'react';
-import type { SchoolRecommendationResponse } from '@/app/types/university';
-import type { UniversityItem } from '@/app/types/university';
-import MajorTabNav from './MajorTabNav';
-import SearchBar from './SearchBar';
-import UniversityTable from './UniversityTable';
-import UniversityListStatus from './UniversityListStatus';
-import { useUniversityListTab } from '../_hooks/use-university-list-tab';
-import { useUniversityHide } from '../_hooks/use-university-hide';
+
+import type { SchoolRecommendationResponse, UniversityItem } from '@/app/types/university';
+
+import { AlertModal } from '@/app/components/modal/AlertModal';
+
 import { useFilteredUniversityList } from '../_hooks/use-filtered-university-list';
+import { useUniversityHide } from '../_hooks/use-university-hide';
 import { useUniversityListFilter } from '../_hooks/use-university-list-filter';
 import { useUniversityListSearch } from '../_hooks/use-university-list-search';
+import { useUniversityListTab } from '../_hooks/use-university-list-tab';
+
 import HiddenToggleButton from './HiddenToggleButton';
-import { AlertModal } from '@/app/components/modal/AlertModal';
+import MajorTabNav from './MajorTabNav';
+import SearchBar from './SearchBar';
+import UniversityListStatus from './UniversityListStatus';
+import UniversityTable from './UniversityTable';
 import UniversityTableActions from './UniversityTableActions';
 
 interface UniversityListSectionProps {
@@ -56,14 +59,20 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
             setSelectedRegions,
             selectedTypes,
             setSelectedTypes,
+            selectedCategories,
+            setSelectedCategories,
             showRegionFilter,
             setShowRegionFilter,
             showTypeFilter,
             setShowTypeFilter,
+            showCategoryFilter,
+            setShowCategoryFilter,
             clearRegionFilter,
             clearTypeFilter,
+            clearCategoryFilter,
             allRegions,
             allTypes,
+            allCategories,
             handleResetFilters,
         } = useUniversityListFilter(displayUniversityList);
 
@@ -73,7 +82,8 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
             searchText,
             searchField as keyof UniversityItem,
             selectedRegions,
-            selectedTypes
+            selectedTypes,
+            selectedCategories
         );
 
         // 숨기기 관련 통합 훅
@@ -89,7 +99,8 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
 
         const regionCount = selectedRegions.length;
         const typeCount = selectedTypes.length;
-        const hasActiveFilters = regionCount > 0 || typeCount > 0;
+        const categoryCount = selectedCategories.length;
+        const hasActiveFilters = regionCount > 0 || typeCount > 0 || categoryCount > 0;
         const hasData = !!data && data.departments.length > 0;
 
         if (loading || error || !hasData) {
@@ -125,6 +136,7 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
                                 hasActiveFilters={hasActiveFilters}
                                 regionCount={regionCount}
                                 typeCount={typeCount}
+                                categoryCount={categoryCount}
                                 handleResetFilters={handleResetFilters}
                                 onHide={handleHideList}
                             />
@@ -151,6 +163,13 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
                     clearTypeFilter={clearTypeFilter}
                     selectedTypes={selectedTypes}
                     setSelectedTypes={setSelectedTypes}
+                    // 카테고리 필터 관련
+                    allCategories={allCategories}
+                    showCategoryFilter={showCategoryFilter}
+                    setShowCategoryFilter={setShowCategoryFilter}
+                    selectedCategories={selectedCategories}
+                    setSelectedCategories={setSelectedCategories}
+                    clearCategoryFilter={clearCategoryFilter}
                 />
 
                 {/* 숨긴 학교 토글 버튼 및 목록 */}

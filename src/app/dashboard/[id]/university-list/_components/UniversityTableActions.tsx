@@ -5,6 +5,7 @@ interface UniversityTableActionsProps {
     hasActiveFilters: boolean;
     regionCount: number;
     typeCount: number;
+    categoryCount: number;
     handleResetFilters: () => void;
     onHide: () => void;
 }
@@ -13,6 +14,7 @@ const UniversityTableActions: FC<UniversityTableActionsProps> = ({
     hasActiveFilters,
     regionCount,
     typeCount,
+    categoryCount,
     handleResetFilters,
     onHide
 }) => (
@@ -22,7 +24,7 @@ const UniversityTableActions: FC<UniversityTableActionsProps> = ({
             <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-1 px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full text-sm font-medium">
                     <Filter className="w-3 h-3" />
-                    <span>활성 필터 {regionCount + typeCount}</span>
+                    <span>활성 필터 {regionCount + typeCount + categoryCount}</span>
                 </div>
             </div>
         )}

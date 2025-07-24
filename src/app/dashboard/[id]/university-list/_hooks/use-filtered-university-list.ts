@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
+
 import type { UniversityItem } from '@/app/types/university';
 
 const SEARCHABLE_FIELDS: Array<keyof UniversityItem> = [
     'university_name',
     'admission_type',
+    'admission_category',
     'major_name',
 ];
 
@@ -12,7 +14,8 @@ export function useFilteredUniversityList(
     searchText: string,
     searchField: keyof UniversityItem,
     selectedRegions: string[],
-    selectedTypes: string[]
+    selectedTypes: string[],
+    selectedCategories: string[]
 ): UniversityItem[] {
     return useMemo(() => {
         return displayUniversityList.filter(u => {
@@ -31,7 +34,9 @@ export function useFilteredUniversityList(
                 selectedRegions.length === 0 || selectedRegions.includes(u.region);
             const matchesType =
                 selectedTypes.length === 0 || selectedTypes.includes(u.recommendation_type);
-            return matchesSearch && matchesRegion && matchesType;
+            const matchesCategory =
+                selectedCategories.length === 0 || selectedCategories.includes(u.admission_category);
+            return matchesSearch && matchesRegion && matchesType && matchesCategory;
         });
-    }, [displayUniversityList, searchText, searchField, selectedRegions, selectedTypes]);
+    }, [displayUniversityList, searchText, searchField, selectedRegions, selectedTypes, selectedCategories]);
 } 

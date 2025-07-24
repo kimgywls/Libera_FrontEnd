@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { DesiredSchool } from '@/app/types/university';
-
+import { X } from 'lucide-react';
 interface DesiredSchoolListProps {
     desiredSchools: DesiredSchool[];
     onDelete: (id: number) => void;
@@ -14,11 +14,11 @@ const DesiredSchoolList: FC<DesiredSchoolListProps> = ({ desiredSchools, onDelet
             <div key={department.id ? `dep-${department.id}` : `dep-tmp-${index}`} className="group relative">
                 <div className="flex items-center bg-white hover:bg-red-100 border border-red-200 rounded-full px-3 py-2 transition-all duration-200 cursor-pointer">
                     <span className="text-sm font-medium text-gray-800 select-none">
-                        {department.school_name === "none" ? "학교 미정" : department.school_name} • {department.department_name === "none" ? "전공 미정" : department.department_name}
+                        {department.school_name === "none" ? <span>&nbsp;</span> : department.school_name} • {department.department_name === "none" ? <span>&nbsp;</span> : department.department_name}
                     </span>
-                    <div className="opacity-0 group-hover:opacity-100 flex items-center ml-2 space-x-0.5 transition-opacity duration-200">
-                        <button className="p-0.5 text-red-500 hover:text-red-700 transition-colors" onClick={() => onDelete(department.id)} title="학과 삭제">
-                            <span>X</span>
+                    <div className="opacity-0 group-hover:opacity-100 flex items-cente transition-opacity duration-200">
+                        <button className="text-red-500 hover:text-red-700 transition-colors" onClick={() => onDelete(department.id)} title="학과 삭제">
+                            <X className="w-4 h-4" />
                         </button>
                     </div>
                 </div>

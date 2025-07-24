@@ -1,8 +1,10 @@
 import { FC, memo, useCallback } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import FilterPopover from './FilterPopover';
 import type { Dispatch, SetStateAction } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
 import type { UniversityItem } from '@/app/types/university';
+
+import FilterPopover from './FilterPopover';
 
 export interface UniversityTableProps {
     universityList: UniversityItem[];
@@ -23,13 +25,21 @@ export interface UniversityTableProps {
     clearTypeFilter: () => void;
     selectedTypes: string[];
     setSelectedTypes: (values: string[]) => void;
+    // 카테고리(전형 유형) 필터 관련
+    allCategories: string[];
+    showCategoryFilter: boolean;
+    setShowCategoryFilter: Dispatch<SetStateAction<boolean>>;
+    selectedCategories: string[];
+    setSelectedCategories: (values: string[]) => void;
+    clearCategoryFilter: () => void;
 }
 
 const UniversityTable: FC<UniversityTableProps> = ({
     universityList, selectedItems, handleSelectItem, handleSelectAll,
     recommendTypeLabel, recommendTypeColor,
     showRegionFilter, setShowRegionFilter, allRegions, clearRegionFilter, selectedRegions, setSelectedRegions,
-    showTypeFilter, setShowTypeFilter, allTypes, clearTypeFilter, selectedTypes, setSelectedTypes
+    showTypeFilter, setShowTypeFilter, allTypes, clearTypeFilter, selectedTypes, setSelectedTypes,
+    allCategories, showCategoryFilter, setShowCategoryFilter, selectedCategories, setSelectedCategories, clearCategoryFilter
 }) => {
     const handleRegionConfirm = useCallback((values: string[]) => {
         setSelectedRegions(values);
@@ -38,6 +48,11 @@ const UniversityTable: FC<UniversityTableProps> = ({
     const handleTypeConfirm = useCallback((values: string[]) => {
         setSelectedTypes(values);
     }, [setSelectedTypes]);
+
+    // 카테고리(전형 유형) 필터 콜백
+    const handleCategoryConfirm = useCallback((values: string[]) => {
+        setSelectedCategories(values);
+    }, [setSelectedCategories]);
 
     if (!universityList.length) {
         return (
@@ -84,6 +99,26 @@ const UniversityTable: FC<UniversityTableProps> = ({
                             />
                         </th>
                         <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">대학명</th>
+                        <th
+                            className="px-4 py-2 text-left text-sm font-semibold text-gray-700 cursor-pointer relative"
+                            onClick={() => setShowCategoryFilter(prev => !prev)}
+                        >
+                            <div className="flex items-center gap-1">
+                                전형 유형
+                                {showCategoryFilter ? <ChevronUp className="w-4 h-4 text-violet-500" /> : <ChevronDown className="w-4 h-4 text-violet-500" />}
+                            </div>
+                            <FilterPopover
+                                show={showCategoryFilter}
+                                onClose={() => setShowCategoryFilter(false)}
+                                title="전형 유형 선택"
+                                options={allCategories}
+                                selected={selectedCategories}
+                                onConfirm={handleCategoryConfirm}
+                                onClear={clearCategoryFilter}
+                                widthClass="w-70"
+                                className="absolute left-0 z-10"
+                            />
+                        </th>
                         <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">전형명</th>
                         <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">학과명</th>
                         <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">전형요소별 평가 비율</th>
@@ -118,7 +153,7 @@ const UniversityTable: FC<UniversityTableProps> = ({
                             key={u.admission_id ? `uni-${u.admission_id}-${index}` : `uni-tmp-${index}`}
                             className={`hover:bg-gray-50 ${selectedItems.includes(u.admission_id) ? 'bg-violet-50' : ''}`}
                         >
-                            <td className="px-4 py-2">
+                            <td className="px-4 py-2 w-10">
                                 <input
                                     type="checkbox"
                                     className="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded accent-violet-600"
@@ -126,16 +161,17 @@ const UniversityTable: FC<UniversityTableProps> = ({
                                     onChange={() => handleSelectItem(u.admission_id)}
                                 />
                             </td>
-                            <td className="px-4 py-2 text-sm text-gray-900">{index + 1}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900">
+                            <td className="px-4 py-2 text-sm text-gray-900  w-10">{index + 1}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900  w-20">
                                 <span className="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
                                     {u.region}
                                 </span>
                             </td>
-                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[160px]" title={u.university_name}>{u.university_name}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[160px]" title={u.admission_type}>{u.admission_type}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[160px]" title={u.major_name}>{u.major_name}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[160px]" title={u.admission_method}>{u.admission_method}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[120px]" title={u.university_name}>{u.university_name}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[120px]" title={u.admission_category}>{u.admission_category}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[120px]" title={u.admission_type}>{u.admission_type}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 truncate max-w-[120px]" title={u.major_name}>{u.major_name}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 break-words whitespace-pre-line max-w-[140px]">{u.admission_method}</td>
                             <td className="px-4 py-2 text-sm text-gray-900">{u.recruitment_count}명</td>
                             <td className="px-4 py-2 text-sm text-gray-900">{u.grade_cutoff_current}</td>
                             <td className="px-4 py-2 text-sm text-gray-900">{u.grade_cutoff_prev1}</td>

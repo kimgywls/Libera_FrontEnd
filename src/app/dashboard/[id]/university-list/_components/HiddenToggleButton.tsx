@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ChevronDown, ChevronUp, Eye } from 'lucide-react';
+
 import { UniversityItem } from '@/app/types/university';
 
 interface HiddenToggleButtonProps {

@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { SchoolRecommendationResponse } from '@/app/types/university';
-import type { UniversityItem } from '@/app/types/university';
+
+import type { SchoolRecommendationResponse, UniversityItem } from '@/app/types/university';
 
 interface UseUniversityListTabResult {
     selectedTab: number;

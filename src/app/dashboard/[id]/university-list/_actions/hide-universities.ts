@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+
 import { API_URL } from '@/app/constants';
 import type { UniversityItem } from '@/app/types/university';
 
@@ -33,18 +34,30 @@ export async function hideUniversities(
             ...res.data,
             success: true,
         };
-    } catch (error: unknown) {
-        // console.error('[hideUniversities] error:', error);
-        if (axios.isAxiosError(error)) {
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            console.error('[hideUniversities] Axios error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
             return {
                 success: false,
-                message: error.response?.data?.message || '서버 오류',
+                message: error.response?.data?.message || `서버 오류: ${error.response?.status || 'Network Error'}`,
+            };
+        } else if (error instanceof Error) {
+            console.error('[hideUniversities] Error:', error.message);
+            return {
+                success: false,
+                message: `오류: ${error.message}`,
+            };
+        } else {
+            console.error('[hideUniversities] Unknown error:', error);
+            return {
+                success: false,
+                message: '알 수 없는 오류가 발생했습니다.',
             };
         }
-        return {
-            success: false,
-            message: '알 수 없는 오류',
-        };
     }
 }
 
@@ -67,18 +80,30 @@ export async function unhideUniversities(
             ...res.data,
             success: true,
         };
-    } catch (error: unknown) {
-        // console.error('[unhideUniversities] error:', error);
-        if (axios.isAxiosError(error)) {
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            console.error('[unhideUniversities] Axios error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
             return {
                 success: false,
-                message: error.response?.data?.message || '서버 오류',
+                message: error.response?.data?.message || `서버 오류: ${error.response?.status || 'Network Error'}`,
+            };
+        } else if (error instanceof Error) {
+            console.error('[unhideUniversities] Error:', error.message);
+            return {
+                success: false,
+                message: `오류: ${error.message}`,
+            };
+        } else {
+            console.error('[unhideUniversities] Unknown error:', error);
+            return {
+                success: false,
+                message: '알 수 없는 오류가 발생했습니다.',
             };
         }
-        return {
-            success: false,
-            message: '알 수 없는 오류',
-        };
     }
 }
 
@@ -94,8 +119,18 @@ export async function fetchHiddenUniversities(studentId: number): Promise<Univer
         const res = await api.get<FetchHiddenUniversitiesResponse>(`/api/v1/school-recommendations/hidden/${studentId}`);
         // console.log('[fetchHiddenUniversities] response:', res.data);
         return res.data.hidden_schools;
-    } catch {
-        // console.error('[fetchHiddenUniversities] error:', error);
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            console.error('[fetchHiddenUniversities] Axios error:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
+        } else if (error instanceof Error) {
+            console.error('[fetchHiddenUniversities] Error:', error.message);
+        } else {
+            console.error('[fetchHiddenUniversities] Unknown error:', error);
+        }
         return [];
     }
 } 

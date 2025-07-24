@@ -3,6 +3,7 @@ import {
     GraduationCap,
     Check,
     Plus,
+    Target,
 } from "lucide-react";
 import { StudentInfo as StudentInfoType } from "@/app/types/student";
 import { DesiredSchool } from "@/app/types/university";
@@ -103,6 +104,7 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, desiredSchools, isLoadingD
                 <div className="space-y-2 flex flex-col h-full">
                     <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                            <Target className="w-5 h-5 text-red-500 mr-2" />
                             진학 목표
                         </h3>
                         <button
