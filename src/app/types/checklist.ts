@@ -81,3 +81,20 @@ export interface ChecklistResultResponse {
     student_id: number;
     result_scores: ChecklistResultScores;
 }
+
+// 상세 결과 타입 정의
+export interface ChecklistDetailedResultResponse {
+    student_id: number;
+    categories: {
+        main_category_id: number;
+        main_category_name: string;
+        overall_score: number;
+        sub_categories: {
+            sub_category_id: number;
+            sub_category_name: string;
+            score: number;
+            max_score: number;
+            question_count: number;
+        }[];
+    }[];
+}

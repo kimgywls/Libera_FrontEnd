@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios, { type AxiosError } from 'axios';
+
 import { API_URL } from '@/app/constants';
-import type { AxiosError } from 'axios';
 import type { SaveChecklistMetaRequest, ChecklistMetaResponse } from '@/app/types/checklist';
 
 const api = axios.create({

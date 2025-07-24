@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postChecklistResponses } from '../_actions/post-checklist-responses';
+
 import type { ChecklistSubmitResponse } from '@/app/types/checklist';
+
+import { postChecklistResponses } from '../_actions/post-checklist-responses';
 
 export function useChecklistSubmit() {
     const queryClient = useQueryClient();

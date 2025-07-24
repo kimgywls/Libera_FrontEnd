@@ -1,5 +1,7 @@
 import { Check } from 'lucide-react';
+
 import { ChecklistMetaResponse, HighschoolTypeEnum } from '@/app/types/checklist';
+
 import { AlertModal } from '@/app/components/modal/AlertModal';
 
 const SCHOOL_TYPES = Object.values(HighschoolTypeEnum);

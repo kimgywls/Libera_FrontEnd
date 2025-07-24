@@ -1,19 +1,25 @@
 "use client";
 
-import ChecklistMetaSection from './ChecklistMetaSection';
-import ChecklistSection from './ChecklistSection';
-import ChecklistScoreSummary from './ChecklistScoreSummary';
+import { useState } from 'react';
+
+import { HighschoolTypeEnum } from '@/app/types/checklist';
+import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
+import { useModalState } from '@/app/hooks/useModalState';
+
+import { useChecklistDetailedResult } from '../_hooks/use-checklist-detailed-result';
 import { useChecklistMetaMutation, useChecklistMetaQuery } from '../_hooks/use-checklist-meta';
 import { useChecklistQuestions } from '../_hooks/use-checklist-questions';
-import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
-import { HighschoolTypeEnum } from '@/app/types/checklist';
-import { useState } from 'react';
-import { useModalState } from '@/app/hooks/useModalState';
 import { useChecklistResult } from '../_hooks/use-checklist-result';
+
+import ChecklistMetaSection from './ChecklistMetaSection';
+import ChecklistScoreChart from './ChecklistScoreChart';
+import ChecklistScoreSummary from './ChecklistScoreSummary';
+import ChecklistSection from './ChecklistSection';
+
 
 export default function ChecklistWidget() {
     const { studentInfo } = useStudentInfoContext();
-    const studentId = studentInfo?.id;
+    const studentId = studentInfo?.id || 0;
     const { data: meta } = useChecklistMetaQuery(studentId);
     const mutation = useChecklistMetaMutation(studentId);
     const [schoolType, setSchoolType] = useState<HighschoolTypeEnum | ''>('');
@@ -25,6 +31,20 @@ export default function ChecklistWidget() {
         onConfirm: () => closeModal('meta-alert'),
     });
     const { data: resultData } = useChecklistResult(studentId);
+    const { data: questionsData, isLoading: isQuestionsLoading } = useChecklistQuestions();
+    const { data: detailedResult, isLoading: isDetailedLoading, isError: isDetailedError } = useChecklistDetailedResult(studentId);
+
+    // 학생 정보가 로딩 중인 경우 로딩 상태 표시
+    if (!studentInfo) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p className="text-gray-500">학생 정보를 불러오는 중...</p>
+                </div>
+            </div>
+        );
+    }
 
     const handleSaveChecklistMeta = async () => {
         if (!studentId) return;
@@ -54,7 +74,7 @@ export default function ChecklistWidget() {
         openModal('meta-alert');
     };
 
-    const { data: questionsData, isLoading: isQuestionsLoading } = useChecklistQuestions();
+
 
     return (
         <div className="space-y-10 mb-8">
@@ -86,6 +106,14 @@ export default function ChecklistWidget() {
                 careerScore={resultData?.result_scores?.['진로역량'] ?? 0}
                 communityScore={resultData?.result_scores?.['공동체역량'] ?? 0}
             />
+
+            <ChecklistScoreChart
+                data={detailedResult!}
+                isLoading={isDetailedLoading}
+                isError={isDetailedError}
+            />
+
+
         </div>
     );
 }

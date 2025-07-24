@@ -1,9 +1,12 @@
-import type { ChecklistResponseItem } from "@/app/types/checklist";
-import { useChecklistSubmit } from "../_hooks/use-checklist-submit";
-import { useStudentInfoContext } from "@/app/dashboard/_contexts/StudentInfoContext";
 import { useState } from "react";
-import { AlertModal } from "@/app/components/modal/AlertModal";
+
+import type { ChecklistResponseItem } from "@/app/types/checklist";
+import { useStudentInfoContext } from "@/app/contexts/StudentInfoContext";
 import { useModalState } from '@/app/hooks/useModalState';
+
+import { useChecklistSubmit } from "../_hooks/use-checklist-submit";
+
+import { AlertModal } from "@/app/components/modal/AlertModal";
 
 interface ChecklistSubmitButtonProps {
     responses: ChecklistResponseItem[];

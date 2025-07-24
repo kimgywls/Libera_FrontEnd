@@ -1,11 +1,14 @@
+import { useState, useMemo, useEffect } from "react";
+
+import type { ChecklistQuestion, ChecklistResponseItem, ChecklistSubmitResponse } from "@/app/types/checklist";
+import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
+
+import { useChecklistResponses } from '../_hooks/use-checklist-responses';
+
 import AcademicCompetencySection from "./AcademicCompetencySection";
 import CareerCompetencySection from "./CareerCompetencySection";
-import CommunityCompetencySection from "./CommunityCompetencySection";
 import ChecklistSubmitButton from "./ChecklistSubmitButton";
-import type { ChecklistQuestion, ChecklistResponseItem, ChecklistSubmitResponse } from "@/app/types/checklist";
-import { useState, useMemo, useEffect } from "react";
-import { useStudentInfoContext } from '@/app/dashboard/_contexts/StudentInfoContext';
-import { useChecklistResponses } from '../_hooks/use-checklist-responses';
+import CommunityCompetencySection from "./CommunityCompetencySection";
 
 interface ChecklistSectionProps {
     questions: ChecklistQuestion[];
@@ -13,7 +16,7 @@ interface ChecklistSectionProps {
 
 export default function ChecklistSection({ questions }: ChecklistSectionProps) {
     const { studentInfo } = useStudentInfoContext();
-    const studentId = studentInfo.id;
+    const studentId = studentInfo!.id;
     const { data: prevResponses } = useChecklistResponses(studentId);
 
     const academicQuestions = useMemo(
