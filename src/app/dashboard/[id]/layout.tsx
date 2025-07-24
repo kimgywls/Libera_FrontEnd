@@ -11,8 +11,11 @@ import {
 } from 'lucide-react';
 import { useParams } from "next/navigation";
 import { useAllStudentsList } from "@/app/main/_hooks/use-all-students-list";
-import { ReactNode } from "react";
-import { StudentInfoProvider } from "@/app/dashboard/_contexts/StudentInfoContext";
+import { ReactNode, useState } from "react";
+import { StudentInfoProvider } from "@/app/contexts/StudentInfoContext";
+import { useReportData } from './result-report/hooks/use-report-data';
+import { ReportPDFViewer, captureChartAsImage, captureIndividualCharts } from './result-report';
+import { Student } from '@/app/types/student';
 
 // 타입 정의
 interface NavItem {
@@ -22,9 +25,393 @@ interface NavItem {
     description: string;
 }
 
+interface Html2CanvasOptions {
+    backgroundColor?: string;
+    scale?: number;
+    useCORS?: boolean;
+    allowTaint?: boolean;
+    logging?: boolean;
+    removeContainer?: boolean;
+    foreignObjectRendering?: boolean;
+    imageTimeout?: number;
+    width?: number;
+    height?: number;
+    onclone?: (clonedDoc: Document) => void;
+}
+
+interface Html2CanvasWindow extends Window {
+    html2canvas?: (element: HTMLElement, options?: Html2CanvasOptions) => Promise<HTMLCanvasElement>;
+}
+
 interface DashboardLayoutProps {
     children: ReactNode;
 }
+
+// 내부 컴포넌트: StudentInfoProvider 내부에서 실행
+interface DashboardContentProps {
+    children: ReactNode;
+    selectedStudent: Student;
+}
+
+const DashboardContent = ({ children, selectedStudent }: DashboardContentProps) => {
+    const { reportData } = useReportData(selectedStudent?.id || 0);
+    const [showReport, setShowReport] = useState(false);
+    const [isCapturing, setIsCapturing] = useState(false);
+    const [chartImages, setChartImages] = useState<{
+        checklistChart?: string;
+        semesterTrendCharts?: string[];
+    }>({});
+
+    // 페이지에서 차트 캡처하는 함수
+    const captureChartFromPage = async (pageUrl: string, chartId: string): Promise<string> => {
+        return new Promise((resolve) => {
+
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.left = '-9999px';
+            iframe.style.width = '1200px';
+            iframe.style.height = '800px';
+            iframe.style.border = 'none';
+            iframe.style.visibility = 'hidden';
+
+            document.body.appendChild(iframe);
+
+            const cleanup = () => {
+                if (iframe.parentNode) {
+                    document.body.removeChild(iframe);
+                }
+            };
+
+            const timeout = setTimeout(() => {
+                cleanup();
+                resolve('');
+            }, 15000); // 15초 타임아웃
+
+            iframe.onload = async () => {
+                try {
+                    // 페이지 로딩 대기
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                    const iframeWindow = iframe.contentWindow;
+
+                    if (!iframeDoc || !iframeWindow) {
+                        clearTimeout(timeout);
+                        cleanup();
+                        resolve('');
+                        return;
+                    }
+
+                    // html2canvas 스크립트가 없으면 로드
+                    const html2canvasWindow = iframeWindow as Html2CanvasWindow;
+                    if (!html2canvasWindow.html2canvas) {
+                        const script = iframeDoc.createElement('script');
+                        script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+                        iframeDoc.head.appendChild(script);
+
+                        // 스크립트 로딩 대기
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                    }
+
+                    const chartElement = iframeDoc.getElementById(chartId);
+                    if (!chartElement) {
+                        clearTimeout(timeout);
+                        cleanup();
+                        resolve('');
+                        return;
+                    }
+
+                    // html2canvas가 iframe 내에서 로드되었는지 확인
+                    if (!iframeWindow || !html2canvasWindow.html2canvas) {
+                        clearTimeout(timeout);
+                        cleanup();
+                        resolve('');
+                        return;
+                    }
+
+                    // iframe 내에서 html2canvas 실행
+                    const html2canvasOptions: Html2CanvasOptions = {
+                        backgroundColor: '#ffffff',
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        logging: false,
+                        onclone: (clonedDoc: Document) => {
+                            const allElements = clonedDoc.querySelectorAll('*');
+                            allElements.forEach((el) => {
+                                const computedStyle = iframeWindow!.getComputedStyle(el);
+                                if (computedStyle.color && computedStyle.color.includes('oklch')) {
+                                    (el as HTMLElement).style.color = '#000000';
+                                }
+                                if (computedStyle.backgroundColor && computedStyle.backgroundColor.includes('oklch')) {
+                                    (el as HTMLElement).style.backgroundColor = '#ffffff';
+                                }
+                            });
+                        }
+                    };
+                    const canvas = await html2canvasWindow.html2canvas!(chartElement, html2canvasOptions);
+
+                    const dataUrl = canvas.toDataURL('image/png');
+
+                    clearTimeout(timeout);
+                    cleanup();
+                    resolve(dataUrl);
+                } catch {
+                    clearTimeout(timeout);
+                    cleanup();
+                    resolve('');
+                }
+            };
+
+            iframe.onerror = () => {
+                clearTimeout(timeout);
+                cleanup();
+                resolve('');
+            };
+
+            iframe.src = pageUrl;
+        });
+    };
+
+    // 석차등급 차트들을 iframe에서 캡처하는 함수
+    const captureSemesterChartsFromPage = async (pageUrl: string): Promise<string[]> => {
+        return new Promise((resolve) => {
+
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.left = '-9999px';
+            iframe.style.width = '1200px';
+            iframe.style.height = '800px';
+            iframe.style.border = 'none';
+            iframe.style.visibility = 'hidden';
+
+            document.body.appendChild(iframe);
+
+            const cleanup = () => {
+                if (iframe.parentNode) {
+                    document.body.removeChild(iframe);
+                }
+            };
+
+            const timeout = setTimeout(() => {
+                cleanup();
+                resolve([]);
+            }, 20000); // 20초 타임아웃
+
+            iframe.onload = async () => {
+                try {
+                    // 페이지 로딩 대기
+                    await new Promise(resolve => setTimeout(resolve, 4000));
+
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                    const iframeWindow = iframe.contentWindow;
+
+                    if (!iframeDoc || !iframeWindow) {
+                        clearTimeout(timeout);
+                        cleanup();
+                        resolve([]);
+                        return;
+                    }
+
+                    // html2canvas 스크립트가 없으면 로드
+                    const html2canvasWindow = iframeWindow as Html2CanvasWindow;
+                    if (!html2canvasWindow.html2canvas) {
+                        const script = iframeDoc.createElement('script');
+                        script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+                        iframeDoc.head.appendChild(script);
+
+                        // 스크립트 로딩 대기
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                    }
+
+                    const chartElements = iframeDoc.querySelectorAll('[id^="chart-"]');
+                    if (chartElements.length === 0) {
+                        clearTimeout(timeout);
+                        cleanup();
+                        resolve([]);
+                        return;
+                    }
+
+                    // html2canvas가 iframe 내에서 로드되었는지 확인
+                    if (!iframeWindow || !html2canvasWindow.html2canvas) {
+                        clearTimeout(timeout);
+                        cleanup();
+                        resolve([]);
+                        return;
+                    }
+
+                    // 각 차트를 순차적으로 캡처
+                    const capturedCharts: string[] = [];
+                    for (let i = 0; i < chartElements.length; i++) {
+                        const chartElement = chartElements[i] as HTMLElement;
+                        try {
+                            const html2canvasOptions: Html2CanvasOptions = {
+                                backgroundColor: '#ffffff',
+                                scale: 2,
+                                useCORS: true,
+                                allowTaint: true,
+                                logging: false,
+                                onclone: (clonedDoc: Document) => {
+                                    const allElements = clonedDoc.querySelectorAll('*');
+                                    allElements.forEach((el) => {
+                                        const computedStyle = iframeWindow!.getComputedStyle(el);
+                                        if (computedStyle.color && computedStyle.color.includes('oklch')) {
+                                            (el as HTMLElement).style.color = '#000000';
+                                        }
+                                        if (computedStyle.backgroundColor && computedStyle.backgroundColor.includes('oklch')) {
+                                            (el as HTMLElement).style.backgroundColor = '#ffffff';
+                                        }
+                                    });
+                                }
+                            };
+                            const canvas = await html2canvasWindow.html2canvas!(chartElement, html2canvasOptions);
+
+                            const dataUrl = canvas.toDataURL('image/png');
+                            if (dataUrl && dataUrl.length > 1000) {
+                                capturedCharts.push(dataUrl);
+                            }
+                        } catch {
+                            // 캡처 실패 시 무시
+                        }
+                    }
+
+                    clearTimeout(timeout);
+                    cleanup();
+                    resolve(capturedCharts);
+                } catch {
+                    clearTimeout(timeout);
+                    cleanup();
+                    resolve([]);
+                }
+            };
+
+            iframe.onerror = () => {
+                clearTimeout(timeout);
+                cleanup();
+                resolve([]);
+            };
+
+            iframe.src = pageUrl;
+        });
+    };
+
+    // 결과보고서 생성 함수
+    const handleShowReport = async () => {
+        try {
+            setIsCapturing(true);
+
+            let checklistChart = '';
+            let semesterTrendCharts: string[] = [];
+            const studentId = selectedStudent?.id;
+
+
+
+            if (!studentId) {
+                return;
+            }
+
+            // 체크리스트 차트 캡처 시도
+            const checklistElement = document.getElementById('checklist-score-chart');
+            if (checklistElement) {
+                try {
+                    ;
+                    checklistChart = await captureChartAsImage('checklist-score-chart');
+                    //console.log('체크리스트 차트 캡처 성공:', checklistChart ? 'true' : 'false');
+                } catch (error) {
+                    console.error('체크리스트 차트 캡처 실패:', error);
+                    checklistChart = '';
+                }
+            }
+
+            // 석차등급 추이 차트 캡처 시도
+            const chartElements = document.querySelectorAll('[id^="chart-"]');
+            if (chartElements.length > 0) {
+                const chartIds = Array.from(chartElements).map(el => el.id);
+                const individualCharts = await captureIndividualCharts('semester-trend-charts', chartIds);
+                semesterTrendCharts = individualCharts.filter(chart => chart.length > 0);
+
+            }
+
+            // 체크리스트 차트가 없으면 체크리스트 페이지에서 캡처
+            if (!checklistChart) {
+                checklistChart = await captureChartFromPage(
+                    `/dashboard/${studentId}/checklist`,
+                    'checklist-score-chart'
+                );
+            }
+
+            // 석차등급 차트가 없으면 교과 페이지에서 캡처
+            if (semesterTrendCharts.length === 0) {
+                semesterTrendCharts = await captureSemesterChartsFromPage(
+                    `/dashboard/${studentId}/scores`
+                );
+            }
+
+            // 결과 설정 및 보고서 표시
+            setChartImages({
+                checklistChart: checklistChart || undefined,
+                semesterTrendCharts: semesterTrendCharts.length > 0 ? semesterTrendCharts : undefined,
+            });
+
+            setShowReport(true);
+        } catch {
+            setShowReport(true);
+        } finally {
+            setIsCapturing(false);
+        }
+    };
+
+    return (
+        <>
+            {/* 상단 헤더 */}
+            <header className="bg-white shadow-sm border-b border-gray-200">
+                <div className="flex items-center justify-between h-16 px-6">
+                    <div className="flex items-center space-x-4">
+                        <h1 className="text-xl font-semibold text-gray-900">
+                            {selectedStudent?.name} 학생의 대시보드
+                        </h1>
+                    </div>
+                    <div>
+                        <button
+                            onClick={handleShowReport}
+                            disabled={!reportData || isCapturing}
+                            className={`px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 ${reportData && !isCapturing
+                                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                }`}
+                        >
+                            {isCapturing ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    차트 캡처 중...
+                                </>
+                            ) : (
+                                '결과보고서 생성'
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            {/* 페이지 컨텐츠 */}
+            <main className="flex-1 p-3">
+                {children}
+            </main>
+
+            {/* PDF 뷰어 */}
+            {showReport && reportData && (
+                <ReportPDFViewer
+                    data={reportData}
+                    chartImages={chartImages}
+                    onClose={() => setShowReport(false)}
+                />
+            )}
+        </>
+    );
+};
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     const pathname = usePathname();
@@ -43,7 +430,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         },
         {
             name: "비교과",
-            href: selectedStudent ? `/dashboard/${selectedStudent.id}/non-scores` : "/main",
+            href: selectedStudent ? `/dashboard/${selectedStudent.id}/extracurricular` : "/main",
             icon: FileText,
             description: "비교과 활동 관리"
         },
@@ -74,6 +461,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         }
         return pathname.startsWith(href);
     };
+
+
 
     return (
         <div className="min-h-screen bg-violet-50 flex">
@@ -123,27 +512,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
             {/* 메인 컨텐츠 영역 */}
             <div className="flex-1 flex flex-col">
-                {/* 상단 헤더 */}
-                <header className="bg-white shadow-sm border-b border-gray-200">
-                    <div className="flex items-center justify-between h-16 px-6">
-                        <div className="flex items-center space-x-4">
-                            <h1 className="text-xl font-semibold text-gray-900">
-                                {selectedStudent?.name} 학생의 대시보드
-                            </h1>
-                        </div>
-                    </div>
-                </header>
-
-                {/* 페이지 컨텐츠 */}
-                <main className="flex-1 p-3">
-                    {selectedStudent ? (
-                        <StudentInfoProvider student={selectedStudent}>
+                {selectedStudent ? (
+                    <StudentInfoProvider studentId={selectedStudent.id}>
+                        <DashboardContent selectedStudent={selectedStudent}>
                             {children}
-                        </StudentInfoProvider>
-                    ) : (
-                        <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-sm" />
-                    )}
-                </main>
+                        </DashboardContent>
+                    </StudentInfoProvider>
+                ) : (
+                    <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-sm" />
+                )}
             </div>
         </div>
     );

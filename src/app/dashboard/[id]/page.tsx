@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from "next/navigation";
-import { useStudentInfoContext } from "@/app/dashboard/_contexts/StudentInfoContext";
+import { useStudentInfoContext } from "@/app/contexts/StudentInfoContext";
 
 export default function DashboardPage() {
     const router = useRouter();

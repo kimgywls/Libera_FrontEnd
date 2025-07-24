@@ -14,13 +14,108 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #1f2937;
   }
+}
+
+html {
+  color-scheme: light only;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 다크 모드에서도 텍스트를 진한 색상으로 유지 */
+@media (prefers-color-scheme: dark) {
+
+  body,
+  html {
+    background: #ffffff !important;
+    color: #1f2937 !important;
+  }
+
+  /* 텍스트 요소들의 기본 색상 강제 */
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  span,
+  div,
+  label,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900 {
+    color: #1f2937 !important;
+  }
+
+  .text-gray-600 {
+    color: #4b5563 !important;
+  }
+
+  .text-gray-500 {
+    color: #6b7280 !important;
+  }
+
+  .text-gray-400 {
+    color: #9ca3af !important;
+  }
+}
+
+@media print {
+  .report-page {
+    page-break-after: always;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+  }
+}
+
+@media print {
+  .report-page {
+    page-break-after: always;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .page-break-inside-auto {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  .page-break-inside-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
 }
