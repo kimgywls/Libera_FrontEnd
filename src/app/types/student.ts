@@ -11,6 +11,19 @@ export interface Student {
     result_file?: string;
 }
 
+export interface StudentDetail {
+    id: number;
+    name: string;
+    birth_date: string;
+    phone_number: string;
+    current_school_name: string;
+    school_histories: SchoolHistory[];
+}
+
+export interface SchoolHistory {
+    school_name: string;
+}
+
 export interface StudentsListResponse {
     success: boolean;
     total: number;

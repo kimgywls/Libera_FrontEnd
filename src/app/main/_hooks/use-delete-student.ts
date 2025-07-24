@@ -1,26 +1,32 @@
-import { useState, useCallback } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { deleteStudent, DeleteStudentResponse } from '../_actions/delete-student';
 
 export function useDeleteStudent() {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
+    const queryClient = useQueryClient();
 
-    const remove = useCallback(async (studentIds: number[]) => {
-        setLoading(true);
-        setError('');
-        setSuccess(false);
-        const res: DeleteStudentResponse = await deleteStudent(studentIds);
-        setSuccess(res.success);
-        if (!res.success) setError(res.message);
-        setLoading(false);
-        return res;
-    }, []);
+    const mutation = useMutation<DeleteStudentResponse, Error, number[]>({
+        mutationFn: deleteStudent,
+        onSuccess: () => {
+            // 학생 목록 캐시 무효화
+            queryClient.invalidateQueries({ queryKey: ['students'] });
+            queryClient.invalidateQueries({ queryKey: ['all-students'] });
+        },
+    });
 
-    const reset = useCallback(() => {
-        setError('');
-        setSuccess(false);
-    }, []);
+    const remove = async (studentIds: number[]) => {
+        return await mutation.mutateAsync(studentIds);
+    };
 
-    return { loading, error, success, remove, reset };
+    const reset = () => {
+        mutation.reset();
+    };
+
+    return {
+        loading: mutation.isPending,
+        error: mutation.error?.message || '',
+        success: mutation.isSuccess,
+        remove,
+        reset,
+    };
 } 

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Student } from '@/app/types/student';
-import { StudentsTableRow } from './StudentsTableRow';
 import { UserRoundX } from 'lucide-react';
+
+import { Student } from '@/app/types/student';
+
+import { StudentsTableRow } from './StudentsTableRow';
 
 interface StudentsTableProps {
     students: Student[];
@@ -63,9 +65,6 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
                             </th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 완료상태
-                            </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                                출력물 다운로드
                             </th>
                         </tr>
                     </thead>

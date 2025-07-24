@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
+
 import { Student } from '@/app/types/student';
 
 interface StudentsTableRowProps {
@@ -7,6 +8,7 @@ interface StudentsTableRowProps {
     index: number;
     selected: boolean;
     onSelect: (id: number) => void;
+    onDownloadReport?: (studentId: number) => void;
 }
 
 const completionStatusMap: Record<Student['completion_status'], string> = {
@@ -80,14 +82,6 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                     <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${getStatusStyle(student.completion_status)}`}>
                         {completionStatusMap[student.completion_status]}
                     </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                        className="text-sm text-violet-600 hover:text-violet-800 hover:underline font-medium"
-                        onClick={e => e.stopPropagation()}
-                    >
-                        출력물 다운로드
-                    </button>
                 </td>
             </tr>
         );

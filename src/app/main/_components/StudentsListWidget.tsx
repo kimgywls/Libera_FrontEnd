@@ -1,34 +1,21 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useStudentsList } from '../_hooks/use-students-list';
-import { StudentsListParams } from '@/app/types/student';
-import { StudentsTable } from './StudentsTable';
-import { StudentsSearchForm } from './StudentsSearchForm';
-import { StudentsPagination } from './StudentsPagination';
-import { AddStudentModal } from './_modal/AddStudentModal';
+import React, { useState, useCallback } from 'react';
+
 import { AlertModal } from '../../components/modal/AlertModal';
 import { useModalState } from '../../hooks/useModalState';
-import { StudentsListButtons } from './StudentsListButtons';
 
-const LIMIT = 20;
+import { useAllStudentsList } from '../_hooks/use-all-students-list';
+
+import { AddStudentModal } from './_modal/AddStudentModal';
+import { StudentsListButtons } from './StudentsListButtons';
+import { StudentsSearchForm } from './StudentsSearchForm';
+import { StudentsTable } from './StudentsTable';
 
 export const StudentsListWidget: React.FC = React.memo(() => {
-    const [search, setSearch] = useState<StudentsListParams>({ limit: LIMIT, offset: 0 });
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const { students, total, isLoading, isError, mutate } = useStudentsList(search);
+    const { students, isLoading, isError, mutate } = useAllStudentsList();
     const { openModal, closeModal, isModalOpen } = useModalState();
-
-    const totalPages = useMemo(() => Math.ceil(total / (search.limit || LIMIT)), [total, search.limit]);
-    const currentPage = useMemo(() => Math.floor((search.offset || 0) / (search.limit || LIMIT)) + 1, [search]);
-
-    const handleSearchChange = useCallback((params: StudentsListParams) => {
-        setSearch(params);
-    }, []);
-
-    const handlePageChange = useCallback((page: number) => {
-        setSearch(prev => ({ ...prev, limit: prev.limit || LIMIT, offset: ((prev.limit || LIMIT) * (page - 1)) }));
-    }, []);
 
     // 학생 삭제 모달 확인 핸들러
     const handleDeleteConfirm = useCallback(async () => {
@@ -47,7 +34,8 @@ export const StudentsListWidget: React.FC = React.memo(() => {
         <div className="w-full h-full p-2">
             <div className="flex justify-between items-center mb-2">
                 <div className="w-full flex justify-start">
-                    <StudentsSearchForm value={search} onChange={handleSearchChange} /></div>
+                    <StudentsSearchForm value={{}} onChange={() => { }} />
+                </div>
                 <StudentsListButtons openModal={openModal} students={students} />
             </div>
             <div className="h-[600px] overflow-y-auto mb-4">
@@ -56,15 +44,13 @@ export const StudentsListWidget: React.FC = React.memo(() => {
                 ) : isError ? (
                     <div>데이터를 불러오지 못했습니다.</div>
                 ) : (
-                    <StudentsTable students={students} onSelect={setSelectedIds} />
+                    <StudentsTable
+                        students={students}
+                        onSelect={setSelectedIds}
+                    />
                 )}
             </div>
 
-            <StudentsPagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-            />
             <AddStudentModal
                 open={isModalOpen('addStudent')}
                 onClose={() => closeModal('addStudent')}
@@ -78,6 +64,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => closeModal('deleteStudent')}
             />
+
         </div>
     );
 });

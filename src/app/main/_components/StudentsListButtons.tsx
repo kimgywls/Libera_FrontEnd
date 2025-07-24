@@ -1,6 +1,7 @@
-import { Student } from "@/app/types/student";
-import { useRouter } from "next/navigation";
 import { FC } from "react";
+import { useRouter } from "next/navigation";
+
+import { Student } from "@/app/types/student";
 
 interface StudentsListButtonsProps {
     openModal: (modalName: string) => void;

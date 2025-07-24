@@ -1,26 +1,25 @@
-import { useState, useCallback } from 'react';
+import { useMutation } from '@tanstack/react-query';
+
 import { uploadPdfFiles, MultipleUploadResponse } from '../_actions/upload-pdf';
 
 export function useUploadPdf() {
-    const [uploading, setUploading] = useState(false);
-    const [result, setResult] = useState<MultipleUploadResponse | null>(null);
-    const [error, setError] = useState('');
+    const mutation = useMutation<MultipleUploadResponse, Error, File[]>({
+        mutationFn: uploadPdfFiles,
+    });
 
-    const upload = useCallback(async (files: File[]) => {
-        setUploading(true);
-        setError('');
-        setResult(null);
-        const res = await uploadPdfFiles(files);
-        setResult(res);
-        if (!res.success) setError('업로드 실패: ' + res.message);
-        setUploading(false);
-        return res;
-    }, []);
+    const upload = async (files: File[]) => {
+        return await mutation.mutateAsync(files);
+    };
 
-    const reset = useCallback(() => {
-        setResult(null);
-        setError('');
-    }, []);
+    const reset = () => {
+        mutation.reset();
+    };
 
-    return { uploading, result, error, upload, reset };
+    return {
+        uploading: mutation.isPending,
+        result: mutation.data,
+        error: mutation.error?.message || '',
+        upload,
+        reset,
+    };
 } 
