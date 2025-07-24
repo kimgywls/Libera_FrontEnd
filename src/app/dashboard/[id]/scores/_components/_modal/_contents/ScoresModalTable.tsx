@@ -1,10 +1,12 @@
 import type { FC } from 'react';
-import type { ScoreForm } from '@/app/types/score';
+
 import {
     CATEGORY_OPTIONS,
     CATEGORY_COLUMNS,
     ALL_COLUMNS,
 } from '@/app/constants';
+import type { ScoreForm } from '@/app/types/score';
+
 import ScoresModalTableBody from './ScoresModalTableBody';
 
 interface ScoresModalTableProps {
@@ -22,9 +24,9 @@ const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onA
         return 'min-w-28';
     }
 
-    function getDisplayValue(value: unknown): string {
+    function getDisplayValue(value: ScoreForm[keyof ScoreForm]): string {
         if (typeof value === 'object' && value !== null) {
-            return Object.entries(value as Record<string, unknown>)
+            return Object.entries(value as Record<string, string | number>)
                 .map(([k, v]) => `${k}: ${v}`)
                 .join(', ');
         }

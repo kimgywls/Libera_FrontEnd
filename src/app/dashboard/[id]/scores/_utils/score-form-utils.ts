@@ -56,29 +56,56 @@ export function handleScoreFormFieldChange(
     value: ScoreForm[keyof ScoreForm]
 ): ScoreForm {
     // 숫자 필드 처리
-    if ([
-        'raw_score',
-        'subject_average',
-        'credit_hours',
-        'student_count',
-        'standard_deviation',
-    ].includes(field)) {
+    if (field === 'raw_score' || field === 'subject_average' || field === 'credit_hours' || field === 'standard_deviation') {
         return {
             ...scoreForm,
             [field]: safeParseNumber(value as string | number)
-        } as unknown as ScoreForm;
+        };
+    }
+
+    // student_count와 grade_rank는 string | null 타입
+    if (field === 'student_count' || field === 'grade_rank') {
+        return {
+            ...scoreForm,
+            [field]: value as string | null
+        };
     }
 
     // achievement_distribution 필드 처리
     if (field === 'achievement_distribution') {
         return {
             ...scoreForm,
-            [field]: parseAchievementDistribution(value as string | AchievementDistribution)
-        } as unknown as ScoreForm;
+            [field]: parseAchievementDistribution(value as string | AchievementDistribution) as AchievementDistribution | null
+        };
     }
 
-    // 기타 필드는 그대로 처리
-    return { ...scoreForm, [field]: value } as unknown as ScoreForm;
+    // grade, semester 필드 처리 (number 타입)
+    if (field === 'grade' || field === 'semester') {
+        return {
+            ...scoreForm,
+            [field]: typeof value === 'string' ? Number(value) : value as number
+        };
+    }
+
+    // 문자열 필드 처리 (subject_type, curriculum, subject, achievement_level, notes)
+    if (field === 'subject_type' || field === 'curriculum' || field === 'subject' ||
+        field === 'achievement_level' || field === 'notes') {
+        return {
+            ...scoreForm,
+            [field]: value as string | null
+        };
+    }
+
+    // id 필드 처리
+    if (field === 'id') {
+        return {
+            ...scoreForm,
+            [field]: value as number | undefined
+        };
+    }
+
+    // 기타 필드는 그대로 처리 (타입 안전성을 위해 명시적 처리)
+    return scoreForm;
 }
 
 /**

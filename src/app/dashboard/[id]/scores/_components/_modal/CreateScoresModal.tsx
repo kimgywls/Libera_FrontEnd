@@ -1,12 +1,16 @@
 import type { FC } from 'react';
 import { useCallback } from 'react';
+
 import { ScoreForm, CreateScoreRequest } from '@/app/types/score';
+
 import { useCreateScore } from '../../_hooks/use-create-score';
 import { useScoreForm } from '../../_hooks/use-score-form';
+
 import { convertAchievementDistributionForCreate, safeParseNumber } from '../../_utils/score-form-utils';
+
 import BaseModal from '../../../../_components/_modal/BaseModal';
-import ModalHeader from '../../../../_components/_modal/ModalHeader';
 import ModalButtons from '../../../../_components/_modal/ModalButtons';
+import ModalHeader from '../../../../_components/_modal/ModalHeader';
 import ScoresModalTable from './_contents/ScoresModalTable';
 
 interface CreateScoresModalProps {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { API_URL } from '@/app/constants';
 import { ScoresResponse } from '@/app/types/score';
 

@@ -1,9 +1,12 @@
 import type { FC } from 'react';
+
+import { Score, ScoreForm } from '@/app/types/score';
+
+import Section from '../../../_components/Section';
+
+import CreateScoresModal from './_modal/CreateScoresModal';
 import ScoresTable from './ScoresTable';
 import UpdateScoresModal from './_modal/UpdateScoresModal';
-import CreateScoresModal from './_modal/CreateScoresModal';
-import { Score, ScoreForm } from '@/app/types/score';
-import Section from '../../../_components/Section';
 
 const SCORE_CATEGORIES = ['일반선택', '진로선택', '체육/예술'] as const;
 

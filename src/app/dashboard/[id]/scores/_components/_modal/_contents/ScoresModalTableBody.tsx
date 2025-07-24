@@ -1,12 +1,13 @@
 import type { FC } from 'react';
-import type { ScoreForm } from '@/app/types/score';
+
 import type { CategoryOption } from '@/app/constants';
+import type { ScoreForm } from '@/app/types/score';
 
 interface ScoresModalTableBodyProps {
     sortedForm: ScoreForm[];
     onChange: (idx: number, field: keyof ScoreForm, value: ScoreForm[keyof ScoreForm]) => void;
     getMinWidth: (key: string) => string;
-    getDisplayValue: (value: unknown) => string;
+    getDisplayValue: (value: ScoreForm[keyof ScoreForm]) => string;
     ALL_COLUMNS: string[];
     CATEGORY_COLUMNS: Record<string, ReadonlyArray<{ key: keyof ScoreForm; label: string }>>;
     CATEGORY_OPTIONS: readonly CategoryOption[];

@@ -1,15 +1,19 @@
 import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
+
 import { ScoreForm, CreateScoreRequest } from '@/app/types/score';
-import { usePutBulkScores } from '../../_hooks/use-put-bulk-scores';
+
 import { useCreateScore } from '../../_hooks/use-create-score';
+import { usePutBulkScores } from '../../_hooks/use-put-bulk-scores';
 import { useScoreForm } from '../../_hooks/use-score-form';
+
 import { DebouncedSave } from '../../_utils/debounced-save';
 import { convertAchievementDistributionForCreate, safeParseNumber } from '../../_utils/score-form-utils';
-import BaseModal from '../../../../_components/_modal/BaseModal';
-import ModalHeader from '../../../../_components/_modal/ModalHeader';
-import ModalButtons from '../../../../_components/_modal/ModalButtons';
+
 import AutoSaveStatus from '../../../../_components/_modal/AutoSaveStatus';
+import BaseModal from '../../../../_components/_modal/BaseModal';
+import ModalButtons from '../../../../_components/_modal/ModalButtons';
+import ModalHeader from '../../../../_components/_modal/ModalHeader';
 import ScoresModalTable from './_contents/ScoresModalTable';
 
 interface UpdateScoresModalProps {

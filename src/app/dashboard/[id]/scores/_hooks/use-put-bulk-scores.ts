@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { putBulkScores } from '../_actions/put-bulk-scores';
+
 import type { ScoreForm, ScoresResponse } from '@/app/types/score';
+
+import { putBulkScores } from '../_actions/put-bulk-scores';
 
 export function usePutBulkScores() {
     const queryClient = useQueryClient();

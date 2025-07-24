@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchStudentScores } from '../_actions/fetch-student-scores';
+
 import { ScoresResponse } from '@/app/types/score';
+
+import { fetchStudentScores } from '../_actions/fetch-student-scores';
 
 export function useStudentScores(studentId: number) {
     const {

@@ -10,8 +10,9 @@ import {
     LabelList,
     ResponsiveContainer,
 } from 'recharts';
-import { SemesterTrendPeriod, SemesterTrendResponse } from '@/app/types/semesterTrend';
+
 import { SEMESTER_TREND_CATEGORY_LABELS } from '@/app/constants';
+import { SemesterTrendPeriod, SemesterTrendResponse } from '@/app/types/semesterTrend';
 
 const CATEGORY_COLORS: Record<string, string> = {
     overall: '#8884d8',
@@ -46,10 +47,11 @@ interface CategoryTrendChartProps {
     categoryId: string;
     categoryName: string;
     data: { semester: string; barValue: number | null; originalValue: number | null }[];
+    chartId: string;
 }
 
-const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data }) => (
-    <div className="bg-white rounded-lg shadow pl-2 pt-4 pb-2">
+const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data, chartId }) => (
+    <div id={chartId} className="bg-white rounded-lg shadow pl-2 pt-4 pb-2">
         <div className="font-bold mb-2 ml-2 text-lg text-gray-800 flex items-center">
             <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: CATEGORY_COLORS[categoryId] || '#ff7675' }} />
             {SEMESTER_TREND_CATEGORY_LABELS[categoryId] || categoryName} 석차 등급 추이
@@ -124,7 +126,7 @@ const SemesterTrendChartSection: FC<SemesterTrendChartSectionProps> = ({
     if (!semesterTrend?.categories) return <div className="py-4 text-center text-gray-400">석차등급 정보가 없습니다.</div>;
 
     return (
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        <div id="semester-trend-charts" className="grid grid-cols-3 gap-3 mb-6">
             {semesterTrend.categories.map((category) => {
                 const periodMap = Object.fromEntries(
                     category.periods.map((data: SemesterTrendPeriod) => [
@@ -146,6 +148,7 @@ const SemesterTrendChartSection: FC<SemesterTrendChartSectionProps> = ({
                         categoryId={category.id}
                         categoryName={category.name}
                         data={data}
+                        chartId={`chart-${category.id}`}
                     />
                 );
             })}

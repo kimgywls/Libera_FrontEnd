@@ -1,8 +1,11 @@
 import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Loader2, X } from 'lucide-react';
+
 import { ScoreForm } from '@/app/types/score';
+
 import { usePutBulkScores } from '../../_hooks/use-put-bulk-scores';
+
 import ScoresModalTable from './_contents/ScoresModalTable';
 
 

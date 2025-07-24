@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchAttendance } from '../_actions/fetch-attendance';
+
 import { AttendanceApiResponse } from '@/app/types/attendance';
+
+import { fetchAttendance } from '../_actions/fetch-attendance';
 
 export function useAttendance(studentId: number) {
     const {

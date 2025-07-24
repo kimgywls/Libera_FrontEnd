@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { ScoreForm } from '@/app/types/score';
+
 import { API_URL } from '@/app/constants';
+import { ScoreForm } from '@/app/types/score';
 
 const api = axios.create({ baseURL: API_URL });
 

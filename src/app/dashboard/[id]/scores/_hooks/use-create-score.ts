@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createScore } from '../_actions/create-score';
+
 import type { CreateScoreRequest } from '@/app/types/score';
+
+import { createScore } from '../_actions/create-score';
 
 interface CreateScoreParams {
     studentId: number;
