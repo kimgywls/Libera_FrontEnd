@@ -1,0 +1,1 @@
+export { captureChartAsImage, captureMultipleCharts, captureIndividualCharts } from './chartCapture'; 
