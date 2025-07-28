@@ -1,4 +1,5 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 import type { SchoolRecommendationResponse, UniversityItem } from '@/app/types/university';
 
@@ -36,13 +37,38 @@ const RECOMMEND_TYPE_COLOR: Record<string, string> = {
 
 const UniversityListSection: FC<UniversityListSectionProps> = memo(
     ({ data, loading, error }) => {
-        // 탭/검색/필터 관련 훅
+        const pathname = usePathname();
+
+        // 숨기기 관련 통합 훅 (먼저 호출)
+        const {
+            hiddenList, showHidden, setShowHidden,
+            handleHideList, handleUnhide, handleUnhideAll,
+            selectedItems, handleSelectItem, handleSelectAll,
+            alert
+        } = useUniversityHide(data);
+
+        // URL 해시에 따라 숨김 목록 자동 표시
+        useEffect(() => {
+            const hash = pathname.split('#')[1];
+            if (hash === 'hidden-section') {
+                setShowHidden(true);
+                // 스크롤을 위해 약간의 지연
+                setTimeout(() => {
+                    const element = document.getElementById('hidden-section');
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            }
+        }, [pathname, setShowHidden]);
+
+        // 탭/검색/필터 관련 훅 (숨긴 학교 목록 전달) - hiddenList가 변경될 때마다 재계산
         const {
             selectedTab,
             handleTabClick,
             displayTabLabels,
             displayUniversityList,
-        } = useUniversityListTab(data);
+        } = useUniversityListTab(data, hiddenList);
         const {
             searchFields,
             searchField,
@@ -76,7 +102,7 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
             handleResetFilters,
         } = useUniversityListFilter(displayUniversityList);
 
-        // 필터/탭/검색 적용 + 숨김 적용된 리스트
+        // 필터/탭/검색 적용된 리스트
         const filteredUniversityList: UniversityItem[] = useFilteredUniversityList(
             displayUniversityList,
             searchText,
@@ -86,16 +112,10 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
             selectedCategories
         );
 
-        // 숨기기 관련 통합 훅
-        const {
-            hiddenList, showHidden, setShowHidden,
-            handleHideList, handleUnhide,
-            selectedItems, handleSelectItem, handleSelectAll,
-            alert
-        } = useUniversityHide(data, displayUniversityList, filteredUniversityList);
-
-        // 숨긴 학교 제외된 리스트
-        const visibleUniversityList = filteredUniversityList.filter(u => !hiddenList.some(h => h.admission_id === u.admission_id));
+        // 숨긴 학교 목록에서 제외한 학교들
+        const visibleUniversityList = filteredUniversityList.filter(
+            (university) => !hiddenList.some((hidden) => hidden.admission_id === university.admission_id)
+        );
 
         const regionCount = selectedRegions.length;
         const typeCount = selectedTypes.length;
@@ -179,6 +199,7 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
                     hiddenListLength={hiddenList.length}
                     hiddenList={hiddenList}
                     handleUnhide={handleUnhide}
+                    handleUnhideAll={handleUnhideAll}
                 />
                 <AlertModal
                     open={alert.open}

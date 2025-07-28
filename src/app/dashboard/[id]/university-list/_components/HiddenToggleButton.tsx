@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { ChevronDown, ChevronUp, Eye } from 'lucide-react';
+import { FC, useEffect } from 'react';
+import { ChevronDown, ChevronUp, Eye, RotateCcw } from 'lucide-react';
 
 import { UniversityItem } from '@/app/types/university';
 
@@ -9,6 +9,7 @@ interface HiddenToggleButtonProps {
     hiddenListLength: number;
     hiddenList: UniversityItem[];
     handleUnhide: (admissionId: number) => void;
+    handleUnhideAll: () => Promise<void>;
 }
 
 const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
@@ -17,12 +18,23 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
     hiddenListLength,
     hiddenList,
     handleUnhide,
+    handleUnhideAll,
 }) => {
+    // 중복 제거된 실제 개수 계산
+    const uniqueHiddenList = hiddenList.filter((item, index, self) =>
+        index === self.findIndex(t => t.admission_id === item.admission_id)
+    );
+    const actualHiddenCount = uniqueHiddenList.length;
+
+    const handleToggle = () => {
+        setShowHidden(!showHidden);
+    };
+
     return (
-        <div className="py-4">
+        <div id="hidden-section" className="py-4">
             <div className="flex justify-center mt-4">
                 <button
-                    onClick={() => setShowHidden((v) => !v)}
+                    onClick={handleToggle}
                     className="group flex items-center space-x-2 bg-white border border-gray-300 hover:border-blue-400 px-5 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                     {showHidden ? (
@@ -34,9 +46,9 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
                         <>
                             <Eye className="w-4 h-4 text-blue-500" />
                             <span>숨긴 학교 보기</span>
-                            {hiddenListLength > 0 && (
+                            {actualHiddenCount > 0 && (
                                 <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-500 rounded-full">
-                                    {hiddenListLength}
+                                    {actualHiddenCount}
                                 </span>
                             )}
                             <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
@@ -45,11 +57,20 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
                 </button>
             </div>
 
-            {showHidden && hiddenListLength > 0 && (
+            {showHidden && actualHiddenCount > 0 && (
                 <div className="px-6 py-4 m-4 border border-gray-200 rounded-lg bg-gray-50">
-                    <h3 className="text-base font-semibold mb-3 text-gray-800">숨긴 학교 목록</h3>
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-base font-semibold text-gray-800">숨긴 학교 목록</h3>
+                        <button
+                            onClick={handleUnhideAll}
+                            className="flex items-center space-x-1 px-3 py-1 text-sm bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+                        >
+                            <RotateCcw className="w-3 h-3" />
+                            <span>전체 해제</span>
+                        </button>
+                    </div>
                     <ul className="space-y-2">
-                        {hiddenList.map(u => (
+                        {uniqueHiddenList.map(u => (
                             <li
                                 key={u.admission_id}
                                 className="flex items-center justify-between border border-gray-200 rounded-md px-4 py-2 bg-white hover:bg-gray-50 transition-colors"
@@ -68,7 +89,6 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
                                     해제
                                 </button>
                             </li>
-
                         ))}
                     </ul>
                 </div>
