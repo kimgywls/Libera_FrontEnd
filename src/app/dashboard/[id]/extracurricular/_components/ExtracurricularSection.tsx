@@ -16,10 +16,17 @@ import {
     useUpdateBehavioralCharacteristic
 } from '../_hooks/use-update-extracurricular-summary';
 
+import {
+    useCreateCreativeActivity,
+    useCreateDetailedAbility,
+    useCreateBehavioralCharacteristic
+} from '../_hooks/use-create-extracurricular';
+
 import BehavioralCharacteristicsSection from './BehavioralCharacteristicsSection';
 import CreativeActivitiesSection from './CreativeActivitiesSection';
 import DetailedAbilitiesSection from './DetailedAbilitiesSection';
 import EditModal from './_modal/EditModal';
+import AddModal from './_modal/AddModal';
 
 interface ExtracurricularSectionProps {
     summary?: ExtracurricularSummary;
@@ -44,6 +51,16 @@ const ExtracurricularSection: FC<ExtracurricularSectionProps> = ({
         data: null
     });
 
+    // 추가 모달 상태
+    const [addData, setAddData] = useState<{ type: 'creative' | 'detailed' | 'behavioral' | null; grade: number | null }>({ type: null, grade: null });
+    const { isModalOpen: isAddModalOpen, openModal: openAddModal, closeModal: closeAddModal } = useModalState();
+
+    // Create mutations
+    const { mutate: createCreative, isPending: isCreatingCreative } = useCreateCreativeActivity(studentId);
+    const { mutate: createDetailed, isPending: isCreatingDetailed } = useCreateDetailedAbility(studentId);
+    const { mutate: createBehavioral, isPending: isCreatingBehavioral } = useCreateBehavioralCharacteristic(studentId);
+
+    // Update mutations
     const { mutate: updateCreative, isPending: isUpdatingCreative } = useUpdateCreativeActivity(studentId);
     const { mutate: updateDetailed, isPending: isUpdatingDetailed } = useUpdateDetailedAbility(studentId);
     const { mutate: updateBehavioral, isPending: isUpdatingBehavioral } = useUpdateBehavioralCharacteristic(studentId);
@@ -140,6 +157,48 @@ const ExtracurricularSection: FC<ExtracurricularSectionProps> = ({
         openEditModal('behavioral', characteristic);
     };
 
+    // 추가 모달 열기 핸들러
+    const handleOpenAddModal = (type: 'creative' | 'detailed' | 'behavioral', grade: number) => {
+        setAddData({ type, grade });
+        openAddModal('add');
+    };
+
+    // 추가 저장 핸들러
+    const handleAdd = (formData: any) => {
+        if (!addData.type) return;
+
+        const onSuccessCallback = () => {
+            closeAddModal('add');
+            setAddData({ type: null, grade: null });
+        };
+
+        const onErrorCallback = (error: Error) => {
+            console.error('추가 실패:', error.message);
+            alert(`추가에 실패했습니다: ${error.message}`);
+        };
+
+        switch (addData.type) {
+            case 'creative':
+                createCreative(formData, {
+                    onSuccess: onSuccessCallback,
+                    onError: onErrorCallback
+                });
+                break;
+            case 'detailed':
+                createDetailed(formData, {
+                    onSuccess: onSuccessCallback,
+                    onError: onErrorCallback
+                });
+                break;
+            case 'behavioral':
+                createBehavioral(formData, {
+                    onSuccess: onSuccessCallback,
+                    onError: onErrorCallback
+                });
+                break;
+        }
+    };
+
     // 전체 로딩 중이거나 에러가 있을 때만 처리
     if (isLoading) {
         return <div className="py-4 text-center text-gray-500">비교과 활동 정보를 불러오는 중...</div>;
@@ -153,20 +212,29 @@ const ExtracurricularSection: FC<ExtracurricularSectionProps> = ({
         <div className="space-y-8">
             {summary && (
                 <>
-                    <CreativeActivitiesSection
-                        activities={summary.creative_activities}
-                        onEdit={handleEditCreative}
-                    />
+                    <div id="creative-section">
+                        <CreativeActivitiesSection
+                            activities={summary.creative_activities}
+                            onEdit={handleEditCreative}
+                            onAdd={handleOpenAddModal}
+                        />
+                    </div>
 
-                    <DetailedAbilitiesSection
-                        abilities={summary.detailed_abilities}
-                        onEdit={handleEditDetailed}
-                    />
+                    <div id="detailed-section">
+                        <DetailedAbilitiesSection
+                            abilities={summary.detailed_abilities}
+                            onEdit={handleEditDetailed}
+                            onAdd={handleOpenAddModal}
+                        />
+                    </div>
 
-                    <BehavioralCharacteristicsSection
-                        characteristics={summary.behavioral_characteristics}
-                        onEdit={handleEditBehavioral}
-                    />
+                    <div id="behavioral-section">
+                        <BehavioralCharacteristicsSection
+                            characteristics={summary.behavioral_characteristics}
+                            onEdit={handleEditBehavioral}
+                            onAdd={handleOpenAddModal}
+                        />
+                    </div>
                 </>
             )}
 
@@ -176,7 +244,17 @@ const ExtracurricularSection: FC<ExtracurricularSectionProps> = ({
                 onSave={handleSave}
                 type={editData.type!}
                 data={editData.data}
+                studentId={studentId}
                 isLoading={isUpdatingCreative || isUpdatingDetailed || isUpdatingBehavioral}
+            />
+
+            <AddModal
+                isOpen={isAddModalOpen('add')}
+                onClose={() => { closeAddModal('add'); setAddData({ type: null, grade: null }); }}
+                onSave={handleAdd}
+                type={addData.type!}
+                grade={addData.grade}
+                isLoading={isCreatingCreative || isCreatingDetailed || isCreatingBehavioral}
             />
         </div>
     );
