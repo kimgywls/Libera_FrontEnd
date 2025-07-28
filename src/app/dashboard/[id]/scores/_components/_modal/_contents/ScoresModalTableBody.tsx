@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { Trash2 } from 'lucide-react';
 
 import type { CategoryOption } from '@/app/constants';
 import type { ScoreForm } from '@/app/types/score';
@@ -6,6 +7,7 @@ import type { ScoreForm } from '@/app/types/score';
 interface ScoresModalTableBodyProps {
     sortedForm: ScoreForm[];
     onChange: (idx: number, field: keyof ScoreForm, value: ScoreForm[keyof ScoreForm]) => void;
+    onDelete?: (idx: number) => void;
     getMinWidth: (key: string) => string;
     getDisplayValue: (value: ScoreForm[keyof ScoreForm]) => string;
     ALL_COLUMNS: string[];
@@ -16,6 +18,7 @@ interface ScoresModalTableBodyProps {
 const ScoresModalTableBody: FC<ScoresModalTableBodyProps> = ({
     sortedForm,
     onChange,
+    onDelete,
     getMinWidth,
     getDisplayValue,
     ALL_COLUMNS,
@@ -149,6 +152,16 @@ const ScoresModalTableBody: FC<ScoresModalTableBodyProps> = ({
                                     );
                             }
                         })}
+                        {onDelete && (
+                            <td className="px-4 py-3 border-r border-gray-200">
+                                <button
+                                    onClick={() => onDelete(idx)}
+                                    className="text-red-500 hover:text-red-700"
+                                >
+                                    <Trash2 className="h-5 w-5" />
+                                </button>
+                            </td>
+                        )}
                     </tr>
                 );
             })}

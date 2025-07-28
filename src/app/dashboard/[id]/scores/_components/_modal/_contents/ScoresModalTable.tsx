@@ -13,9 +13,10 @@ interface ScoresModalTableProps {
     scoresForm: ScoreForm[];
     onChange: (idx: number, field: keyof ScoreForm, value: ScoreForm[keyof ScoreForm]) => void;
     onAddSubject: () => void;
+    onDelete?: (idx: number) => void;
 }
 
-const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onAddSubject }) => {
+const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onAddSubject, onDelete }) => {
     function getMinWidth(key: string) {
         if ([
             'credit_hours', 'raw_score', 'subject_average', 'standard_deviation', 'student_count', 'grade_rank'
@@ -47,12 +48,19 @@ const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onA
                                     </th>
                                 );
                             })}
+                            {/* 삭제 버튼 컬럼 헤더 추가 */}
+                            {onDelete && (
+                                <th className="px-4 py-2 text-left font-semibold text-gray-700 tracking-wider border-r border-gray-200 min-w-16">
+                                    삭제
+                                </th>
+                            )}
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                         <ScoresModalTableBody
                             sortedForm={scoresForm}
                             onChange={onChange}
+                            onDelete={onDelete}
                             getMinWidth={getMinWidth}
                             getDisplayValue={getDisplayValue}
                             ALL_COLUMNS={ALL_COLUMNS}

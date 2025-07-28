@@ -70,38 +70,44 @@ const ScoresWidget: FC = () => {
             {studentInfo && (
                 <StudentInfoSection student={studentInfo} />
             )}
-            <AttendanceSection
-                attendance={attendance ?? { total_records: 0, records: [], summary: { total_absence: 0, total_tardiness: 0, total_early_leave: 0 }, has_data: false }}
-                isLoading={isAttendanceLoading}
-                isError={isAttendanceError}
-            />
-            {PERIODS.map(({ grade, semester }) => (
-                <ScoresSection
-                    key={`${grade}-${semester}`}
-                    grade={grade}
-                    semester={semester}
-                    scores={scores?.scores || []}
-                    isScoresLoading={isScoresLoading}
-                    isScoresError={isScoresError}
-                    openModal={openModal}
-                    closeModal={closeModal}
-                    isModalOpen={isModalOpen}
-                    studentId={studentId}
-                    toScoreForm={toScoreForm}
-                    onScoreChange={onScoreChange}
+            <div id="attendance-section">
+                <AttendanceSection
+                    attendance={attendance ?? { total_records: 0, records: [], summary: { total_absence: 0, total_tardiness: 0, total_early_leave: 0 }, has_data: false }}
+                    isLoading={isAttendanceLoading}
+                    isError={isAttendanceError}
                 />
-            ))}
-            <SemesterTrendSection
-                overallGpa={overallGpa ?? 0}
-                semesterTrend={semesterTrend}
-                isTrendLoading={isTrendLoading}
-                isTrendError={isTrendError}
-            />
-            <SemesterTrendChartSection
-                semesterTrend={semesterTrend}
-                isLoading={isTrendLoading}
-                isError={isTrendError}
-            />
+            </div>
+            <div id="scores-section">
+                {PERIODS.map(({ grade, semester }) => (
+                    <ScoresSection
+                        key={`${grade}-${semester}`}
+                        grade={grade}
+                        semester={semester}
+                        scores={scores?.scores || []}
+                        isScoresLoading={isScoresLoading}
+                        isScoresError={isScoresError}
+                        openModal={openModal}
+                        closeModal={closeModal}
+                        isModalOpen={isModalOpen}
+                        studentId={studentId}
+                        toScoreForm={toScoreForm}
+                        onScoreChange={onScoreChange}
+                    />
+                ))}
+            </div>
+            <div id="trend-section">
+                <SemesterTrendSection
+                    overallGpa={overallGpa ?? 0}
+                    semesterTrend={semesterTrend}
+                    isTrendLoading={isTrendLoading}
+                    isTrendError={isTrendError}
+                />
+                <SemesterTrendChartSection
+                    semesterTrend={semesterTrend}
+                    isLoading={isTrendLoading}
+                    isError={isTrendError}
+                />
+            </div>
         </div>
     );
 };

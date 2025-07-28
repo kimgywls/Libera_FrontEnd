@@ -49,6 +49,11 @@ export function useScoreForm({ initialScores, grade, semester, onFormChange }: U
         onFormChange?.();
     }, [grade, semester, onFormChange]);
 
+    const removeScore = useCallback((idx: number) => {
+        setScoresForm(prev => prev.filter((_, i) => i !== idx));
+        onFormChange?.();
+    }, [onFormChange]);
+
     const resetForm = useCallback(() => {
         setScoresForm(initialScores?.length ? initialScores : [DEFAULT_ROW(grade, semester)]);
     }, [initialScores, grade, semester]);
@@ -58,6 +63,7 @@ export function useScoreForm({ initialScores, grade, semester, onFormChange }: U
         setScoresForm,
         handleChange,
         handleAddSubject,
+        removeScore,
         resetForm
     };
 } 

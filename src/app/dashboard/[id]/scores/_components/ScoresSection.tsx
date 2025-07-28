@@ -51,18 +51,18 @@ const ScoresSection: FC<ScoresSectionProps> = ({
         <>
             {!hasScores && (
                 <button
-                    className="px-2 py-2 text-blue-500 font-bold rounded-md hover:underline hover:text-blue-600 whitespace-nowrap cursor-pointer"
+                    className="mr-2 px-4 py-2 text-sm font-semibold bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
                     onClick={() => openModal(createModalId)}
                 >
-                    성적 입력하기
+                    입력
                 </button>
             )}
             {hasScores && (
                 <button
-                    className="px-2 py-2 text-green-500 font-bold rounded-md hover:underline hover:text-green-600 whitespace-nowrap cursor-pointer"
+                    className="mr-2 px-4 py-2 text-sm font-semibold bg-violet-100 text-violet-700 rounded hover:bg-violet-200"
                     onClick={() => openModal(modalId)}
                 >
-                    성적 수정하기
+                    수정
                 </button>
             )}
         </>
