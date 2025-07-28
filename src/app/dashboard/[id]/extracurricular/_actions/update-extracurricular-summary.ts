@@ -18,7 +18,7 @@ export async function updateCreativeActivity(
 ): Promise<CreativeActivity> {
     try {
         const response = await api.put<CreativeActivity>(
-            `/api/v1/api/extracurricular/creative-activities/${activityId}`,
+            `/api/v1/extracurricular/creative-activities/${activityId}`,
             updateData
         );
 
@@ -60,7 +60,7 @@ export async function updateDetailedAbility(
 ): Promise<DetailedAbility> {
     try {
         const response = await api.put<DetailedAbility>(
-            `/api/v1/api/extracurricular/detailed-abilities/${abilityId}`,
+            `/api/v1/extracurricular/detailed-abilities/${abilityId}`,
             updateData
         );
 
@@ -100,7 +100,7 @@ export async function updateBehavioralCharacteristic(
 ): Promise<BehavioralCharacteristic> {
     try {
         const response = await api.put<BehavioralCharacteristic>(
-            `/api/v1/api/extracurricular/behavioral-characteristics/${characteristicId}`,
+            `/api/v1/extracurricular/behavioral-characteristics/${characteristicId}`,
             updateData
         );
 

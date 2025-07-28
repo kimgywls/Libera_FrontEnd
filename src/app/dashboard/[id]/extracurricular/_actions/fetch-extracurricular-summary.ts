@@ -7,7 +7,7 @@ const api = axios.create({ baseURL: API_URL });
 
 export async function fetchExtracurricularSummary(studentId: number): Promise<ExtracurricularSummary> {
     try {
-        const response = await api.get<ExtracurricularApiData>(`/api/v1/api/extracurricular/student/${studentId}/summary`);
+        const response = await api.get<ExtracurricularApiData>(`/api/v1/extracurricular/student/${studentId}/summary`);
         const data = response.data;
 
         if (!data) {

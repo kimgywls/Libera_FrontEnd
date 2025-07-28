@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { Save, X } from 'lucide-react';
+import { Save, X, Trash2 } from 'lucide-react';
 
 import {
     CreativeActivity,
@@ -8,13 +8,20 @@ import {
     EditFormData
 } from '@/app/types/extracurricular';
 
+import {
+    useDeleteCreativeActivity,
+    useDeleteDetailedAbility,
+    useDeleteBehavioralCharacteristic
+} from '../../_hooks/use-delete-extracurricular-summary';
 
 interface EditModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (data: EditFormData) => void;
+    onDelete?: () => void;
     type: 'creative' | 'detailed' | 'behavioral';
     data: CreativeActivity | DetailedAbility | BehavioralCharacteristic | null;
+    studentId: number;
     isLoading?: boolean;
 }
 
@@ -33,11 +40,19 @@ const EditModal: FC<EditModalProps> = ({
     isOpen,
     onClose,
     onSave,
+    onDelete,
     type,
     data,
+    studentId,
     isLoading = false
 }) => {
     const [formData, setFormData] = useState<EditFormData>(DefaultFormData);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    // 삭제 hooks
+    const deleteCreativeActivity = useDeleteCreativeActivity(studentId);
+    const deleteDetailedAbility = useDeleteDetailedAbility(studentId);
+    const deleteBehavioralCharacteristic = useDeleteBehavioralCharacteristic(studentId);
 
     // 데이터가 변경될 때마다 폼 데이터 업데이트
     useEffect(() => {
@@ -98,15 +113,50 @@ const EditModal: FC<EditModalProps> = ({
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    const handleDelete = async () => {
+        if (!data?.id) return;
+
+        try {
+            const isDeleting = deleteCreativeActivity.isPending ||
+                deleteDetailedAbility.isPending ||
+                deleteBehavioralCharacteristic.isPending;
+
+            if (isDeleting) return;
+
+            switch (type) {
+                case 'creative':
+                    await deleteCreativeActivity.mutateAsync(data.id);
+                    break;
+                case 'detailed':
+                    await deleteDetailedAbility.mutateAsync(data.id);
+                    break;
+                case 'behavioral':
+                    await deleteBehavioralCharacteristic.mutateAsync(data.id);
+                    break;
+            }
+
+            setShowDeleteConfirm(false);
+            onClose();
+            onDelete?.();
+        } catch (error) {
+            console.error('삭제 실패:', error);
+            // 에러는 hooks에서 처리됨
+        }
+    };
+
+    const isDeleting = deleteCreativeActivity.isPending ||
+        deleteDetailedAbility.isPending ||
+        deleteBehavioralCharacteristic.isPending;
+
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold text-gray-800">{getTitle()}</h2>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                        disabled={isLoading}
+                        disabled={isLoading || isDeleting}
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -256,34 +306,82 @@ const EditModal: FC<EditModalProps> = ({
                         </>
                     )}
 
-                    <div className="flex justify-end gap-3 pt-4">
+                    <div className="flex justify-between pt-4">
                         <button
                             type="button"
-                            onClick={onClose}
-                            className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                            disabled={isLoading}
+                            onClick={() => setShowDeleteConfirm(true)}
+                            className="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2 disabled:opacity-50"
+                            disabled={isLoading || isDeleting || !data?.id}
                         >
-                            취소
+                            <Trash2 className="w-4 h-4" />
+                            삭제
                         </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors flex items-center gap-2 disabled:bg-violet-400"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                    저장 중...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="w-4 h-4" />
-                                    저장
-                                </>
-                            )}
-                        </button>
+
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                disabled={isLoading || isDeleting}
+                            >
+                                취소
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors flex items-center gap-2 disabled:bg-violet-400"
+                                disabled={isLoading || isDeleting}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        저장 중...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-4 h-4" />
+                                        저장
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </form>
+                {/* 삭제 확인 다이얼로그 */}
+                {showDeleteConfirm && (
+                    <div className="my-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <h3 className="text-lg font-medium text-red-800 mb-2">삭제 확인</h3>
+                        <p className="text-red-700 mb-4">
+                            정말로 이 {getTitle().replace(' 수정', '')}을(를) 삭제하시겠습니까?
+                            <br />이 작업은 되돌릴 수 없습니다.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={handleDelete}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 disabled:bg-red-400"
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        삭제 중...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 className="w-4 h-4" />
+                                        삭제
+                                    </>
+                                )}
+                            </button>
+                            <button
+                                onClick={() => setShowDeleteConfirm(false)}
+                                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                disabled={isDeleting}
+                            >
+                                취소
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
