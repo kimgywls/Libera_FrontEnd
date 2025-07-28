@@ -1,4 +1,4 @@
-import { FC, memo, useCallback } from 'react';
+import { FC, memo, useCallback, useEffect, useRef } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -10,7 +10,7 @@ export interface UniversityTableProps {
     universityList: UniversityItem[];
     selectedItems: number[];
     handleSelectItem: (id: number) => void;
-    handleSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSelectAll: (admissionIds: number[]) => void; // 타입 수정
     recommendTypeLabel: Record<string, string>;
     recommendTypeColor: Record<string, string>;
     showRegionFilter: boolean;
@@ -41,6 +41,8 @@ const UniversityTable: FC<UniversityTableProps> = ({
     showTypeFilter, setShowTypeFilter, allTypes, clearTypeFilter, selectedTypes, setSelectedTypes,
     allCategories, showCategoryFilter, setShowCategoryFilter, selectedCategories, setSelectedCategories, clearCategoryFilter
 }) => {
+    const checkboxRef = useRef<HTMLInputElement>(null);
+
     const handleRegionConfirm = useCallback((values: string[]) => {
         setSelectedRegions(values);
     }, [setSelectedRegions]);
@@ -53,6 +55,34 @@ const UniversityTable: FC<UniversityTableProps> = ({
     const handleCategoryConfirm = useCallback((values: string[]) => {
         setSelectedCategories(values);
     }, [setSelectedCategories]);
+
+    // 전체 선택 상태 계산 (실제 표시되는 리스트 기준)
+    const currentPageIds = universityList.map(u => u.admission_id);
+    const selectedInCurrentPage = selectedItems.filter(id => currentPageIds.includes(id));
+    const isAllSelected = currentPageIds.length > 0 && selectedInCurrentPage.length === currentPageIds.length;
+    const isPartiallySelected = selectedInCurrentPage.length > 0 && selectedInCurrentPage.length < currentPageIds.length;
+
+    // indeterminate 상태 설정
+    useEffect(() => {
+        if (checkboxRef.current) {
+            checkboxRef.current.indeterminate = isPartiallySelected;
+        }
+    }, [isPartiallySelected]);
+
+    // 전체 선택 핸들러 수정
+    const handleSelectAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            const allAdmissionIds = universityList.map(u => u.admission_id);
+            handleSelectAll(allAdmissionIds);
+        } else {
+            handleSelectAll([]);
+        }
+    };
+
+    // 개별 선택 핸들러 디버깅
+    const handleSelectItemWithDebug = (admissionId: number) => {
+        handleSelectItem(admissionId);
+    };
 
     if (!universityList.length) {
         return (
@@ -71,10 +101,11 @@ const UniversityTable: FC<UniversityTableProps> = ({
                     <tr>
                         <th className="px-4 py-3 text-left">
                             <input
+                                ref={checkboxRef}
                                 type="checkbox"
                                 className="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded focus:ring-violet-500 focus:ring-2 accent-violet-600"
-                                checked={selectedItems.length === universityList.length && universityList.length > 0}
-                                onChange={handleSelectAll}
+                                checked={isAllSelected}
+                                onChange={(e) => handleSelectAllChange(e)}
                             />
                         </th>
                         <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">순서</th>
@@ -158,7 +189,7 @@ const UniversityTable: FC<UniversityTableProps> = ({
                                     type="checkbox"
                                     className="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded accent-violet-600"
                                     checked={selectedItems.includes(u.admission_id)}
-                                    onChange={() => handleSelectItem(u.admission_id)}
+                                    onChange={(e) => handleSelectItemWithDebug(u.admission_id)}
                                 />
                             </td>
                             <td className="px-4 py-2 text-sm text-gray-900  w-10">{index + 1}</td>

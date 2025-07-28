@@ -17,10 +17,8 @@ export const fetchSchoolRecommendations = async (
         return data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            // 서버 에러 메시지 추출
             const serverError = error.response?.data?.detail || error.response?.data?.message || '서버 오류가 발생했습니다';
 
-            // 500 에러에 대한 특별 처리
             if (error.response?.status === 500) {
                 const customError = new Error(`학교 추천 시스템에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요. (오류: ${serverError})`);
                 customError.name = 'SchoolRecommendationError';
