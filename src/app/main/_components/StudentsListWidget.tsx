@@ -38,7 +38,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
                 </div>
                 <StudentsListButtons openModal={openModal} students={students} />
             </div>
-            <div className="h-[600px] overflow-y-auto mb-4">
+            <div className="h-[90%] overflow-y-auto mb-4">
                 {isLoading ? (
                     <div>로딩 중...</div>
                 ) : isError ? (

@@ -31,7 +31,7 @@ const AutoSaveStatus: FC<AutoSaveStatusProps> = ({ isAutoSaving, lastSaved }) =>
     return (
         <div className="flex items-center text-gray-500 text-sm">
             <Clock className="w-4 h-4 mr-2" />
-            2초 후 자동 저장
+            5초 후 자동 저장
         </div>
     );
 };
