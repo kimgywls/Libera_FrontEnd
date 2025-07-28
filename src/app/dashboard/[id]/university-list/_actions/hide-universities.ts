@@ -5,132 +5,106 @@ import type { UniversityItem } from '@/app/types/university';
 
 const api = axios.create({ baseURL: API_URL });
 
-export interface HideUniversitiesRequest {
-    student_id: number;
-    admission_ids: number[];
-}
-
 export interface HideUniversitiesResponse {
     success: boolean;
     message?: string;
+    hidden_count?: number;
 }
 
-export async function hideUniversities(
-    studentId: number,
-    admissionIds: number[]
-): Promise<HideUniversitiesResponse> {
-    const body: HideUniversitiesRequest = {
-        student_id: studentId,
-        admission_ids: admissionIds,
-    };
+export const hideUniversities = async (studentId: number, admissionIds: number[]): Promise<HideUniversitiesResponse> => {
     try {
-        // console.log('[hideUniversities] request body:', body);
-        const res = await api.post<HideUniversitiesResponse>(
-            '/api/v1/school-recommendations/hide',
-            body
+        const response = await axios.post<HideUniversitiesResponse>(
+            `${API_URL}/api/v1/school-recommendations/${studentId}/hide-schools`,
+            admissionIds,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                timeout: 10000,
+            }
         );
-        // console.log('[hideUniversities] response:', res.data);
-        return {
-            ...res.data,
-            success: true,
-        };
+        return response.data;
     } catch (error) {
-        if (error instanceof AxiosError) {
-            console.error('[hideUniversities] Axios error:', {
-                message: error.message,
-                status: error.response?.status,
-                data: error.response?.data
-            });
-            return {
-                success: false,
-                message: error.response?.data?.message || `서버 오류: ${error.response?.status || 'Network Error'}`,
-            };
-        } else if (error instanceof Error) {
-            console.error('[hideUniversities] Error:', error.message);
-            return {
-                success: false,
-                message: `오류: ${error.message}`,
-            };
-        } else {
-            console.error('[hideUniversities] Unknown error:', error);
-            return {
-                success: false,
-                message: '알 수 없는 오류가 발생했습니다.',
-            };
-        }
-    }
-}
+        if (axios.isAxiosError(error)) {
+            const serverError = error.response?.data?.detail || error.response?.data?.message || '서버 오류가 발생했습니다';
 
-export async function unhideUniversities(
-    studentId: number,
-    admissionIds: number[]
-): Promise<HideUniversitiesResponse> {
-    const body: HideUniversitiesRequest = {
-        student_id: studentId,
-        admission_ids: admissionIds,
-    };
+            if (error.response?.status === 500) {
+                const customError = new Error(`학교 숨기기 시스템에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요. (오류: ${serverError})`);
+                customError.name = 'HideUniversitiesError';
+                throw customError;
+            }
+
+            const customError = new Error(`학교 숨기기 실패: ${serverError}`);
+            customError.name = 'HideUniversitiesError';
+            throw customError;
+        }
+        throw new Error('네트워크 오류가 발생했습니다');
+    }
+};
+
+export const unhideUniversities = async (studentId: number, admissionIds: number[]): Promise<HideUniversitiesResponse> => {
     try {
-        // console.log('[unhideUniversities] request body:', body);
-        const res = await api.post<HideUniversitiesResponse>(
-            '/api/v1/school-recommendations/unhide',
-            body
+        const response = await axios.post<HideUniversitiesResponse>(
+            `${API_URL}/api/v1/school-recommendations/${studentId}/unhide-schools`,
+            admissionIds,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                timeout: 10000,
+            }
         );
-        // console.log('[unhideUniversities] response:', res.data);
-        return {
-            ...res.data,
-            success: true,
-        };
+        return response.data;
     } catch (error) {
-        if (error instanceof AxiosError) {
-            console.error('[unhideUniversities] Axios error:', {
-                message: error.message,
-                status: error.response?.status,
-                data: error.response?.data
-            });
-            return {
-                success: false,
-                message: error.response?.data?.message || `서버 오류: ${error.response?.status || 'Network Error'}`,
-            };
-        } else if (error instanceof Error) {
-            console.error('[unhideUniversities] Error:', error.message);
-            return {
-                success: false,
-                message: `오류: ${error.message}`,
-            };
-        } else {
-            console.error('[unhideUniversities] Unknown error:', error);
-            return {
-                success: false,
-                message: '알 수 없는 오류가 발생했습니다.',
-            };
+        if (axios.isAxiosError(error)) {
+            const serverError = error.response?.data?.detail || error.response?.data?.message || '서버 오류가 발생했습니다';
+
+            if (error.response?.status === 500) {
+                const customError = new Error(`학교 숨김 해제 시스템에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요. (오류: ${serverError})`);
+                customError.name = 'UnhideUniversitiesError';
+                throw customError;
+            }
+
+            const customError = new Error(`학교 숨김 해제 실패: ${serverError}`);
+            customError.name = 'UnhideUniversitiesError';
+            throw customError;
         }
+        throw new Error('네트워크 오류가 발생했습니다');
     }
-}
+};
 
-interface FetchHiddenUniversitiesResponse {
-    student_id: number;
-    hidden_schools: UniversityItem[];
-    total_count: number;
-}
-
-export async function fetchHiddenUniversities(studentId: number): Promise<UniversityItem[]> {
+export const fetchHiddenUniversities = async (studentId: number): Promise<UniversityItem[]> => {
     try {
-        // console.log('[fetchHiddenUniversities] request studentId:', studentId);
-        const res = await api.get<FetchHiddenUniversitiesResponse>(`/api/v1/school-recommendations/hidden/${studentId}`);
-        // console.log('[fetchHiddenUniversities] response:', res.data);
-        return res.data.hidden_schools;
+        const response = await axios.get<{
+            student_id: number;
+            hidden_schools: UniversityItem[];
+            total_count: number;
+        }>(
+            `${API_URL}/api/v1/school-recommendations/hidden/${studentId}`,
+            {
+                headers: {
+                    'Accept': 'application/json',
+                },
+                timeout: 10000,
+            }
+        );
+        return response.data.hidden_schools || [];
     } catch (error) {
-        if (error instanceof AxiosError) {
-            console.error('[fetchHiddenUniversities] Axios error:', {
-                message: error.message,
-                status: error.response?.status,
-                data: error.response?.data
-            });
-        } else if (error instanceof Error) {
-            console.error('[fetchHiddenUniversities] Error:', error.message);
-        } else {
-            console.error('[fetchHiddenUniversities] Unknown error:', error);
+        if (axios.isAxiosError(error)) {
+            const serverError = error.response?.data?.detail || error.response?.data?.message || '서버 오류가 발생했습니다';
+
+            if (error.response?.status === 500) {
+                const customError = new Error(`숨긴 학교 조회 시스템에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요. (오류: ${serverError})`);
+                customError.name = 'FetchHiddenUniversitiesError';
+                throw customError;
+            }
+
+            const customError = new Error(`숨긴 학교 조회 실패: ${serverError}`);
+            customError.name = 'FetchHiddenUniversitiesError';
+            throw customError;
         }
-        return [];
+        throw new Error('네트워크 오류가 발생했습니다');
     }
-} 
+}; 

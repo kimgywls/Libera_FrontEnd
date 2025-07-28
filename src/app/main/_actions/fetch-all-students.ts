@@ -10,7 +10,7 @@ const api = axios.create({
 export async function fetchAllStudents(): Promise<StudentsListResponse> {
     try {
         const { data } = await api.get<StudentsListResponse>('api/v1/students');
-        console.log("fetchAllStudents data", data);
+        //console.log("fetchAllStudents data", data);
         return data;
     } catch (error) {
         console.error('[fetchAllStudents] error:', error);
