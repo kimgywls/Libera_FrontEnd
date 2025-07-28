@@ -151,14 +151,17 @@ const AddModal: FC<AddModalProps> = ({
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">학기</label>
-                                    <input
-                                        type="text"
+                                    <select
                                         value={(formData as DetailedFormData).semester || ''}
                                         onChange={e => updateFormData('semester', e.target.value)}
-                                        placeholder="예: 1학기, 2학기, 1,2학기"
                                         className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                                         required
-                                    />
+                                    >
+                                        <option value="">선택하세요</option>
+                                        <option value="1">1학기</option>
+                                        <option value="2">2학기</option>
+                                        <option value="1,2">1,2학기</option>
+                                    </select>
                                 </div>
                             </div>
                             <div>

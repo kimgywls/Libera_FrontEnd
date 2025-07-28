@@ -24,6 +24,13 @@ const DetailedAbilitiesSection: FC<DetailedAbilitiesSectionProps> = ({
         return acc;
     }, {} as Record<number, DetailedAbility[]>);
 
+    const semesterMatch = {
+        "1": "1학기",
+        "2": "2학기",
+        "1,2": "1,2학기",
+        "": "선택하세요"
+    };
+
     return (
         <Section title="세부능력 및 특기사항">
             <DataState
@@ -59,7 +66,7 @@ const DetailedAbilitiesSection: FC<DetailedAbilitiesSectionProps> = ({
                                                 <div className="w-3 h-3 bg-yellow-400 rounded-full " />
                                                 <h5 className="font-semibold text-gray-900 text-lg">{ability.subject}</h5>
                                                 <span className="px-2 py-0.5 bg-gray-50 text-gray-700 border border-gray-200 rounded text-sm font-medium">
-                                                    {ability.semester}
+                                                    {semesterMatch[ability.semester as keyof typeof semesterMatch]}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-2">
