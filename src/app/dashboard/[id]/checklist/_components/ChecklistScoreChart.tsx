@@ -15,6 +15,7 @@ import {
 import type { LabelProps } from "recharts";
 
 import { ChecklistDetailedResultResponse } from "@/app/types/checklist";
+import { CircleAlert, CircleCheckBig } from "lucide-react";
 
 interface ChecklistScoreChartProps {
     data: ChecklistDetailedResultResponse | undefined;
@@ -47,19 +48,27 @@ const ChecklistScoreChart: FC<ChecklistScoreChartProps> = ({ data, isLoading, is
         );
     }
 
-    if (isError || !data) {
+    if (!data) {
+        return (
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                        <CircleCheckBig className="w-8 h-8 text-blue-500" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">체크리스트를 제출해주세요</h3>
+                    <p className="text-gray-500">체크리스트를 완료하고 제출하면 상세 분석 결과를 확인할 수 있습니다.</p>
+                </div>
+            </div>
+        );
+    }
+
+
+    if (isError) {
         return (
             <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.864-.833-2.634 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                            />
-                        </svg>
+                        <CircleAlert className="w-8 h-8 text-red-500" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">데이터 로드 실패</h3>
                     <p className="text-gray-500">데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>
