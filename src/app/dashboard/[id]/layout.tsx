@@ -463,13 +463,24 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             name: "체크리스트",
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist` : "/main",
             icon: ListCheck,
-            description: "학생부 종합 체크리스트"
+            description: "학생부 종합 체크리스트",
+            subItems: [
+                { name: "학업역량", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#academic-section` : "/main", description: "학업역량" },
+                { name: "진로역량", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#career-section` : "/main", description: "진로역량" },
+                { name: "공동체역량", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#community-section` : "/main", description: "공동체역량" },
+                { name: "체크리스트 점수", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#checklist-score-summary-section` : "/main", description: "체크리스트 점수 요약" },
+            ]
         },
         {
             name: "종합 평가",
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation` : "/main",
             icon: BarChart3,
-            description: "종합 성적 분석"
+            description: "종합 성적 분석",
+            subItems: [
+                { name: "최종 학교 추천 리스트", href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation#final-section` : "/main", description: "최종 학교 추천 리스트" },
+                { name: "학생부 종합 평가", href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation#category-evaluation-section` : "/main", description: "학생부 종합 평가" },
+                { name: "전체 종합 의견", href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation#overall-evaluation-section` : "/main", description: "전체 종합 의견" },
+            ]
         },
     ];
 
