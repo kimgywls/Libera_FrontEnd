@@ -1,26 +1,26 @@
 import { FC, useState, useEffect } from 'react';
 import { Save, X } from 'lucide-react';
 
-import { CreativeActivity, DetailedAbility, BehavioralCharacteristic } from '@/app/types/extracurricular';
-
 // 각 폼 데이터 타입 정의
 export type CreativeFormData = {
     grade: number;
     area: string;
     details: string;
 };
+
 export type DetailedFormData = {
     grade: number;
     semester: string;
     subject: string;
     content: string;
 };
+
 export type BehavioralFormData = {
     grade: number;
     content: string;
 };
 
-type AddModalFormData = CreativeFormData | DetailedFormData | BehavioralFormData;
+export type AddModalFormData = CreativeFormData | DetailedFormData | BehavioralFormData;
 
 interface AddModalProps {
     isOpen: boolean;

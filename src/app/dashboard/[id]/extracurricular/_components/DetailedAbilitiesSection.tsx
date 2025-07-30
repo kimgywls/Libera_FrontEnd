@@ -24,11 +24,18 @@ const DetailedAbilitiesSection: FC<DetailedAbilitiesSectionProps> = ({
         return acc;
     }, {} as Record<number, DetailedAbility[]>);
 
-    const semesterMatch = {
-        "1": "1학기",
-        "2": "2학기",
-        "1,2": "1,2학기",
-        "": "선택하세요"
+    const formatSemester = (semester: string) => {
+        // 이미 '학기'가 포함된 경우 그대로 반환
+        if (semester.includes('학기')) return semester;
+
+        // 숫자만 있는 경우 '학기' 추가
+        const semesterDisplayMap = {
+            "1": "1학기",
+            "2": "2학기",
+            "1,2": "1,2학기",
+            "": "선택하세요"
+        };
+        return semesterDisplayMap[semester as keyof typeof semesterDisplayMap] || semester;
     };
 
     return (
@@ -63,10 +70,10 @@ const DetailedAbilitiesSection: FC<DetailedAbilitiesSectionProps> = ({
                                     >
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-3 h-3 bg-yellow-400 rounded-full " />
+                                                <div className="w-3 h-3 bg-neutral-400 rounded-full " />
                                                 <h5 className="font-semibold text-gray-900 text-lg">{ability.subject}</h5>
                                                 <span className="px-2 py-0.5 bg-gray-50 text-gray-700 border border-gray-200 rounded text-sm font-medium">
-                                                    {semesterMatch[ability.semester as keyof typeof semesterMatch]}
+                                                    {formatSemester(ability.semester)}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-2">

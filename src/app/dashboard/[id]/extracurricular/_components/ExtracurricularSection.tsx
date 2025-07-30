@@ -22,11 +22,20 @@ import {
     useCreateBehavioralCharacteristic
 } from '../_hooks/use-create-extracurricular';
 
+interface ApiError {
+    message?: string;
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
+
 import BehavioralCharacteristicsSection from './BehavioralCharacteristicsSection';
 import CreativeActivitiesSection from './CreativeActivitiesSection';
 import DetailedAbilitiesSection from './DetailedAbilitiesSection';
 import EditModal from './_modal/EditModal';
-import AddModal from './_modal/AddModal';
+import AddModal, { AddModalFormData } from './_modal/AddModal';
 
 interface ExtracurricularSectionProps {
     summary?: ExtracurricularSummary;
@@ -85,9 +94,10 @@ const ExtracurricularSection: FC<ExtracurricularSectionProps> = ({
             closeEditModal();
         };
 
-        const onErrorCallback = (error: Error) => {
-            console.error('수정 실패:', error.message);
-            alert(`수정에 실패했습니다: ${error.message}`);
+        const onErrorCallback = (error: unknown) => {
+            const err = error as Error;
+            console.error('수정 실패:', err.message);
+            alert(`수정에 실패했습니다: ${err.message}`);
         };
 
         switch (editData.type) {
@@ -164,7 +174,7 @@ const ExtracurricularSection: FC<ExtracurricularSectionProps> = ({
     };
 
     // 추가 저장 핸들러
-    const handleAdd = (formData: any) => {
+    const handleAdd = (formData: AddModalFormData) => {
         if (!addData.type) return;
 
         const onSuccessCallback = () => {
@@ -172,29 +182,51 @@ const ExtracurricularSection: FC<ExtracurricularSectionProps> = ({
             setAddData({ type: null, grade: null });
         };
 
-        const onErrorCallback = (error: Error) => {
-            console.error('추가 실패:', error.message);
-            alert(`추가에 실패했습니다: ${error.message}`);
+        const onErrorCallback = (error: ApiError) => {
+            const err = error as Error;
+            console.error('추가 실패:', err.message);
+            alert(`추가에 실패했습니다: ${err.message}`);
         };
 
         switch (addData.type) {
             case 'creative':
-                createCreative(formData, {
-                    onSuccess: onSuccessCallback,
-                    onError: onErrorCallback
-                });
+                if ('area' in formData && 'details' in formData) {
+                    createCreative({
+                        grade: formData.grade,
+                        area: formData.area as "자율활동" | "동아리활동" | "진로활동",
+                        details: formData.details,
+                        student_id: studentId
+                    }, {
+                        onSuccess: onSuccessCallback,
+                        onError: onErrorCallback
+                    });
+                }
                 break;
             case 'detailed':
-                createDetailed(formData, {
-                    onSuccess: onSuccessCallback,
-                    onError: onErrorCallback
-                });
+                if ('semester' in formData && 'subject' in formData && 'content' in formData) {
+                    createDetailed({
+                        grade: formData.grade,
+                        semester: formData.semester as "1" | "2" | "1,2",
+                        subject: formData.subject,
+                        content: formData.content,
+                        student_id: studentId
+                    }, {
+                        onSuccess: onSuccessCallback,
+                        onError: onErrorCallback
+                    });
+                }
                 break;
             case 'behavioral':
-                createBehavioral(formData, {
-                    onSuccess: onSuccessCallback,
-                    onError: onErrorCallback
-                });
+                if ('content' in formData) {
+                    createBehavioral({
+                        grade: formData.grade,
+                        content: formData.content,
+                        student_id: studentId
+                    }, {
+                        onSuccess: onSuccessCallback,
+                        onError: onErrorCallback
+                    });
+                }
                 break;
         }
     };
