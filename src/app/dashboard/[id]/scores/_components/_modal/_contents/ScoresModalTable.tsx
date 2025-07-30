@@ -20,7 +20,7 @@ const ScoresModalTable: FC<ScoresModalTableProps> = ({ scoresForm, onChange, onA
     function getMinWidth(key: string) {
         if ([
             'credit_hours', 'raw_score', 'subject_average', 'standard_deviation', 'student_count', 'grade_rank'
-        ].includes(key)) return 'min-w-14';
+        ].includes(key)) return 'min-w-16';
         if (key === 'achievement_distribution') return 'min-w-40';
         return 'min-w-28';
     }

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ScoreForm } from '@/app/types/score';
-import { handleScoreFormFieldChange } from '../_utils/score-form-utils';
+import { handleScoreFormFieldChange, safeParseNumber, convertAchievementDistributionForCreate } from '../_utils/score-form-utils';
 
 const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
     grade,
@@ -27,8 +27,21 @@ interface UseScoreFormProps {
 }
 
 export function useScoreForm({ initialScores, grade, semester, onFormChange }: UseScoreFormProps) {
+    // 초기 데이터 타입 변환
+    const transformInitialScores = useCallback((scores: ScoreForm[]): ScoreForm[] => {
+        return scores.map(score => ({
+            ...score,
+            raw_score: safeParseNumber(score.raw_score),
+            subject_average: safeParseNumber(score.subject_average),
+            standard_deviation: safeParseNumber(score.standard_deviation),
+            credit_hours: safeParseNumber(score.credit_hours),
+            student_count: score.student_count ? String(score.student_count) : null,
+            achievement_distribution: convertAchievementDistributionForCreate(score.achievement_distribution)
+        }));
+    }, []);
+
     const [scoresForm, setScoresForm] = useState<ScoreForm[]>(
-        initialScores?.length ? initialScores : [DEFAULT_ROW(grade, semester)]
+        initialScores?.length ? transformInitialScores(initialScores) : [DEFAULT_ROW(grade, semester)]
     );
 
     const handleChange = useCallback(
@@ -55,8 +68,8 @@ export function useScoreForm({ initialScores, grade, semester, onFormChange }: U
     }, [onFormChange]);
 
     const resetForm = useCallback(() => {
-        setScoresForm(initialScores?.length ? initialScores : [DEFAULT_ROW(grade, semester)]);
-    }, [initialScores, grade, semester]);
+        setScoresForm(initialScores?.length ? transformInitialScores(initialScores) : [DEFAULT_ROW(grade, semester)]);
+    }, [initialScores, grade, semester, transformInitialScores]);
 
     return {
         scoresForm,

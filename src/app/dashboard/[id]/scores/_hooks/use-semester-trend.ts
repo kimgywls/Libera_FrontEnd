@@ -7,10 +7,11 @@ export function useSemesterTrend(studentId: number) {
         data,
         isLoading,
         isError,
+        refetch
     } = useQuery<SemesterTrendResponse>({
         queryKey: ['semester-trend', studentId],
         queryFn: () => fetchSemesterTrend(studentId),
         enabled: !!studentId,
     });
-    return { semesterTrend: data, isLoading, isError };
+    return { semesterTrend: data, isLoading, isError, refetch };
 } 

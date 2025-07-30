@@ -6,6 +6,7 @@ export function useOverallGpa(studentId: number) {
         data,
         isLoading,
         isError,
+        refetch
     } = useQuery<OverallGpaResponse>({
         queryKey: ['overall-gpa', studentId],
         queryFn: () => fetchOverallGpa(studentId),
@@ -16,5 +17,6 @@ export function useOverallGpa(studentId: number) {
         mainSubjectsGpa: data?.main_subjects_gpa,
         isLoading,
         isError,
+        refetch
     };
 } 

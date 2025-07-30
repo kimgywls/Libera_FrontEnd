@@ -23,7 +23,7 @@ export async function putSingleScore(studentId: number, scoreId: number, score: 
             raw_score: score.raw_score,
             subject_average: score.subject_average,
             standard_deviation: score.standard_deviation,
-            student_count: score.student_count ? parseInt(score.student_count, 10) : null,
+            student_count: score.student_count ? parseInt(score.student_count) : null,
             grade_rank: score.grade_rank,
             credit_hours: score.credit_hours,
         };
