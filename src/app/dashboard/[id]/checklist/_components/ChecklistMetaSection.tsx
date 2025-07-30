@@ -113,7 +113,7 @@ export default function ChecklistMetaSection({
             <AlertModal
                 open={alert.open}
                 title={alert.title}
-                description={alert.description}
+                description={`학생의 고교 구분과 개설 교과목 이수 여부를 성공적으로 저장 했습니다`}
                 onConfirm={alert.onConfirm}
                 onCancel={alert.onConfirm}
             />

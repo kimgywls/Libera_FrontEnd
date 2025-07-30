@@ -50,21 +50,28 @@ export default function ChecklistSection({ questions }: ChecklistSectionProps) {
 
     return (
         <div className="flex flex-col space-y-4 w-full">
-            <AcademicCompetencySection
-                questions={academicQuestions}
-                scores={scores}
-                onScoreChange={handleScoreChange}
-            />
-            <CareerCompetencySection
-                questions={careerQuestions}
-                scores={scores}
-                onScoreChange={handleScoreChange}
-            />
-            <CommunityCompetencySection
-                questions={communityQuestions}
-                scores={scores}
-                onScoreChange={handleScoreChange}
-            />
+            <div id="academic-section">
+                <AcademicCompetencySection
+                    questions={academicQuestions}
+                    scores={scores}
+                    onScoreChange={handleScoreChange}
+                />
+            </div>
+            <div id="career-section">
+                <CareerCompetencySection
+                    questions={careerQuestions}
+                    scores={scores}
+                    onScoreChange={handleScoreChange}
+                />
+            </div>
+            <div id="community-section">
+                <CommunityCompetencySection
+                    questions={communityQuestions}
+                    scores={scores}
+                    onScoreChange={handleScoreChange}
+                />
+            </div>
+
             <ChecklistSubmitButton responses={responses} totalQuestions={questions.length} />
         </div>
     );

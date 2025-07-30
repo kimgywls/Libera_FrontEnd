@@ -101,11 +101,13 @@ export default function ChecklistWidget() {
                 />
             )}
 
-            <ChecklistScoreSummary
-                academicScore={resultData?.result_scores?.['학업역량'] ?? 0}
-                careerScore={resultData?.result_scores?.['진로역량'] ?? 0}
-                communityScore={resultData?.result_scores?.['공동체역량'] ?? 0}
-            />
+            <div id="checklist-score-summary-section">
+                <ChecklistScoreSummary
+                    academicScore={resultData?.result_scores?.['학업역량'] ?? 0}
+                    careerScore={resultData?.result_scores?.['진로역량'] ?? 0}
+                    communityScore={resultData?.result_scores?.['공동체역량'] ?? 0}
+                />
+            </div>
 
             <ChecklistScoreChart
                 data={detailedResult!}
