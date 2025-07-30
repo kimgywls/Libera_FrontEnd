@@ -1,15 +1,14 @@
 import type { FC } from 'react';
 import StudentInfo from './StudentInfo/StudentInfo';
 import { StudentInfo as StudentInfoType } from '@/app/types/student';
-import { useDesiredSchools } from '@/app/dashboard/_hooks/use-desired-schools';
+import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
 
 interface StudentInfoSectionProps {
     student: StudentInfoType;
 }
 
 const StudentInfoSection: FC<StudentInfoSectionProps> = ({ student }) => {
-    const studentId = student!.id;
-    const { data: desiredSchools = [], isLoading } = useDesiredSchools(studentId);
+    const { desiredSchools, isLoadingDesiredSchools } = useStudentInfoContext();
 
     if (!student) return null;
 
@@ -17,7 +16,7 @@ const StudentInfoSection: FC<StudentInfoSectionProps> = ({ student }) => {
         <StudentInfo
             student={student}
             desiredSchools={desiredSchools}
-            isLoadingDesiredSchools={isLoading}
+            isLoadingDesiredSchools={isLoadingDesiredSchools}
         />
     );
 };

@@ -4,8 +4,10 @@ import React, { useState, useCallback } from 'react';
 
 import { AlertModal } from '../../components/modal/AlertModal';
 import { useModalState } from '../../hooks/useModalState';
+import { StudentsListParams } from '@/app/types/student';
 
 import { useAllStudentsList } from '../_hooks/use-all-students-list';
+import { useDeleteStudent } from '../_hooks/use-delete-student';
 
 import { AddStudentModal } from './_modal/AddStudentModal';
 import { StudentsListButtons } from './StudentsListButtons';
@@ -14,29 +16,44 @@ import { StudentsTable } from './StudentsTable';
 
 export const StudentsListWidget: React.FC = React.memo(() => {
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const { students, isLoading, isError, mutate } = useAllStudentsList();
+    const [searchParams, setSearchParams] = useState<StudentsListParams>({});
+    const { students, isLoading, isError } = useAllStudentsList(searchParams);
     const { openModal, closeModal, isModalOpen } = useModalState();
+    const { deleteStudents, isLoading: isDeleting } = useDeleteStudent();
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
-    // 학생 삭제 모달 확인 핸들러
+    const handleSearch = useCallback((params: StudentsListParams) => {
+        setSearchParams(params);
+    }, []);
+
     const handleDeleteConfirm = useCallback(async () => {
         try {
-            for (const id of selectedIds) {
-                await fetch(`/api/v1/students/${id}`, { method: 'DELETE' });
+            const result = await deleteStudents(selectedIds);
+            if (result.success) {
+                setSelectedIds([]);
+                closeModal('deleteStudent');
+            } else {
+                setErrorMessage(result.message);
+                openModal('error');
             }
-            mutate();
-            closeModal('deleteStudent');
-        } catch {
-            // 에러 핸들링 필요시 추가
+        } catch (error) {
+            console.error('학생 삭제 중 오류:', error);
+            setErrorMessage('학생 삭제 중 오류가 발생했습니다.');
+            openModal('error');
         }
-    }, [selectedIds, mutate, closeModal]);
+    }, [selectedIds, deleteStudents, closeModal, openModal]);
 
     return (
         <div className="w-full h-full p-2">
             <div className="flex justify-between items-center mb-2">
                 <div className="w-full flex justify-start">
-                    <StudentsSearchForm value={{}} onChange={() => { }} />
+                    <StudentsSearchForm value={searchParams} onChange={handleSearch} />
                 </div>
-                <StudentsListButtons openModal={openModal} students={students} />
+                <StudentsListButtons
+                    openModal={openModal}
+                    selectedIds={selectedIds}
+                    isDeleting={isDeleting}
+                />
             </div>
             <div className="h-[90%] overflow-y-auto mb-4">
                 {isLoading ? (
@@ -58,13 +75,20 @@ export const StudentsListWidget: React.FC = React.memo(() => {
             <AlertModal
                 open={isModalOpen('deleteStudent')}
                 title="정말 삭제하시겠습니까?"
-                description={`이 작업은 되돌릴 수 없습니다\n모든 관련 데이터(학생 기본정보, 성적데이터, 출결데이터, 학교 이력, 희망 학교정보, 기타 학생과 관련된 모든 데이터)가 영구적으로 삭제됩니다\n실행 전 충분한 확인이 필요합니다`}
-                confirmText="영구 삭제"
+                description={`이 작업은 되돌릴 수 없습니다\n${selectedIds.length}명의 학생과 관련된 모든 데이터가 영구적으로 삭제됩니다`}
+                confirmText="삭제"
                 cancelText="취소"
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => closeModal('deleteStudent')}
             />
-
+            <AlertModal
+                open={isModalOpen('error')}
+                title="오류 발생"
+                description={errorMessage}
+                confirmText="확인"
+                onConfirm={() => closeModal('error')}
+                onCancel={() => closeModal('error')}
+            />
         </div>
     );
 });

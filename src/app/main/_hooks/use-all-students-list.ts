@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { StudentsListResponse } from '@/app/types/student';
+import { StudentsListParams, StudentsListResponse } from '@/app/types/student';
 
 import { fetchAllStudents } from '../_actions/fetch-all-students';
 
-export function useAllStudentsList() {
+export function useAllStudentsList(params?: StudentsListParams) {
     const { data, error, isLoading, refetch } = useQuery<StudentsListResponse>({
-        queryKey: ['all-students'],
-        queryFn: fetchAllStudents,
+        queryKey: ['all-students', params],
+        queryFn: () => fetchAllStudents(params),
         staleTime: 5 * 60 * 1000, // 5분
         refetchOnWindowFocus: false,
     });

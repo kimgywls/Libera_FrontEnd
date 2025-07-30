@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 import { MultipleUploadResponse } from '../../_actions/upload-pdf';
@@ -15,6 +15,23 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = React.memo(({ ope
     const [files, setFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { uploading, result, error, upload, reset } = useUploadPdf();
+
+    const handleModalClose = useCallback(() => {
+        setFiles([]);
+        reset();
+        onClose();
+    }, [onClose, reset]);
+
+    // 업로드 성공 시 5초 후 자동 닫기
+    useEffect(() => {
+        if (result?.success) {
+            const timer = setTimeout(() => {
+                handleModalClose();
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [result?.success, handleModalClose]);
 
     const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -46,12 +63,6 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = React.memo(({ ope
             // 에러는 훅에서 관리
         }
     }, [files, upload, onUploaded, reset]);
-
-    const handleModalClose = useCallback(() => {
-        setFiles([]);
-        reset();
-        onClose();
-    }, [onClose, reset]);
 
     if (!open) return null;
 
@@ -105,11 +116,11 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = React.memo(({ ope
                 </button>
                 {result && (
                     <div className="mt-4 text-sm text-green-600">
-                        <div>업로드 성공: {result.success ? '성공' : '실패'}</div>
+                        <div>업로드 성공 여부: {result.success ? '성공' : '실패'}</div>
                         <div>메시지: {result.message}</div>
-                        <div>파일 수: {result.total_files}</div>
-                        <div>작업 ID: {result.job_id}</div>
-                        <div>상태 URL: {result.status_url}</div>
+                        <div>업로드 파일 수: {result.total_files}</div>
+                        <div>한 파일 당 작업 시간 약 5분 소요됩니다</div>
+                        <div>작업 완료 후 학생 목록에서 확인할 수 있습니다</div>
                     </div>
                 )}
             </div>
@@ -117,4 +128,4 @@ export const AddStudentModal: React.FC<AddStudentModalProps> = React.memo(({ ope
     );
 });
 
-AddStudentModal.displayName = 'AddStudentModal'; 
+AddStudentModal.displayName = 'AddStudentModal';

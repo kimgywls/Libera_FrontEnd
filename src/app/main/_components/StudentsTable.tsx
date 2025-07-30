@@ -3,7 +3,10 @@ import { UserRoundX } from 'lucide-react';
 
 import { Student } from '@/app/types/student';
 
+import { AlertModal } from '@/app/components/modal/AlertModal';
+import { useModalState } from '@/app/hooks/useModalState';
 import { StudentsTableRow } from './StudentsTableRow';
+import { useDeleteStudent } from '../_hooks/use-delete-student';
 
 interface StudentsTableProps {
     students: Student[];
@@ -12,6 +15,10 @@ interface StudentsTableProps {
 
 export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ students, onSelect }) => {
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const { deleteStudents } = useDeleteStudent();
+    const { openModal, closeModal, isModalOpen } = useModalState();
 
     useEffect(() => {
         if (onSelect) onSelect(selectedIds);
@@ -29,6 +36,29 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
         } else {
             setSelectedIds([]);
         }
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!studentToDelete) return;
+        try {
+            const result = await deleteStudents([studentToDelete.id]);
+            if (!result.success) {
+                setErrorMessage(result.message);
+                openModal('error');
+            }
+            closeModal('deleteConfirm');
+            setStudentToDelete(null);
+        } catch {
+            setErrorMessage('삭제 중 오류가 발생했습니다.');
+            openModal('error');
+            closeModal('deleteConfirm');
+            setStudentToDelete(null);
+        }
+    };
+
+    const handleDeleteRequest = (student: Student) => {
+        setStudentToDelete(student);
+        openModal('deleteConfirm');
     };
 
     return (
@@ -66,6 +96,9 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
                             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 완료상태
                             </th>
+                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                                삭제
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -86,6 +119,7 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
                                     index={index}
                                     selected={selectedIds.includes(student.id)}
                                     onSelect={handleCheckbox}
+                                    onRequestDelete={handleDeleteRequest}
                                 />
                             ))
                         )}
@@ -93,22 +127,35 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
                 </table>
             </div>
 
-            {/* 선택된 항목 표시 */}
-            {selectedIds.length > 0 && (
-                <div className="bg-blue-50 border-t border-blue-200 px-6 py-3">
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-blue-700">
-                            {selectedIds.length}개 항목이 선택되었습니다.
-                        </span>
-                        <button
-                            onClick={() => setSelectedIds([])}
-                            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                        >
-                            선택 해제
-                        </button>
-                    </div>
-                </div>
-            )}
+            {/* 삭제 확인 모달 */}
+            <AlertModal
+                open={isModalOpen('deleteConfirm')}
+                title="정말 삭제하시겠습니까?"
+                description={studentToDelete ? `이 작업은 되돌릴 수 없습니다\n${studentToDelete.name} 학생의 모든 데이터가 삭제됩니다.` : ''}
+                confirmText="삭제"
+                cancelText="취소"
+                onConfirm={handleDeleteConfirm}
+                onCancel={() => {
+                    closeModal('deleteConfirm');
+                    setStudentToDelete(null);
+                }}
+            />
+
+            {/* 에러 모달 */}
+            <AlertModal
+                open={isModalOpen('error')}
+                title="오류 발생"
+                description={errorMessage}
+                confirmText="확인"
+                onConfirm={() => {
+                    closeModal('error');
+                    setErrorMessage('');
+                }}
+                onCancel={() => {
+                    closeModal('error');
+                    setErrorMessage('');
+                }}
+            />
         </div>
     );
 });

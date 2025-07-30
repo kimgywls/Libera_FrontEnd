@@ -1,40 +1,47 @@
 'use client';
 
 import { createContext, useContext, ReactNode } from 'react';
-import { useOverallGpa } from '@/app/dashboard/[id]/scores/_hooks/use-overall-gpa';
-import { useDesiredSchools } from '@/app/dashboard/_hooks/use-desired-schools';
-import { StudentInfo } from '@/app/types/student';
-import { DesiredSchool } from '@/app/types/university';
 import { useQuery } from '@tanstack/react-query';
+import type { StudentInfo } from '@/app/types/student';
+import type { DesiredSchool } from '@/app/types/university';
+import { useDesiredSchools } from '@/app/dashboard/_hooks/use-desired-schools';
 import { fetchStudentDetail } from '@/app/main/_actions/fetch-student-detail';
+import { useOverallGpa } from '@/app/dashboard/[id]/scores/_hooks/use-overall-gpa';
+
+interface StudentInfoContextType {
+    studentInfo: StudentInfo | null;
+    desiredSchools: DesiredSchool[];
+    isLoadingDesiredSchools: boolean;
+    isLoading: boolean;
+    isError: boolean;
+}
+
+const StudentInfoContext = createContext<StudentInfoContextType>({
+    studentInfo: null,
+    desiredSchools: [],
+    isLoadingDesiredSchools: false,
+    isLoading: false,
+    isError: false,
+});
 
 interface StudentInfoProviderProps {
     studentId: number;
     children: ReactNode;
 }
 
-interface StudentInfoContextValue {
-    studentInfo: StudentInfo | null;
-    desiredSchools: DesiredSchool[];
-    isLoading: boolean;
-    isError: boolean;
-}
-
-const StudentInfoContext = createContext<StudentInfoContextValue | null>(null);
-
-export const StudentInfoProvider = ({ studentId, children }: StudentInfoProviderProps) => {
-    // 학생 정보 가져오기
+export function StudentInfoProvider({ children, studentId }: StudentInfoProviderProps) {
+    // 학생 정보 조회
     const { data: student, isLoading: studentLoading, isError: studentError } = useQuery({
         queryKey: ['student-detail', studentId],
         queryFn: () => fetchStudentDetail(studentId),
         enabled: !!studentId,
     });
 
+    // GPA 정보 조회
     const { overallGpa, mainSubjectsGpa } = useOverallGpa(studentId);
-    const { data: desiredSchools = [], isLoading: schoolsLoading } = useDesiredSchools(studentId);
 
-    const isLoading = studentLoading || schoolsLoading;
-    const isError = studentError;
+    // 목표 대학 정보 조회
+    const { data: desiredSchools = [], isLoading: isLoadingDesiredSchools } = useDesiredSchools(studentId);
 
     const studentInfo: StudentInfo | null = student ? {
         id: student.id,
@@ -47,22 +54,23 @@ export const StudentInfoProvider = ({ studentId, children }: StudentInfoProvider
         main_subjects_score: mainSubjectsGpa ?? 0,
     } : null;
 
-    const value: StudentInfoContextValue = {
-        studentInfo,
-        desiredSchools: desiredSchools,
-        isLoading,
-        isError,
-    };
-
     return (
-        <StudentInfoContext.Provider value={value}>
+        <StudentInfoContext.Provider value={{
+            studentInfo,
+            desiredSchools,
+            isLoadingDesiredSchools,
+            isLoading: studentLoading,
+            isError: studentError,
+        }}>
             {children}
         </StudentInfoContext.Provider>
     );
-};
+}
 
-export const useStudentInfoContext = () => {
+export function useStudentInfoContext() {
     const context = useContext(StudentInfoContext);
-    if (!context) throw new Error('useStudentInfo는 StudentInfoProvider 내부에서만 사용해야 합니다.');
+    if (context === undefined) {
+        throw new Error('useStudentInfoContext must be used within a StudentInfoProvider');
+    }
     return context;
-}; 
+} 

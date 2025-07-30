@@ -1,32 +1,31 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
 import { deleteStudent, DeleteStudentResponse } from '../_actions/delete-student';
 
-export function useDeleteStudent() {
+interface UseDeleteStudentReturn {
+    deleteStudents: (studentIds: number[]) => Promise<DeleteStudentResponse>;
+    isLoading: boolean;
+    isSuccess: boolean;
+    error: Error | null;
+    reset: () => void;
+}
+
+export function useDeleteStudent(): UseDeleteStudentReturn {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<DeleteStudentResponse, Error, number[]>({
         mutationFn: deleteStudent,
         onSuccess: () => {
-            // 학생 목록 캐시 무효화
+            // 모든 관련 쿼리 무효화
             queryClient.invalidateQueries({ queryKey: ['students'] });
             queryClient.invalidateQueries({ queryKey: ['all-students'] });
-        },
+        }
     });
 
-    const remove = async (studentIds: number[]) => {
-        return await mutation.mutateAsync(studentIds);
-    };
-
-    const reset = () => {
-        mutation.reset();
-    };
-
     return {
-        loading: mutation.isPending,
-        error: mutation.error?.message || '',
-        success: mutation.isSuccess,
-        remove,
-        reset,
+        deleteStudents: mutation.mutateAsync,
+        isLoading: mutation.isPending,
+        isSuccess: mutation.isSuccess,
+        error: mutation.error,
+        reset: mutation.reset
     };
 } 

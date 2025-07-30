@@ -42,7 +42,7 @@ export const StudentsSearchForm: React.FC<StudentsSearchFormProps> = React.memo(
         }, [onChange, value]);
 
         return (
-            <div className="w-1/2 text-gray-800 rounded-md p-2 " >
+            <div className="w-2/3 min-w-[650px] max-w-[750px] text-gray-800 rounded-md p-2" >
                 <div className="px-2">
                     <div className="flex space-x-4 items-end">
                         <select
@@ -72,13 +72,13 @@ export const StudentsSearchForm: React.FC<StudentsSearchFormProps> = React.memo(
                                         handleSearch();
                                     }
                                 }}
-                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 pr-8"
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 pr-10"
                             />
                             {searchValue && (
                                 <button
                                     type="button"
                                     onClick={handleClearButton}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
                                     aria-label="검색어 지우기"
                                 >
                                     <X className="w-4 h-4" />
@@ -88,9 +88,10 @@ export const StudentsSearchForm: React.FC<StudentsSearchFormProps> = React.memo(
                         <button
                             type="button"
                             onClick={handleSearch}
-                            className="py-2 flex items-center justify-center"
+                            className="px-4 py-2 bg-violet-100 text-violet-700 rounded-md hover:bg-violet-200 transition-colors flex items-center justify-center gap-2"
                         >
                             <Search className="w-4 h-4" />
+                            검색
                         </button>
                     </div>
                     {error && <div className="text-sm text-red-500 mt-1">{error}</div>}

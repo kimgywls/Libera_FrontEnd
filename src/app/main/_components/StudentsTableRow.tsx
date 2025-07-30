@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
-
+import { Trash2 } from 'lucide-react';
 import { Student } from '@/app/types/student';
 
 interface StudentsTableRowProps {
@@ -8,7 +8,7 @@ interface StudentsTableRowProps {
     index: number;
     selected: boolean;
     onSelect: (id: number) => void;
-    onDownloadReport?: (studentId: number) => void;
+    onRequestDelete: (student: Student) => void;
 }
 
 const completionStatusMap: Record<Student['completion_status'], string> = {
@@ -34,7 +34,7 @@ const getStatusStyle = (status: Student['completion_status']) => {
 };
 
 export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
-    ({ student, index, selected, onSelect }) => {
+    ({ student, index, selected, onSelect, onRequestDelete }) => {
         const router = useRouter();
 
         const handleCheckboxClick = (e: React.MouseEvent) => {
@@ -42,8 +42,20 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
             onSelect(student.id);
         };
 
-        const handleRowClick = () => {
-            router.push(`/dashboard/${student.id}/scores`);
+        const handleDeleteClick = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            onRequestDelete(student);
+        };
+
+        const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+            // 클릭된 요소가 td인 경우에만 라우팅 처리
+            const target = e.target as HTMLElement;
+            const cell = target.closest('td');
+
+            // 첫 번째(체크박스)나 마지막(삭제 버튼) td가 아닌 경우에만 라우팅
+            if (cell && !cell.matches('td:first-child, td:last-child')) {
+                router.push(`/dashboard/${student.id}/scores`);
+            }
         };
 
         return (
@@ -51,7 +63,7 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                 className={`hover:bg-gray-50 transition-colors duration-200 ${selected ? 'bg-blue-50' : ''} cursor-pointer`}
                 onClick={handleRowClick}
             >
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>
                     <input
                         type="checkbox"
                         checked={selected}
@@ -82,6 +94,15 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                     <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${getStatusStyle(student.completion_status)}`}>
                         {completionStatusMap[student.completion_status]}
                     </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                    <button
+                        onClick={handleDeleteClick}
+                        disabled={false}
+                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-100 rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </button>
                 </td>
             </tr>
         );
