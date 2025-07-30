@@ -66,6 +66,10 @@ body {
   .text-gray-400 {
     color: #9ca3af !important;
   }
+
+  .text-white {
+    color: #ffffff !important;
+  }
 }
 
 @media print {
