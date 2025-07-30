@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { API_URL } from '@/app/constants';
 import type { UniversityItem } from '@/app/types/university';
@@ -13,8 +13,8 @@ export interface HideUniversitiesResponse {
 
 export const hideUniversities = async (studentId: number, admissionIds: number[]): Promise<HideUniversitiesResponse> => {
     try {
-        const response = await axios.post<HideUniversitiesResponse>(
-            `${API_URL}/api/v1/school-recommendations/${studentId}/hide-schools`,
+        const response = await api.post<HideUniversitiesResponse>(
+            `/api/v1/school-recommendations/${studentId}/hide-schools`,
             admissionIds,
             {
                 headers: {
@@ -45,8 +45,8 @@ export const hideUniversities = async (studentId: number, admissionIds: number[]
 
 export const unhideUniversities = async (studentId: number, admissionIds: number[]): Promise<HideUniversitiesResponse> => {
     try {
-        const response = await axios.post<HideUniversitiesResponse>(
-            `${API_URL}/api/v1/school-recommendations/${studentId}/unhide-schools`,
+        const response = await api.post<HideUniversitiesResponse>(
+            `/api/v1/school-recommendations/${studentId}/unhide-schools`,
             admissionIds,
             {
                 headers: {
@@ -77,12 +77,12 @@ export const unhideUniversities = async (studentId: number, admissionIds: number
 
 export const fetchHiddenUniversities = async (studentId: number): Promise<UniversityItem[]> => {
     try {
-        const response = await axios.get<{
+        const response = await api.get<{
             student_id: number;
             hidden_schools: UniversityItem[];
             total_count: number;
         }>(
-            `${API_URL}/api/v1/school-recommendations/hidden/${studentId}`,
+            `/api/v1/school-recommendations/hidden/${studentId}`,
             {
                 headers: {
                     'Accept': 'application/json',

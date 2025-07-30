@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { SchoolRecommendationResponse, UniversityItem } from '@/app/types/university';
@@ -154,7 +154,7 @@ export function useUniversityHide(
                 onConfirm: () => setAlert(prev => ({ ...prev, open: false })),
             });
         }
-    }, [unhideMutation, studentId]);
+    }, [unhideMutation]);
 
     const handleUnhideAll = useCallback(async () => {
         if (!studentId || hiddenList.length === 0) return;

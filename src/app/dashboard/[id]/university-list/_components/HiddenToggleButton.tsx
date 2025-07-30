@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { ChevronDown, ChevronUp, Eye, RotateCcw } from 'lucide-react';
 
 import { UniversityItem } from '@/app/types/university';
@@ -6,8 +6,8 @@ import { UniversityItem } from '@/app/types/university';
 interface HiddenToggleButtonProps {
     showHidden: boolean;
     setShowHidden: (value: boolean | ((prev: boolean) => boolean)) => void;
-    hiddenListLength: number;
     hiddenList: UniversityItem[];
+    hiddenListLength: number;
     handleUnhide: (admissionId: number) => void;
     handleUnhideAll: () => Promise<void>;
 }
@@ -15,17 +15,11 @@ interface HiddenToggleButtonProps {
 const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
     showHidden,
     setShowHidden,
-    hiddenListLength,
     hiddenList,
+    hiddenListLength,
     handleUnhide,
     handleUnhideAll,
 }) => {
-    // 중복 제거된 실제 개수 계산
-    const uniqueHiddenList = hiddenList.filter((item, index, self) =>
-        index === self.findIndex(t => t.admission_id === item.admission_id)
-    );
-    const actualHiddenCount = uniqueHiddenList.length;
-
     const handleToggle = () => {
         setShowHidden(!showHidden);
     };
@@ -46,9 +40,9 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
                         <>
                             <Eye className="w-4 h-4 text-blue-500" />
                             <span>숨긴 학교 보기</span>
-                            {actualHiddenCount > 0 && (
+                            {hiddenListLength > 0 && (
                                 <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-500 rounded-full">
-                                    {actualHiddenCount}
+                                    {hiddenListLength}
                                 </span>
                             )}
                             <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
@@ -57,7 +51,7 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
                 </button>
             </div>
 
-            {showHidden && actualHiddenCount > 0 && (
+            {showHidden && hiddenListLength > 0 && (
                 <div className="px-6 py-4 m-4 border border-gray-200 rounded-lg bg-gray-50">
                     <div className="flex items-center justify-between mb-3">
                         <h3 className="text-base font-semibold text-gray-800">숨긴 학교 목록</h3>
@@ -70,9 +64,9 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
                         </button>
                     </div>
                     <ul className="space-y-2">
-                        {uniqueHiddenList.map(u => (
+                        {hiddenList.map((u, index) => (
                             <li
-                                key={u.admission_id}
+                                key={`hidden-${u.admission_id}-${index}`}
                                 className="flex items-center justify-between border border-gray-200 rounded-md px-4 py-2 bg-white hover:bg-gray-50 transition-colors"
                             >
                                 <div className="flex items-center space-x-2 text-sm text-gray-700 truncate">

@@ -189,7 +189,7 @@ const UniversityTable: FC<UniversityTableProps> = ({
                                     type="checkbox"
                                     className="w-4 h-4 text-violet-600 bg-gray-100 border-gray-300 rounded accent-violet-600"
                                     checked={selectedItems.includes(u.admission_id)}
-                                    onChange={(e) => handleSelectItemWithDebug(u.admission_id)}
+                                    onChange={() => handleSelectItemWithDebug(u.admission_id)}
                                 />
                             </td>
                             <td className="px-4 py-2 text-sm text-gray-900  w-10">{index + 1}</td>

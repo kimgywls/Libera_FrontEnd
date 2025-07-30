@@ -12,7 +12,7 @@ export default function UniversityListWidget() {
     const { studentInfo } = useStudentInfoContext();
 
     // React Hook 규칙을 준수하기 위해 항상 호출
-    const { data, isLoading, error } = useSchoolRecommendations(studentInfo?.id || 0);
+    const { data, isLoading, error } = useSchoolRecommendations(studentInfo?.id ?? 0);
 
     // studentInfo가 없으면 로딩 상태 표시
     if (!studentInfo) {
