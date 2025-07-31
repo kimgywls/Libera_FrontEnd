@@ -1,4 +1,4 @@
-import { FC, memo, useState, useEffect } from 'react';
+import { FC, memo, useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 export interface FilterPopoverProps {
@@ -16,10 +16,27 @@ export interface FilterPopoverProps {
 
 const FilterPopover: FC<FilterPopoverProps> = ({ show, onClose, title, options, selected, onConfirm, onClear, widthClass, recommendTypeLabel, className }) => {
     const [checkedValues, setCheckedValues] = useState<string[]>(selected);
+    const popoverRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setCheckedValues(selected);
     }, [selected, show]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+                onClose();
+            }
+        };
+
+        if (show) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [show, onClose]);
 
     const handleCheck = (val: string) => {
         setCheckedValues(prev =>
@@ -44,6 +61,7 @@ const FilterPopover: FC<FilterPopoverProps> = ({ show, onClose, title, options, 
     if (!show) return null;
     return (
         <div
+            ref={popoverRef}
             className={`absolute top-12 right-0 bg-white border border-gray-200 rounded-xl shadow-2xl z-10 ${widthClass || 'w-80'} ${className || ''}`}
             onClick={e => e.stopPropagation()}
         >
@@ -63,9 +81,9 @@ const FilterPopover: FC<FilterPopoverProps> = ({ show, onClose, title, options, 
                     </div>
                 </div>
             </div>
-            <div className={`p-4 ${title === '판정 선택' ? 'flex flex-col gap-3' : 'grid grid-cols-2 gap-3'}`}>
+            <div className={`px-4 py-2 ${title === '판정 선택' ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-2'} max-h-[300px] overflow-y-auto`}>
                 {options.map(opt => (
-                    <label key={opt} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                    <label key={opt} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 ">
                         <input
                             type="checkbox"
                             checked={checkedValues.includes(opt)}

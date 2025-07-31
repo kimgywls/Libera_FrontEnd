@@ -95,11 +95,11 @@ const UniversityTable: FC<UniversityTableProps> = ({
     }
 
     return (
-        <div className="overflow-x-auto border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-x-auto border border-gray-200 bg-white shadow-sm min-h-[500px]">
             <table className="w-full table-auto divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>
-                        <th className="px-4 py-3 text-left">
+                        <th className="px-4 py-3 text-left bf">
                             <input
                                 ref={checkboxRef}
                                 type="checkbox"
@@ -108,7 +108,7 @@ const UniversityTable: FC<UniversityTableProps> = ({
                                 onChange={(e) => handleSelectAllChange(e)}
                             />
                         </th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">순서</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">순서</th>
                         <th
                             className="px-4 py-2 text-left text-sm font-semibold text-gray-700 cursor-pointer relative"
                             onClick={() => setShowRegionFilter(prev => !prev)}
@@ -129,7 +129,7 @@ const UniversityTable: FC<UniversityTableProps> = ({
                                 className="absolute left-0 z-10"
                             />
                         </th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">대학명</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">대학명</th>
                         <th
                             className="px-4 py-2 text-left text-sm font-semibold text-gray-700 cursor-pointer relative"
                             onClick={() => setShowCategoryFilter(prev => !prev)}
@@ -150,12 +150,12 @@ const UniversityTable: FC<UniversityTableProps> = ({
                                 className="absolute left-0 z-10"
                             />
                         </th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">전형명</th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">학과명</th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">전형요소별 평가 비율</th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">모집인원</th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">25년 입결</th>
-                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">24년 입결</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">전형명</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">학과명</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">전형요소별 평가 비율</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">모집인원</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">25년 입결</th>
+                        <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">24년 입결</th>
                         <th
                             className="px-4 py-2 text-left text-sm font-semibold text-gray-700 cursor-pointer relative"
                             onClick={() => setShowTypeFilter(prev => !prev)}

@@ -5,7 +5,6 @@ export interface MajorTabNavProps {
     selected: number;
     onSelect: (idx: number) => void;
 }
-
 const MajorTabNav: FC<MajorTabNavProps> = ({ labels, selected, onSelect }) => (
     <div className="flex flex-wrap gap-2 mb-1">
         {labels.map((label, idx) => (

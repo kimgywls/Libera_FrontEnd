@@ -21,7 +21,7 @@ export function useUniversityListTab(
     
     // 전체학과를 제외한 학과들
     const nonAllDepartments = useMemo(() => 
-        displayDepartments.filter(dept => dept.department_name !== '전체학과'), 
+        displayDepartments.filter(dept => dept.department_name !== '성적기반추천'), 
         [displayDepartments]
     );
     
