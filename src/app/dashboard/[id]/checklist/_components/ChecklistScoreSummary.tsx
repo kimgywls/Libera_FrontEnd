@@ -4,6 +4,7 @@ interface ChecklistScoreSummaryProps {
     academicScore: number;
     careerScore: number;
     communityScore: number;
+    totalScore: number;
 }
 
 const MAX_SCORE = 100;
@@ -12,9 +13,8 @@ const ChecklistScoreSummary: FC<ChecklistScoreSummaryProps> = ({
     academicScore,
     careerScore,
     communityScore,
+    totalScore,
 }) => {
-    const totalScore = academicScore + careerScore + communityScore;
-
     const Cell = ({ label, value, max }: { label: string; value: number; max: number }) => (
         <div className="flex flex-col items-center justify-center px-4 py-3 space-y-1 border-r last:border-r-0 border-gray-300 w-full">
             <div className="text-sm font-semibold">{label}</div>
