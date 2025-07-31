@@ -1,16 +1,10 @@
 import axios from 'axios';
 import { API_URL } from '@/app/constants';
+import { UpdateCategoryEvaluationParams } from '@/app/types/comprehensiveEvaluation';
 
 const api = axios.create({
     baseURL: API_URL,
 });
-
-interface UpdateCategoryEvaluationParams {
-    studentId: number;
-    mainCategoryId: number;
-    evaluationContent: string;
-    isFinal?: boolean;
-}
 
 export const updateCategoryEvaluation = async ({
     studentId,

@@ -1,14 +1,10 @@
 import axios from 'axios';
 import { API_URL } from '@/app/constants';
+import { UpdateOverallEvaluationParams } from '@/app/types/comprehensiveEvaluation';
 
 const api = axios.create({
     baseURL: API_URL,
 });
-
-interface UpdateOverallEvaluationParams {
-    studentId: string;
-    overallEvaluation: string;
-}
 
 export const updateOverallEvaluation = async ({
     studentId,

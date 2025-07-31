@@ -8,12 +8,13 @@ import { useFinalEvaluation } from '../_hooks/use-final-evaluation';
 import { useUpdateCategoryEvaluation } from '../_hooks/use-update-category-evaluation';
 import { useUpdateOverallEvaluation } from '../_hooks/use-update-overall-evaluation';
 import FinalRecommendedSchoolsSection from './FinalRecommendedSchoolsSection';
-import FinalComprehensiveEvaluationSection from './FinalComprehensiveEvaluationSection';
+import CategoryEvaluationSection from './CategoryEvaluationSection';
+import OverallEvaluationSection from './OverallEvaluationSection';
 
 const ComprehensiveEvaluationWidget: FC = () => {
     const { studentInfo } = useStudentInfoContext();
     const studentId = studentInfo?.id || 0;
-    const { data: finalEvaluationData, isLoading, isError } = useFinalEvaluation(studentId);
+    const { data: finalEvaluationData, isLoading, isError, isFetching } = useFinalEvaluation(studentId);
     const updateCategoryMutation = useUpdateCategoryEvaluation();
     const updateOverallMutation = useUpdateOverallEvaluation();
 
@@ -54,17 +55,29 @@ const ComprehensiveEvaluationWidget: FC = () => {
         <div className="space-y-10">
             <StudentInfoSection student={studentInfo} />
 
-            <FinalRecommendedSchoolsSection />
-            <FinalComprehensiveEvaluationSection
-                isLoading={isLoading}
-                isError={isError}
-                categoryEvaluations={finalEvaluationData?.category_evaluations}
-                onCategoryEvaluationUpdate={handleCategoryEvaluationUpdate}
-                isCategoryEvaluationUpdating={updateCategoryMutation.isPending}
-                overallEvaluation={finalEvaluationData?.overall_evaluation}
-                onOverallEvaluationUpdate={handleOverallEvaluationUpdate}
-                isOverallUpdating={updateOverallMutation.isPending}
-            />
+            <div id="final-recommended-schools-section">
+                <FinalRecommendedSchoolsSection />
+            </div>
+
+            <div id="category-evaluation-section">
+                <CategoryEvaluationSection
+                    isLoading={isLoading}
+                    isError={isError}
+                    categoryEvaluations={finalEvaluationData?.category_evaluations}
+                    onCategoryEvaluationUpdate={handleCategoryEvaluationUpdate}
+                    isCategoryEvaluationUpdating={updateCategoryMutation.isPending || isFetching}
+                />
+            </div>
+
+            <div id="overall-evaluation-section">
+                <OverallEvaluationSection
+                    isLoading={isLoading}
+                    isError={isError}
+                    overallEvaluation={finalEvaluationData?.overall_evaluation}
+                    onOverallEvaluationUpdate={handleOverallEvaluationUpdate}
+                    isOverallUpdating={updateOverallMutation.isPending || isFetching}
+                />
+            </div>
         </div>
     );
 };

@@ -1,18 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateOverallEvaluation } from "../_actions/update-overall-evaluation";
-import { FinalEvaluationResponse } from "../_actions/get-final-evaluation";
-
-interface UpdateOverallEvaluationParams {
-    studentId: number;
-    overallEvaluation: string;
-}
+import { FinalEvaluationResponse, UpdateOverallEvaluationParams } from "@/app/types/comprehensiveEvaluation";
 
 export const useUpdateOverallEvaluation = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (params: UpdateOverallEvaluationParams) => updateOverallEvaluation({
-            studentId: params.studentId.toString(),
+            studentId: params.studentId,
             overallEvaluation: params.overallEvaluation
         }),
         onMutate: async (variables) => {

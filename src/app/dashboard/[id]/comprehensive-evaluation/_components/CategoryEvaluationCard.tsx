@@ -1,0 +1,87 @@
+import { FC } from "react";
+import { FinalEvaluationResponse } from "@/app/types/comprehensiveEvaluation";
+import EditableEvaluationText from "./EditableEvaluationText";
+import EditToggleButton from "./EditToggleButton";
+
+interface CategoryEvaluationCardProps {
+    category: FinalEvaluationResponse['category_evaluations'][0];
+    isEditing: boolean;
+    isUpdating: boolean;
+    editContent: string;
+    onEditToggle: (categoryId: number, currentContent: string) => void;
+    onContentChange: (categoryId: number, content: string) => void;
+}
+
+const CategoryEvaluationCard: FC<CategoryEvaluationCardProps> = ({
+    category,
+    isEditing,
+    isUpdating,
+    editContent,
+    onEditToggle,
+    onContentChange
+}) => {
+    const getCategoryColor = (categoryName: string) => {
+        const colors: Record<string, { bg: string; text: string; icon: string }> = {
+            '학업역량': {
+                bg: 'bg-amber-50',
+                text: 'text-amber-700',
+                icon: 'bg-amber-400'
+            },
+            '진로역량': {
+                bg: 'bg-teal-50',
+                text: 'text-teal-700',
+                icon: 'bg-teal-400'
+            },
+            '공동체역량': {
+                bg: 'bg-pink-50',
+                text: 'text-pink-700',
+                icon: 'bg-pink-400'
+            }
+        };
+        return colors[categoryName] || {
+            bg: 'bg-gray-50',
+            text: 'text-gray-700',
+            icon: 'bg-gray-400'
+        };
+    };
+
+    const color = getCategoryColor(category.category_name);
+    const currentContent = category.final_content || category.auto_generated_texts?.join('\n') || '';
+
+    return (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-5">
+            <div className="flex items-center justify-between mb-4">
+                <h4 className="text-xl font-semibold text-gray-800 flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full ${color.icon}`} />
+                    {category.category_name}
+                </h4>
+                <EditToggleButton
+                    isEditing={isEditing}
+                    isUpdating={isUpdating}
+                    hasContent={true}
+                    onToggle={() => onEditToggle(category.main_category_id, editContent)}
+                    editText="수정"
+                    completeText="완료"
+                    updateText="저장 중..."
+                />
+            </div>
+
+            <div className="space-y-3">
+                <div className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-sm transition-shadow">
+                    <div className="flex items-start gap-3">
+                        <div className="flex-1 min-w-0">
+                            <EditableEvaluationText
+                                isEditing={isEditing}
+                                content={isEditing ? editContent : currentContent}
+                                placeholder="학생부 종합 의견 문구를 수정하세요..."
+                                onContentChange={(content) => onContentChange(category.main_category_id, content)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CategoryEvaluationCard; 
