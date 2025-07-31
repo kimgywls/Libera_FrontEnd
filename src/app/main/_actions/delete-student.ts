@@ -1,13 +1,9 @@
 import axios from 'axios';
 
 import { API_URL } from '@/app/constants';
+import { DeleteStudentResponse } from '@/app/types/student';
 
 const api = axios.create({ baseURL: API_URL });
-
-export interface DeleteStudentResponse {
-    success: boolean;
-    message: string;
-}
 
 export async function deleteStudent(studentIds: number[]): Promise<DeleteStudentResponse> {
     try {
@@ -18,9 +14,9 @@ export async function deleteStudent(studentIds: number[]): Promise<DeleteStudent
             // 다중 학생 삭제
             await api.delete('/api/v1/students/bulk', { data: { studentIds } });
         }
-        return { 
-            success: true, 
-            message: `${studentIds.length}명의 학생이 삭제되었습니다.` 
+        return {
+            success: true,
+            message: `${studentIds.length}명의 학생이 삭제되었습니다.`
         };
     } catch (err) {
         console.error('[deleteStudent] error:', err);

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteStudent, DeleteStudentResponse } from '../_actions/delete-student';
+import { deleteStudent } from '../_actions/delete-student';
+import { DeleteStudentResponse } from '@/app/types/student';
 
 interface UseDeleteStudentReturn {
     deleteStudents: (studentIds: number[]) => Promise<DeleteStudentResponse>;

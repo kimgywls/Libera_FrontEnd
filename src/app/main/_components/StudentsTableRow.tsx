@@ -2,6 +2,13 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Trash2 } from 'lucide-react';
 import { Student } from '@/app/types/student';
+import { useCheckThirdGradeScores } from '../_hooks/use-check-third-grade-scores';
+import {
+    completionStatusMap,
+    getStatusStyle,
+    getThirdGradeStatusStyle,
+    getThirdGradeStatusText
+} from '../_utils/status-utils';
 
 interface StudentsTableRowProps {
     student: Student;
@@ -11,31 +18,12 @@ interface StudentsTableRowProps {
     onRequestDelete: (student: Student) => void;
 }
 
-const completionStatusMap: Record<Student['completion_status'], string> = {
-    '완료': '완료',
-    '성적만 완료': '성적만 완료',
-    '출결만 완료': '출결만 완료',
-    '미완료': '미완료',
-};
-
-const getStatusStyle = (status: Student['completion_status']) => {
-    switch (status) {
-        case '완료':
-            return 'bg-green-100 text-green-800 border-green-200';
-        case '성적만 완료':
-            return 'bg-blue-100 text-blue-800 border-blue-200';
-        case '출결만 완료':
-            return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-        case '미완료':
-            return 'bg-red-100 text-red-800 border-red-200';
-        default:
-            return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-};
-
 export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
     ({ student, index, selected, onSelect, onRequestDelete }) => {
         const router = useRouter();
+
+        // 3학년 1학기 성적 확인
+        const { data: scoresData, isLoading: scoresLoading } = useCheckThirdGradeScores(student.id);
 
         const handleCheckboxClick = (e: React.MouseEvent) => {
             e.stopPropagation();
@@ -57,6 +45,11 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                 router.push(`/dashboard/${student.id}/scores`);
             }
         };
+
+        // 3학년 성적 상태 계산
+        const hasThirdGradeScores = scoresData?.hasThirdGradeScores || false;
+        const thirdGradeStatusText = getThirdGradeStatusText(hasThirdGradeScores, scoresLoading);
+        const thirdGradeStatusStyle = getThirdGradeStatusStyle(hasThirdGradeScores);
 
         return (
             <tr
@@ -85,14 +78,21 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                     <div className="text-sm text-gray-700">{student.current_school_name}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{student.desired_school}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                        {student.desired_school === 'none' ? '-' : student.desired_school}
+                    </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-700">{student.desired_department}</div>
+                    <div className="text-sm text-gray-700">
+                        {student.desired_department === 'none' ? '-' : student.desired_department}
+                    </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 whitespace-nowrap flex flex-col gap-2">
                     <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${getStatusStyle(student.completion_status)}`}>
                         {completionStatusMap[student.completion_status]}
+                    </span>
+                    <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${thirdGradeStatusStyle}`}>
+                        {thirdGradeStatusText}
                     </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>

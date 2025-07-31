@@ -17,10 +17,12 @@ import { StudentsTable } from './StudentsTable';
 export const StudentsListWidget: React.FC = React.memo(() => {
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const [searchParams, setSearchParams] = useState<StudentsListParams>({});
-    const { students, isLoading, isError } = useAllStudentsList(searchParams);
-    const { openModal, closeModal, isModalOpen } = useModalState();
-    const { deleteStudents, isLoading: isDeleting } = useDeleteStudent();
     const [errorMessage, setErrorMessage] = useState<string>('');
+
+    // 훅들을 사용하여 로직 분리
+    const { students, isLoading, isError } = useAllStudentsList(searchParams);
+    const { deleteStudents, isLoading: isDeleting } = useDeleteStudent();
+    const { openModal, closeModal, isModalOpen } = useModalState();
 
     const handleSearch = useCallback((params: StudentsListParams) => {
         setSearchParams(params);
