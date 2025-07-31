@@ -82,17 +82,30 @@ const FilterPopover: FC<FilterPopoverProps> = ({ show, onClose, title, options, 
                 </div>
             </div>
             <div className={`px-4 py-2 ${title === '판정 선택' ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-2'} max-h-[300px] overflow-y-auto`}>
-                {options.map(opt => (
-                    <label key={opt} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 ">
-                        <input
-                            type="checkbox"
-                            checked={checkedValues.includes(opt)}
-                            onChange={() => handleCheck(opt)}
-                            className="rounded border-gray-300 text-violet-600 accent-violet-600"
-                        />
-                        <span className="text-sm text-gray-700">{title === '판정 선택' && recommendTypeLabel ? recommendTypeLabel[opt] || opt : opt}</span>
-                    </label>
-                ))}
+                {title === '판정 선택'
+                    ? ['도전', '적정', '안정'].filter(opt => options.includes(opt)).map(opt => (
+                        <label key={opt} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 ">
+                            <input
+                                type="checkbox"
+                                checked={checkedValues.includes(opt)}
+                                onChange={() => handleCheck(opt)}
+                                className="rounded border-gray-300 text-violet-600 accent-violet-600"
+                            />
+                            <span className="text-sm text-gray-700">{recommendTypeLabel ? recommendTypeLabel[opt] || opt : opt}</span>
+                        </label>
+                    ))
+                    : options.map(opt => (
+                        <label key={opt} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 ">
+                            <input
+                                type="checkbox"
+                                checked={checkedValues.includes(opt)}
+                                onChange={() => handleCheck(opt)}
+                                className="rounded border-gray-300 text-violet-600 accent-violet-600"
+                            />
+                            <span className="text-sm text-gray-700">{opt}</span>
+                        </label>
+                    ))
+                }
             </div>
         </div>
     );
