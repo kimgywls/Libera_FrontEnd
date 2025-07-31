@@ -52,7 +52,7 @@ const OverallEvaluationSection: FC<OverallEvaluationSectionProps> = ({
                 <DataState
                     isLoading={isLoading}
                     isError={isError}
-                    isEmpty={!overallEvaluation}
+                    isEmpty={false} // 항상 카드를 표시하도록 false로 설정
                     loadingMessage="전체 종합 의견을 불러오는 중입니다..."
                     errorMessage="전체 종합 의견을 불러오는데 실패했습니다."
                     emptyMessage="저장된 최종 종합 의견이 없습니다."
