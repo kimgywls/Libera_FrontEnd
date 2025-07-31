@@ -23,7 +23,7 @@ export function useChecklistSubmit() {
                     student_id: variables.student_id,
                     result_scores: data.result_scores,
                 }));
-                
+
                 // 체크리스트 점수 변경 시 종합평가 문구 자동 갱신을 위해 final-evaluation 쿼리 무효화
                 queryClient.invalidateQueries({ queryKey: ['final-evaluation', variables.student_id] });
             }

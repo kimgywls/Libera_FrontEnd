@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 
 import type { ChecklistQuestion, ChecklistResponseItem, ChecklistSubmitResponse } from "@/app/types/checklist";
 import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
@@ -39,9 +39,9 @@ export default function ChecklistSection({ questions }: ChecklistSectionProps) {
         }
     }, [prevResponses]);
 
-    const handleScoreChange = (questionId: number, score: number) => {
+    const handleScoreChange = useCallback((questionId: number, score: number) => {
         setScores(prev => ({ ...prev, [questionId]: score }));
-    };
+    }, []);
 
     const responses: ChecklistResponseItem[] = useMemo(
         () => Object.entries(scores).map(([id, score]) => ({ checklist_question_id: Number(id), score })),
