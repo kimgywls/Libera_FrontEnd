@@ -12,9 +12,10 @@ import CommunityCompetencySection from "./CommunityCompetencySection";
 
 interface ChecklistSectionProps {
     questions: ChecklistQuestion[];
+    onSubmissionSuccess?: () => void;
 }
 
-export default function ChecklistSection({ questions }: ChecklistSectionProps) {
+export default function ChecklistSection({ questions, onSubmissionSuccess }: ChecklistSectionProps) {
     const { studentInfo } = useStudentInfoContext();
     const studentId = studentInfo!.id;
     const { data: prevResponses } = useChecklistResponses(studentId);
@@ -48,6 +49,10 @@ export default function ChecklistSection({ questions }: ChecklistSectionProps) {
         [scores]
     );
 
+    const handleSubmissionSuccess = useCallback(() => {
+        onSubmissionSuccess?.();
+    }, [onSubmissionSuccess]);
+
     return (
         <div className="flex flex-col space-y-4 w-full">
             <div id="academic-section">
@@ -72,7 +77,11 @@ export default function ChecklistSection({ questions }: ChecklistSectionProps) {
                 />
             </div>
 
-            <ChecklistSubmitButton responses={responses} totalQuestions={questions.length} />
+            <ChecklistSubmitButton
+                responses={responses}
+                totalQuestions={questions.length}
+                onSuccess={handleSubmissionSuccess}
+            />
         </div>
     );
 }

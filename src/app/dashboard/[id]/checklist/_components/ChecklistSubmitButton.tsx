@@ -11,9 +11,10 @@ import { AlertModal } from "@/app/components/modal/AlertModal";
 interface ChecklistSubmitButtonProps {
     responses: ChecklistResponseItem[];
     totalQuestions: number;
+    onSuccess?: () => void;
 }
 
-export default function ChecklistSubmitButton({ responses, totalQuestions }: ChecklistSubmitButtonProps) {
+export default function ChecklistSubmitButton({ responses, totalQuestions, onSuccess }: ChecklistSubmitButtonProps) {
     const { studentInfo } = useStudentInfoContext();
     const studentId = studentInfo?.id;
     const mutation = useChecklistSubmit();
@@ -40,6 +41,7 @@ export default function ChecklistSubmitButton({ responses, totalQuestions }: Che
                     });
                 }
                 openModal('alert');
+                onSuccess?.();
             }
         });
     };

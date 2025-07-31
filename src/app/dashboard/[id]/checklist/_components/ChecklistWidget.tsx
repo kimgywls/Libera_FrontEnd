@@ -30,9 +30,9 @@ export default function ChecklistWidget() {
         description: '',
         onConfirm: () => closeModal('meta-alert'),
     });
-    const { data: resultData } = useChecklistResult(studentId);
+    const { data: resultData, refetch: refetchResult } = useChecklistResult(studentId);
     const { data: questionsData, isLoading: isQuestionsLoading } = useChecklistQuestions();
-    const { data: detailedResult, isLoading: isDetailedLoading, isError: isDetailedError } = useChecklistDetailedResult(studentId);
+    const { data: detailedResult, isLoading: isDetailedLoading, isError: isDetailedError, refetch: refetchDetailed } = useChecklistDetailedResult(studentId);
 
     // 학생 정보가 로딩 중인 경우 로딩 상태 표시
     if (!studentInfo) {
@@ -74,7 +74,11 @@ export default function ChecklistWidget() {
         openModal('meta-alert');
     };
 
-
+    const handleSubmissionSuccess = () => {
+        // 제출 성공 시 관련 데이터를 다시 불러옴
+        refetchResult();
+        refetchDetailed();
+    };
 
     return (
         <div className="space-y-10 mb-8">
@@ -98,6 +102,7 @@ export default function ChecklistWidget() {
             ) : (
                 <ChecklistSection
                     questions={questionsData!.questions}
+                    onSubmissionSuccess={handleSubmissionSuccess}
                 />
             )}
 
@@ -106,6 +111,7 @@ export default function ChecklistWidget() {
                     academicScore={resultData?.result_scores?.['학업역량'] ?? 0}
                     careerScore={resultData?.result_scores?.['진로역량'] ?? 0}
                     communityScore={resultData?.result_scores?.['공동체역량'] ?? 0}
+                    totalScore={resultData?.result_scores?.['total'] ?? 0}
                 />
             </div>
 
