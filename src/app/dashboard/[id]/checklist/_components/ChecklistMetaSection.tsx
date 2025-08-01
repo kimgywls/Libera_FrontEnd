@@ -38,7 +38,7 @@ export default function ChecklistMetaSection({
                     {!meta && (
                         <button
                             onClick={handleSave}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 text-violet-500 text-sm rounded-md hover:bg-violet-600 hover:text-white transition"
+                            className="inline-flex items-center gap-1.5 px-5 py-1.5 bg-violet-500 text-white font-semibold rounded-md hover:bg-violet-600 transition"
                         >
                             저장
                         </button>
