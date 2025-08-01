@@ -1,5 +1,5 @@
 import { FC, memo } from 'react';
-import { EyeOff, Filter, RefreshCcw } from 'lucide-react';
+import { CircleCheck, EyeOff, Filter, RefreshCcw } from 'lucide-react';
 
 interface UniversityTableActionsProps {
     hasActiveFilters: boolean;
@@ -7,7 +7,10 @@ interface UniversityTableActionsProps {
     typeCount: number;
     categoryCount: number;
     handleResetFilters: () => void;
-    onHide: () => void;
+    onHide: () => Promise<void>;
+    onSaveSelectedSchools: () => Promise<void>;
+    selectedItemsCount: number;
+    isSaving: boolean;
 }
 
 const UniversityTableActions: FC<UniversityTableActionsProps> = ({
@@ -16,7 +19,10 @@ const UniversityTableActions: FC<UniversityTableActionsProps> = ({
     typeCount,
     categoryCount,
     handleResetFilters,
-    onHide
+    onHide,
+    onSaveSelectedSchools,
+    selectedItemsCount,
+    isSaving
 }) => (
     <div className="flex items-center justify-end gap-2">
         {/* 활성 필터 표시 */}
@@ -36,11 +42,26 @@ const UniversityTableActions: FC<UniversityTableActionsProps> = ({
             초기화
         </button>
         <button
-            onClick={onHide}
-            className="flex items-center gap-2 bg-blue-500 text-white px-3 py-2 text-sm rounded-lg transition-all duration-200 transform hover:scale-105 group"
+            onClick={async () => await onHide()}
+            disabled={selectedItemsCount === 0}
+            className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 transform hover:scale-105 group ${selectedItemsCount === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
         >
             <EyeOff className="w-4 h-4 transition-transform duration-300 " />
             숨김
+        </button>
+        <button
+            onClick={async () => await onSaveSelectedSchools()}
+            disabled={selectedItemsCount === 0 || isSaving}
+            className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 transform hover:scale-105 group ${selectedItemsCount === 0 || isSaving
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-violet-500 text-white hover:bg-violet-600'
+                }`}
+        >
+            <CircleCheck className="w-4 h-4 transition-transform duration-300" />
+            {isSaving ? '저장 중...' : `선택한 학교 저장`}
         </button>
     </div>
 );

@@ -182,7 +182,7 @@ const UniversityTable: FC<UniversityTableProps> = ({
                     {universityList.map((u, index) => (
                         <tr
                             key={u.admission_id ? `uni-${u.admission_id}-${index}` : `uni-tmp-${index}`}
-                            className={`hover:bg-gray-50 ${selectedItems.includes(u.admission_id) ? 'bg-violet-50' : ''}`}
+                            className={`hover:bg-gray-50 ${selectedItems.includes(u.admission_id) ? 'bg-violet-400/30' : ''}`}
                         >
                             <td className="px-4 py-2 w-10">
                                 <input
@@ -192,8 +192,8 @@ const UniversityTable: FC<UniversityTableProps> = ({
                                     onChange={() => handleSelectItemWithDebug(u.admission_id)}
                                 />
                             </td>
-                            <td className="px-4 py-2 text-sm text-gray-900  w-10">{index + 1}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900  w-20">
+                            <td className="px-4 py-2 text-sm text-gray-900 w-10">{index + 1}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 w-20">
                                 <span className="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
                                     {u.region}
                                 </span>
