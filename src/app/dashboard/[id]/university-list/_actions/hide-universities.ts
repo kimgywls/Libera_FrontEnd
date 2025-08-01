@@ -24,6 +24,7 @@ export const hideUniversities = async (studentId: number, admissionIds: number[]
                 timeout: 10000,
             }
         );
+
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -90,6 +91,7 @@ export const fetchHiddenUniversities = async (studentId: number): Promise<Univer
                 timeout: 10000,
             }
         );
+
         return response.data.hidden_schools || [];
     } catch (error) {
         if (axios.isAxiosError(error)) {

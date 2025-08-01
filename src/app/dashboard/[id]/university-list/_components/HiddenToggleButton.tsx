@@ -60,7 +60,7 @@ const HiddenToggleButton: FC<HiddenToggleButtonProps> = ({
                             className="flex items-center space-x-1 px-3 py-1 text-sm bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
                         >
                             <RotateCcw className="w-3 h-3" />
-                            <span>전체 해제</span>
+                            <span className="text-white">전체 해제</span>
                         </button>
                     </div>
                     <ul className="space-y-2">

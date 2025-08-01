@@ -39,7 +39,7 @@ export function useUniversityHide(
         open: false,
         title: '',
         description: '',
-        onConfirm: () => {},
+        onConfirm: () => { },
     });
 
     // 숨긴 학교 목록 조회
@@ -50,7 +50,10 @@ export function useUniversityHide(
         staleTime: 0,
         refetchOnWindowFocus: true,
         refetchOnMount: true,
+        refetchOnReconnect: true,
     });
+
+
 
     // 숨기기 뮤테이션
     const hideMutation = useMutation({
@@ -76,7 +79,7 @@ export function useUniversityHide(
 
     const handleSelectItem = useCallback((id: number) => {
         setSelectedItems(prev => {
-            const newItems = prev.includes(id) 
+            const newItems = prev.includes(id)
                 ? prev.filter(item => item !== id)
                 : [...prev, id];
             return newItems;
@@ -94,7 +97,7 @@ export function useUniversityHide(
             // 이미 숨겨진 학교들 제외
             const hiddenAdmissionIds = hiddenList.map(school => school.admission_id);
             const uniqueItems = selectedItems.filter(id => !hiddenAdmissionIds.includes(id));
-            
+
             if (uniqueItems.length === 0) {
                 setAlert({
                     open: true,
@@ -107,15 +110,15 @@ export function useUniversityHide(
             }
 
             const response = await hideMutation.mutateAsync(uniqueItems);
-            
+
             // 서버 응답에 따라 캐시 업데이트
             if (response.hidden_count && response.hidden_count > 0) {
                 // 숨기기 성공 시 캐시 무효화하여 서버에서 최신 데이터 가져오기
                 await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
             }
-            
+
             setSelectedItems([]);
-            
+
             setAlert({
                 open: true,
                 title: '성공',
@@ -137,7 +140,7 @@ export function useUniversityHide(
     const handleUnhide = useCallback(async (admissionId: number) => {
         try {
             await unhideMutation.mutateAsync(admissionId);
-            
+
             setAlert({
                 open: true,
                 title: '성공',
@@ -161,13 +164,13 @@ export function useUniversityHide(
 
         try {
             const admissionIds = hiddenList.map(school => school.admission_id);
-            
+
             // 한 번의 API 호출로 모든 학교 숨김 해제
             await unhideUniversities(studentId, admissionIds);
-            
+
             // 캐시 무효화
             await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
-            
+
             setAlert({
                 open: true,
                 title: '성공',
