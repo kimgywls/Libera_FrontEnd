@@ -9,17 +9,12 @@ import {
     Image,
 } from '@react-pdf/renderer';
 import { StudentReportData } from '@/app/types/report';
-import { SEMESTER_TREND_CATEGORY_LABELS } from '@/app/constants';
+import { Attendance } from '@/app/types/attendance';
 
-// 한글 폰트 등록
+// 한글 폰트 등록 - 기본 폰트 사용
 Font.register({
     family: 'NanumGothic',
     src: 'https://fonts.gstatic.com/ea/nanumgothic/v5/NanumGothic-Regular.ttf',
-});
-
-Font.register({
-    family: 'NanumGothic-Bold',
-    src: 'https://fonts.gstatic.com/ea/nanumgothic/v5/NanumGothic-Bold.ttf',
 });
 
 const styles = StyleSheet.create({
@@ -63,51 +58,53 @@ const styles = StyleSheet.create({
         marginBottom: 25,
     },
     studentInfoCard: {
-        padding: 20,
-        backgroundColor: '#f8fafc',
-        borderRadius: 8,
-        border: '1px solid #e2e8f0',
+        padding: 24,
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        border: '1px solid #e5e7eb',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
     },
     studentInfoTitle: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: 20,
         color: '#1e293b',
-        borderBottom: '2px solid #7c3aed',
-        paddingBottom: 5,
+        borderBottom: '3px solid #7c3aed',
+        paddingBottom: 8,
     },
     studentInfoGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 15,
+        gap: 20,
     },
     infoItem: {
-        width: '48%',
+        width: '45%',
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: 12,
     },
     infoItemFull: {
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: 12,
     },
     infoLabel: {
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: 'bold',
-        color: '#64748b',
-        width: 70,
-        marginRight: 10,
+        color: '#374151',
+        width: 80,
+        marginRight: 12,
     },
     infoValue: {
-        fontSize: 11,
+        fontSize: 12,
         color: '#1e293b',
         backgroundColor: '#ffffff',
-        padding: '6 10',
-        borderRadius: 4,
-        border: '1px solid #e2e8f0',
+        padding: '8 12',
+        borderRadius: 6,
+        border: '1px solid #d1d5db',
         flex: 1,
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
     },
 
     // 섹션 스타일
@@ -153,30 +150,53 @@ const styles = StyleSheet.create({
         borderBottom: '1px solid #f1f5f9',
     },
     tableColHeader: {
-        width: '25%',
-        padding: 10,
+        width: '10%',
+        padding: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     tableCol: {
-        width: '25%',
-        padding: 10,
+        width: '10%',
+        padding: 8,
         justifyContent: 'center',
+        alignItems: 'center',
     },
     tableCellHeader: {
-        fontSize: 11,
+        fontSize: 8,
         fontWeight: 'bold',
         color: '#ffffff',
         textAlign: 'center',
+        lineHeight: 1.2,
     },
     tableCell: {
-        fontSize: 10,
+        fontSize: 8,
         color: '#374151',
         textAlign: 'center',
     },
     tableCellBold: {
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 'bold',
         color: '#1e293b',
         textAlign: 'center',
+    },
+
+    // 출결 테이블 전용 스타일
+    attendanceTableColHeader: {
+        padding: 6,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    attendanceTableCol: {
+        padding: 6,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    attendanceTableCellHeader: {
+        fontSize: 7,
+        fontWeight: 'bold',
+        color: '#ffffff',
+        textAlign: 'center',
+        lineHeight: 1.1,
     },
 
     // 차트 컨테이너
@@ -207,7 +227,6 @@ const styles = StyleSheet.create({
     chartPlaceholderText: {
         fontSize: 11,
         color: '#64748b',
-        fontStyle: 'italic',
     },
 
     // 체크리스트 스타일
@@ -311,21 +330,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
-    // 푸터
-    footer: {
-        position: 'absolute',
-        bottom: 20,
-        left: 20,
-        right: 20,
-        textAlign: 'center',
-        borderTop: '1px solid #e2e8f0',
-        paddingTop: 10,
-    },
-    footerText: {
-        fontSize: 9,
-        color: '#94a3b8',
-    },
-
     // 페이지 번호
     pageNumber: {
         position: 'absolute',
@@ -416,14 +420,141 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                                 <Text style={styles.infoLabel}>재학교</Text>
                                 <Text style={styles.infoValue}>{studentInfo.current_school_name}</Text>
                             </View>
-                            <View style={styles.infoItemFull}>
+                        </View>
+                        <View style={styles.studentInfoGrid}>
+                            <View style={styles.infoItem}>
                                 <Text style={styles.infoLabel}>희망대학</Text>
                                 <Text style={styles.infoValue}>
-                                    {studentInfo.desired_school?.map(school => school.school_name).join(', ') || '미정'}
+                                    {(() => {
+                                        const schoolNames = studentInfo.desired_school?.map(school => school.school_name).join(', ') || '미정';
+                                        return schoolNames === 'none' ? '-' : schoolNames;
+                                    })()}
+                                </Text>
+                            </View>
+                            <View style={styles.infoItem}>
+                                <Text style={styles.infoLabel}>희망학과</Text>
+                                <Text style={styles.infoValue}>
+                                    {(() => {
+                                        const departmentNames = studentInfo.desired_school?.map(school => school.department_name).join(', ') || '미정';
+                                        return departmentNames === 'none' ? '-' : departmentNames;
+                                    })()}
                                 </Text>
                             </View>
                         </View>
                     </View>
+                </View>
+
+                <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>학생 출결 현황</Text>
+                    </View>
+
+                    {data.attendance && data.attendance.length > 0 ? (
+                        <View style={styles.tableContainer}>
+                            <View style={styles.table}>
+                                <View style={styles.tableHeader}>
+                                    <View style={[styles.attendanceTableColHeader, { width: '10%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>학년</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '10%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>총{'\n'}등교일수</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>결석{'\n'}(질병)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>결석{'\n'}(무단)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>결석{'\n'}(기타)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>지각{'\n'}(질병)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>지각{'\n'}(무단)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>지각{'\n'}(기타)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>조퇴{'\n'}(질병)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>조퇴{'\n'}(무단)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>조퇴{'\n'}(기타)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>결과{'\n'}(질병)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>결과{'\n'}(무단)</Text>
+                                    </View>
+                                    <View style={[styles.attendanceTableColHeader, { width: '8%' }]}>
+                                        <Text style={styles.attendanceTableCellHeader}>결과{'\n'}(기타)</Text>
+                                    </View>
+                                </View>
+
+                                {data.attendance.map((attendance: Attendance, index: number) => (
+                                    <View
+                                        key={index}
+                                        style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlternate}
+                                    >
+                                        <View style={[styles.attendanceTableCol, { width: '10%' }]}>
+                                            <Text style={styles.tableCellBold}>{attendance.grade}학년</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '10%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.total_days}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.absence_disease}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.absence_unexcused}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.absence_etc}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.tardiness_disease}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.tardiness_unexcused}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.tardiness_etc}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.early_leave_disease}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.early_leave_unexcused}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.early_leave_etc}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.result_disease}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.result_unexcused}</Text>
+                                        </View>
+                                        <View style={[styles.attendanceTableCol, { width: '8%' }]}>
+                                            <Text style={styles.tableCell}>{attendance.result_etc}</Text>
+                                        </View>
+                                    </View>
+                                ))}
+                            </View>
+                        </View>
+                    ) : (
+                        <View style={styles.chartPlaceholder}>
+                            <Text style={styles.chartPlaceholderText}>
+                                출결 데이터가 없습니다
+                            </Text>
+                        </View>
+                    )}
                 </View>
 
                 {/* 내신 성적 섹션 */}
@@ -453,36 +584,67 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                                         <View style={styles.table}>
                                             <View style={styles.tableHeader}>
                                                 <View style={styles.tableColHeader}>
+                                                    <Text style={styles.tableCellHeader}>과목구분</Text>
+                                                </View>
+                                                <View style={styles.tableColHeader}>
                                                     <Text style={styles.tableCellHeader}>과목명</Text>
+                                                </View>
+                                                <View style={styles.tableColHeader}>
+                                                    <Text style={styles.tableCellHeader}>단위수</Text>
                                                 </View>
                                                 <View style={styles.tableColHeader}>
                                                     <Text style={styles.tableCellHeader}>원점수</Text>
                                                 </View>
                                                 <View style={styles.tableColHeader}>
-                                                    <Text style={styles.tableCellHeader}>석차등급</Text>
+                                                    <Text style={styles.tableCellHeader}>과목평균</Text>
                                                 </View>
                                                 <View style={styles.tableColHeader}>
-                                                    <Text style={styles.tableCellHeader}>과목구분</Text>
+                                                    <Text style={styles.tableCellHeader}>표준편차</Text>
+                                                </View>
+                                                <View style={styles.tableColHeader}>
+                                                    <Text style={styles.tableCellHeader}>성취도</Text>
+                                                </View>
+                                                <View style={styles.tableColHeader}>
+                                                    <Text style={styles.tableCellHeader}>수강자수</Text>
+                                                </View>
+                                                <View style={styles.tableColHeader}>
+                                                    <Text style={styles.tableCellHeader}>석차등급</Text>
                                                 </View>
                                             </View>
+
                                             {semesterScores.map((score, index) => (
                                                 <View
                                                     key={index}
                                                     style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlternate}
                                                 >
                                                     <View style={styles.tableCol}>
+                                                        <Text style={styles.tableCell}>{score.subject_type}</Text>
+                                                    </View>
+                                                    <View style={styles.tableCol}>
                                                         <Text style={styles.tableCellBold}>{score.subject}</Text>
                                                     </View>
                                                     <View style={styles.tableCol}>
-                                                        <Text style={styles.tableCell}>{score.raw_score}점</Text>
+                                                        <Text style={styles.tableCell}>{score.credit_hours || '-'}</Text>
+                                                    </View>
+                                                    <View style={styles.tableCol}>
+                                                        <Text style={styles.tableCell}>{score.raw_score || '-'}</Text>
+                                                    </View>
+                                                    <View style={styles.tableCol}>
+                                                        <Text style={styles.tableCell}>{score.subject_average || '-'}</Text>
+                                                    </View>
+                                                    <View style={styles.tableCol}>
+                                                        <Text style={styles.tableCell}>{score.standard_deviation || '-'}</Text>
+                                                    </View>
+                                                    <View style={styles.tableCol}>
+                                                        <Text style={styles.tableCell}>{score.achievement_level || '-'}</Text>
+                                                    </View>
+                                                    <View style={styles.tableCol}>
+                                                        <Text style={styles.tableCell}>{score.student_count || '-'}</Text>
                                                     </View>
                                                     <View style={styles.tableCol}>
                                                         <Text style={[styles.tableCellBold, getGradeStyle(Number(score.grade_rank))]}>
-                                                            {score.grade_rank}등급
+                                                            {score.grade_rank || '-'}
                                                         </Text>
-                                                    </View>
-                                                    <View style={styles.tableCol}>
-                                                        <Text style={styles.tableCell}>{score.subject_type}</Text>
                                                     </View>
                                                 </View>
                                             ))}
@@ -505,21 +667,21 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                             <Text style={styles.chartTitle}>석차등급 추이 차트</Text>
                             {chartImages?.semesterTrendCharts && chartImages.semesterTrendCharts.length > 0 ? (
                                 <View>
-                                    {Array.from({ length: Math.ceil((chartImages.semesterTrendCharts || []).length / 2) }, (_, rowIndex) => (
+                                    {Array.from({ length: Math.ceil((chartImages.semesterTrendCharts || []).length / 3) }, (_, rowIndex) => (
                                         <View key={rowIndex} style={{ flexDirection: 'row', marginBottom: 15 }}>
                                             {(chartImages.semesterTrendCharts || [])
-                                                .slice(rowIndex * 2, (rowIndex + 1) * 2)
+                                                .slice(rowIndex * 3, (rowIndex + 1) * 3)
                                                 .map((chartImage, colIndex) => (
                                                     <View key={colIndex} style={{
-                                                        width: '48%',
-                                                        marginRight: colIndex < 1 ? '4%' : 0
+                                                        width: '30%',
+                                                        marginRight: colIndex < 2 ? '5%' : 0
                                                     }}>
                                                         {/* eslint-disable-next-line jsx-a11y/alt-text */}
                                                         <Image
                                                             src={chartImage}
                                                             style={{
                                                                 width: '100%',
-                                                                height: 200,
+                                                                height: 180,
                                                                 objectFit: 'contain',
                                                                 borderRadius: 6,
                                                             }}
@@ -537,40 +699,6 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                                 </View>
                             )}
                         </View>
-
-                        {semesterTrend.categories?.map((category) => (
-                            <View key={category.id} style={styles.chartContainer}>
-                                <Text style={styles.chartTitle}>
-                                    {SEMESTER_TREND_CATEGORY_LABELS[category.id] || category.name}
-                                </Text>
-                                <View style={styles.tableContainer}>
-                                    <View style={styles.table}>
-                                        <View style={styles.tableHeader}>
-                                            <View style={[styles.tableColHeader, { width: '50%' }]}>
-                                                <Text style={styles.tableCellHeader}>학기</Text>
-                                            </View>
-                                            <View style={[styles.tableColHeader, { width: '50%' }]}>
-                                                <Text style={styles.tableCellHeader}>석차등급</Text>
-                                            </View>
-                                        </View>
-                                        {category.periods.map((period, index) => (
-                                            <View key={index} style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlternate}>
-                                                <View style={[styles.tableCol, { width: '50%' }]}>
-                                                    <Text style={styles.tableCell}>
-                                                        {period.grade}학년 {period.semester}학기
-                                                    </Text>
-                                                </View>
-                                                <View style={[styles.tableCol, { width: '50%' }]}>
-                                                    <Text style={[styles.tableCellBold, getGradeStyle(period.gpa)]}>
-                                                        {period.gpa}등급
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        ))}
-                                    </View>
-                                </View>
-                            </View>
-                        ))}
                     </View>
                 )}
 
@@ -606,32 +734,86 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                         )}
                     </View>
 
-                    {/* 카테고리별 체크리스트 */}
+                    {/* 카테고리별 체크리스트 테이블 */}
                     {Object.entries(questionsByCategory).map(([categoryId, questions]) => (
-                        <View key={categoryId} style={styles.categoryCard}>
-                            <View style={styles.categoryHeader}>
-                                <Text style={styles.categoryTitle}>
-                                    {categoryNames[Number(categoryId) as keyof typeof categoryNames]}
-                                </Text>
-                            </View>
-                            <View style={styles.categoryContent}>
-                                {questions.map((question) => {
-                                    const score = responsesMap[question.checklist_question_id];
-                                    return (
-                                        <View key={question.checklist_question_id} style={styles.checklistItem}>
-                                            <Text style={styles.questionText}>{question.question_text}</Text>
-                                            {score !== undefined ? (
-                                                <View style={styles.scoreContainer}>
-                                                    <Text style={styles.scoreText}>{score}점</Text>
-                                                </View>
-                                            ) : (
-                                                <View style={styles.scoreTextEmpty}>
-                                                    <Text style={styles.scoreTextEmpty}>-</Text>
-                                                </View>
-                                            )}
+                        <View key={categoryId} style={styles.chartContainer}>
+                            <Text style={styles.chartTitle}>
+                                {categoryNames[Number(categoryId) as keyof typeof categoryNames]}
+                            </Text>
+                            <View style={styles.tableContainer}>
+                                <View style={styles.table}>
+                                    <View style={styles.tableHeader}>
+                                        <View style={[styles.tableColHeader, { width: '15%' }]}>
+                                            <Text style={styles.tableCellHeader}>세부항목</Text>
                                         </View>
-                                    );
-                                })}
+                                        <View style={[styles.tableColHeader, { width: '45%' }]}>
+                                            <Text style={styles.tableCellHeader}>평가질문</Text>
+                                        </View>
+                                        <View style={[styles.tableColHeader, { width: '8%' }]}>
+                                            <Text style={styles.tableCellHeader}>부족</Text>
+                                        </View>
+                                        <View style={[styles.tableColHeader, { width: '8%' }]}>
+                                            <Text style={styles.tableCellHeader}>미흡</Text>
+                                        </View>
+                                        <View style={[styles.tableColHeader, { width: '8%' }]}>
+                                            <Text style={styles.tableCellHeader}>보통</Text>
+                                        </View>
+                                        <View style={[styles.tableColHeader, { width: '8%' }]}>
+                                            <Text style={styles.tableCellHeader}>우수</Text>
+                                        </View>
+                                        <View style={[styles.tableColHeader, { width: '8%' }]}>
+                                            <Text style={styles.tableCellHeader}>탁월</Text>
+                                        </View>
+                                    </View>
+
+                                    {questions.map((question, index) => {
+                                        const score = responsesMap[question.checklist_question_id];
+
+                                        return (
+                                            <View
+                                                key={question.checklist_question_id}
+                                                style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlternate}
+                                            >
+                                                <View style={[styles.tableCol, { width: '15%' }]}>
+                                                    <Text style={styles.tableCell}>
+                                                        {question.sub_category_id === 1 ? '학업성취도' :
+                                                            question.sub_category_id === 2 ? '기초학업역량' :
+                                                                question.sub_category_id === 3 ? '심화학업역량' :
+                                                                    question.sub_category_id === 4 ? '학업태도' :
+                                                                        question.sub_category_id === 5 ? '진로탐색활동과 경험' :
+                                                                            question.sub_category_id === 6 ? '진로탐색역량' :
+                                                                                question.sub_category_id === 7 ? '지식탐구역량' :
+                                                                                    question.sub_category_id === 8 ? '문제해결능력' :
+                                                                                        question.sub_category_id === 9 ? '협업과 소통능력' :
+                                                                                            question.sub_category_id === 10 ? '리더십' :
+                                                                                                question.sub_category_id === 11 ? '성실성 및 책임감' :
+                                                                                                    question.sub_category_id === 12 ? '나눔과 배려' :
+                                                                                                        question.sub_category_id === 13 ? '의사소통능력' : '기본'}
+                                                    </Text>
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '45%' }]}>
+                                                    <Text style={styles.tableCell}>
+                                                        {question.question_text}
+                                                    </Text>
+                                                </View>
+                                                {[1, 2, 3, 4, 5].map((scoreValue) => (
+                                                    <View key={scoreValue} style={[styles.tableCol, { width: '8%' }]}>
+                                                        <Text style={[
+                                                            styles.tableCell,
+                                                            score === scoreValue ? {
+                                                                color: '#7c3aed',
+                                                                fontWeight: 'bold',
+                                                                backgroundColor: '#f3f4f6'
+                                                            } : {}
+                                                        ]}>
+                                                            {score === scoreValue ? 'O' : ''}
+                                                        </Text>
+                                                    </View>
+                                                ))}
+                                            </View>
+                                        );
+                                    })}
+                                </View>
                             </View>
                         </View>
                     ))}
@@ -664,12 +846,6 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                     </View>
                 </View>
 
-                {/* 푸터 */}
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>
-                        Libera 입시 데이터 분석 연구소 | 본 보고서는 개인 맞춤형 입시 전략 수립을 위한 참고 자료입니다.
-                    </Text>
-                </View>
 
                 {/* 페이지 번호 */}
                 <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (
@@ -680,4 +856,4 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
     );
 };
 
-export default ReportPDF; 
+export default ReportPDF;

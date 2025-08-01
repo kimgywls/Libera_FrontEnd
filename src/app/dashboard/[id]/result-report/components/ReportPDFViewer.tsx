@@ -39,7 +39,7 @@ const ReportPDFViewer: React.FC<ReportPDFViewerProps> = ({ data, chartImages, on
 
     return (
         <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
             onClick={(e) => {
                 if (e.target === e.currentTarget) {
                     onClose();
@@ -62,7 +62,7 @@ const ReportPDFViewer: React.FC<ReportPDFViewerProps> = ({ data, chartImages, on
                                 <button
                                     className={`px-4 py-2 rounded-md font-medium ${loading || isLoading
                                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                                        : 'bg-violet-500 text-white hover:bg-violet-600'
                                         }`}
                                     disabled={loading || isLoading}
                                 >
