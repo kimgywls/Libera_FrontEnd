@@ -381,7 +381,7 @@ const DashboardContent = ({ children, selectedStudent }: DashboardContentProps) 
                             onClick={handleShowReport}
                             disabled={!reportData || isCapturing}
                             className={`px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 ${reportData && !isCapturing
-                                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                                ? 'bg-violet-500 text-white hover:bg-violet-600'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 }`}
                         >
