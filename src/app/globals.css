@@ -70,6 +70,63 @@ body {
   .text-white {
     color: #ffffff !important;
   }
+
+  /* Violet 색상 클래스들 추가 */
+  .text-violet-700 {
+    color: #7c3aed !important;
+  }
+
+  .text-violet-900 {
+    color: #4c1d95 !important;
+  }
+
+  .bg-violet-50 {
+    background-color: #faf5ff !important;
+  }
+
+  .border-violet-200 {
+    border-color: #ddd6fe !important;
+  }
+
+  .border-violet-300 {
+    border-color: #c4b5fd !important;
+  }
+
+  /* Red 색상 클래스들 */
+  .bg-red-100 {
+    background-color: #fee2e2 !important;
+  }
+
+  .text-red-600 {
+    color: #dc2626 !important;
+  }
+
+  /* Blue 색상 클래스들 */
+  .bg-blue-100 {
+    background-color: #dbeafe !important;
+  }
+
+  .text-blue-600 {
+    color: #2563eb !important;
+  }
+
+  /* Green 색상 클래스들 */
+  .bg-green-100 {
+    background-color: #dcfce7 !important;
+  }
+
+  .text-green-600 {
+    color: #16a34a !important;
+  }
+
+  /* Yellow 색상 클래스들 */
+  .bg-yellow-100 {
+    background-color: #fef3c7 !important;
+  }
+
+  .text-yellow-600 {
+    color: #ca8a04 !important;
+  }
 }
 
 @media print {
