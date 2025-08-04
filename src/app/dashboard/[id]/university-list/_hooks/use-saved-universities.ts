@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
-import type { UniversityInfo } from '@/app/types/university';
+import type { UniversityInfo, SavedRecommendation, SavedRecommendationItem } from '@/app/types/university';
 import { getSavedRecommendations } from '../../comprehensive-evaluation/_actions/get-saved-recommendations';
 
 export const useSavedUniversities = () => {
@@ -19,8 +19,8 @@ export const useSavedUniversities = () => {
 
     // 저장된 학교들의 admission_id 추출
     const savedUniversities = new Set<number>();
-    savedRecommendations.forEach((rec: any) => {
-        rec.items.forEach((item: any) => {
+    savedRecommendations.forEach((rec: SavedRecommendation) => {
+        rec.items.forEach((item: SavedRecommendationItem) => {
             savedUniversities.add(item.admission_id);
         });
     });
@@ -30,7 +30,7 @@ export const useSavedUniversities = () => {
         mutationFn: (admissionIds: number[]) => {
             return Promise.resolve(admissionIds);
         },
-        onSuccess: (admissionIds) => {
+        onSuccess: () => {
             // 저장된 추천 학교 쿼리 무효화하여 서버에서 최신 데이터 가져오기
             queryClient.invalidateQueries({ queryKey: ['saved-recommendations', studentId] });
         },
