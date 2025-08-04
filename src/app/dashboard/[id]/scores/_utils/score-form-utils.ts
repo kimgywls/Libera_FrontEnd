@@ -19,7 +19,8 @@ export function safeParseNumber(value: string | number | null | undefined): numb
 
 /**
  * achievement_distribution 문자열을 객체로 변환합니다
- * 예: "A: 20, B: 30, C: 50" → { A: 20, B: 30, C: 50 }
+ * 예: "A: 20.5, B: 30.2, C: 50.3" → { A: 20.5, B: 30.2, C: 50.3 }
+ * 파싱할 수 없는 경우 원본 문자열을 반환하여 입력 중인 상태를 유지합니다
  */
 export function parseAchievementDistribution(value: string | AchievementDistribution | null | undefined): AchievementDistribution | string | null {
     if (!value || typeof value !== 'string') return value as AchievementDistribution | null;
@@ -29,20 +30,33 @@ export function parseAchievementDistribution(value: string | AchievementDistribu
 
     try {
         const distributionObj: AchievementDistribution = {};
-        trimmedValue.split(',').forEach(part => {
-            const [key, val] = part.split(':').map(s => s.trim());
-            if (key && val) {
-                const parsedVal = safeParseNumber(val);
-                if (parsedVal !== null) {
-                    distributionObj[key] = parsedVal;
+        let hasValidEntries = false;
+
+        // 쉼표가 있는 경우 쉼표로 분리, 없으면 전체를 하나의 항목으로 처리
+        const parts = trimmedValue.includes(',') ? trimmedValue.split(',') : [trimmedValue];
+
+        parts.forEach(part => {
+            const trimmedPart = part.trim();
+            // 콜론으로 키와 값을 분리
+            const colonIndex = trimmedPart.indexOf(':');
+            if (colonIndex !== -1) {
+                const key = trimmedPart.substring(0, colonIndex).trim();
+                const valStr = trimmedPart.substring(colonIndex + 1).trim();
+
+                if (key && valStr) {
+                    const parsedVal = parseFloat(valStr);
+                    if (!isNaN(parsedVal)) {
+                        distributionObj[key] = parsedVal;
+                        hasValidEntries = true;
+                    }
                 }
             }
         });
 
-        // 객체가 비어있지 않으면 객체 반환, 비어있으면 원본 문자열 반환
-        return Object.keys(distributionObj).length > 0 ? distributionObj : value;
+        // 유효한 항목이 있으면 객체 반환, 없으면 원본 문자열 반환
+        return hasValidEntries ? distributionObj : value;
     } catch (error) {
-        console.error(error);
+        console.error('achievement_distribution 파싱 오류:', error);
         return value; // 파싱 실패 시 원본 문자열 반환
     }
 }
@@ -73,9 +87,11 @@ export function handleScoreFormFieldChange(
 
     // achievement_distribution 필드 처리
     if (field === 'achievement_distribution') {
+        // 문자열인 경우 그대로 저장, 객체인 경우 파싱
+        const processedValue = typeof value === 'string' ? value : parseAchievementDistribution(value as string | AchievementDistribution);
         return {
             ...scoreForm,
-            [field]: parseAchievementDistribution(value as string | AchievementDistribution) as AchievementDistribution | null
+            [field]: processedValue as AchievementDistribution | string | null
         };
     }
 

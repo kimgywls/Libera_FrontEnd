@@ -78,19 +78,23 @@ const ScoresModalTableBody: FC<ScoresModalTableBodyProps> = ({
                                     return (
                                         <td key={key} className={`px-4 py-3 border-r border-gray-200 ${getMinWidth(key)}`}>
                                             <input
+                                                type="text"
                                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                                                placeholder="성취도별 분포 비율"
+                                                placeholder="예: A: 20.5, B: 30.2, C: 50.3"
                                                 value={
-                                                    typeof row.achievement_distribution === 'object' &&
-                                                        row.achievement_distribution !== null
-                                                        ? Object.entries(row.achievement_distribution)
-                                                            .map(([k, v]) => `${k}: ${v}`)
-                                                            .join(', ')
-                                                        : row.achievement_distribution || ''
+                                                    (() => {
+                                                        let displayValue = '';
+                                                        if (typeof row.achievement_distribution === 'string') {
+                                                            displayValue = row.achievement_distribution;
+                                                        } else if (typeof row.achievement_distribution === 'object' && row.achievement_distribution !== null) {
+                                                            displayValue = Object.entries(row.achievement_distribution)
+                                                                .map(([k, v]) => `${k}: ${v}`)
+                                                                .join(', ');
+                                                        }
+                                                        return displayValue;
+                                                    })()
                                                 }
-                                                onChange={e =>
-                                                    onChange(idx, 'achievement_distribution', e.target.value)
-                                                }
+                                                onChange={e => onChange(idx, 'achievement_distribution', e.target.value)}
                                             />
                                         </td>
                                     );

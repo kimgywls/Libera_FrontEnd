@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ScoreForm } from '@/app/types/score';
-import { handleScoreFormFieldChange, safeParseNumber, convertAchievementDistributionForCreate } from '../_utils/score-form-utils';
+import { handleScoreFormFieldChange, safeParseNumber } from '../_utils/score-form-utils';
 
 const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
     grade,
@@ -15,7 +15,7 @@ const DEFAULT_ROW = (grade: number, semester: number): ScoreForm => ({
     grade_rank: '',
     achievement_level: '',
     standard_deviation: null,
-    achievement_distribution: null,
+    achievement_distribution: { A: 0, B: 0, C: 0 },
     notes: '',
 });
 
@@ -36,7 +36,7 @@ export function useScoreForm({ initialScores, grade, semester, onFormChange }: U
             standard_deviation: safeParseNumber(score.standard_deviation),
             credit_hours: safeParseNumber(score.credit_hours),
             student_count: score.student_count ? String(score.student_count) : null,
-            achievement_distribution: convertAchievementDistributionForCreate(score.achievement_distribution)
+            achievement_distribution: score.achievement_distribution
         }));
     }, []);
 
@@ -46,12 +46,13 @@ export function useScoreForm({ initialScores, grade, semester, onFormChange }: U
 
     const handleChange = useCallback(
         (idx: number, field: keyof ScoreForm, value: ScoreForm[keyof ScoreForm]) => {
-            setScoresForm(prev =>
-                prev.map((row, i) => {
+            setScoresForm(prev => {
+                const newForm = prev.map((row, i) => {
                     if (i !== idx) return row;
                     return handleScoreFormFieldChange(row, field, value);
-                })
-            );
+                });
+                return newForm;
+            });
             onFormChange?.();
         },
         [onFormChange]

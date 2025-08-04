@@ -32,7 +32,7 @@ export interface ScoreForm {
     achievement_level?: string | null;
     student_count?: string | null;
     grade_rank?: string | null;
-    achievement_distribution?: AchievementDistribution | null;
+    achievement_distribution?: AchievementDistribution | string | null;
     credit_hours?: number | null;
     notes?: string | null;
 }
