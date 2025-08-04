@@ -7,10 +7,11 @@ interface ConsultationDateEditorProps {
     onSave: () => void;
     onCancel: () => void;
     displayDate: string;
+    isUpdating?: boolean;
 }
 
 const ConsultationDateEditor: FC<ConsultationDateEditorProps> = ({
-    editMode, inputDate, setInputDate, onSave, onCancel, displayDate
+    editMode, inputDate, setInputDate, onSave, onCancel, displayDate, isUpdating = false
 }) => (
     <>
         {editMode ? (
@@ -21,8 +22,20 @@ const ConsultationDateEditor: FC<ConsultationDateEditorProps> = ({
                     value={inputDate}
                     onChange={e => setInputDate(e.target.value)}
                 />
-                <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg" onClick={onSave}><span>저장</span></button>
-                <button className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg" onClick={onCancel}><span>취소</span></button>
+                <button
+                    className="px-3 py-2 text-gray-500 bg-gray-300 hover:bg-gray-400 rounded-lg"
+                    onClick={onCancel}
+                    disabled={isUpdating}
+                >
+                    <span>취소</span>
+                </button>
+                <button
+                    className={`px-3 py-2 rounded-lg ${isUpdating ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-white bg-blue-400 hover:bg-blue-500'}`}
+                    onClick={onSave}
+                    disabled={isUpdating}
+                >
+                    <span>{isUpdating ? '저장 중...' : '저장'}</span>
+                </button>
             </>
         ) : (
             <span className="text-lg font-semibold text-gray-900">{displayDate}</span>

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import {
     GraduationCap,
     Check,
@@ -9,6 +9,7 @@ import { StudentInfo as StudentInfoType } from "@/app/types/student";
 import { DesiredSchool } from "@/app/types/university";
 import { useAddDesiredSchool, useDeleteDesiredSchool } from "../../_hooks/use-desired-school"
 import { useInvalidateDesiredSchools } from '../../_hooks/use-invalidate-desired-schools';
+import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
 import { formatDate, getNextPriority } from './utils';
 import ConsultationDateEditor from './ConsultationDateEditor';
 import StudentStatus from './StudentStatus';
@@ -22,11 +23,20 @@ interface StudentInfoProps {
 }
 
 const StudentInfo: FC<StudentInfoProps> = ({ student, desiredSchools, isLoadingDesiredSchools }) => {
+    const { updateConsultation, isUpdatingConsultation } = useStudentInfoContext();
+
     // 상담일
     const [inputDate, setInputDate] = useState<string>(
         student.consultation_date ? student.consultation_date.toISOString().slice(0, 10) : ''
     );
     const [editMode, setEditMode] = useState(false);
+
+    // student.consultation_date가 변경될 때 inputDate 업데이트
+    useEffect(() => {
+        if (student.consultation_date) {
+            setInputDate(student.consultation_date.toISOString().slice(0, 10));
+        }
+    }, [student.consultation_date]);
 
     // 목표 추가 폼
     const [isAddOpen, setIsAddOpen] = useState(false);
@@ -84,9 +94,24 @@ const StudentInfo: FC<StudentInfoProps> = ({ student, desiredSchools, isLoadingD
                         editMode={editMode}
                         inputDate={inputDate}
                         setInputDate={setInputDate}
-                        onSave={() => setEditMode(false)}
+                        onSave={() => {
+                            if (inputDate) {
+                                updateConsultation.mutate({
+                                    studentId: student.id,
+                                    name: student.name,
+                                    birth_date: student.birth_date,
+                                    phone_number: student.phone_number,
+                                    consultation_date: new Date(inputDate),
+                                }, {
+                                    onSuccess: () => {
+                                        setEditMode(false);
+                                    }
+                                });
+                            }
+                        }}
                         onCancel={() => setEditMode(false)}
                         displayDate={formatDate(student.consultation_date)}
+                        isUpdating={isUpdatingConsultation}
                     />
                     <button
                         className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors"
