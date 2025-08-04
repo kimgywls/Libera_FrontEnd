@@ -4,6 +4,7 @@ import { DesiredSchool } from "./university";
 export interface Student {
     id: number;
     name: string;
+    birth_date: Date;
     phone_number: string;
     current_school_name: string;
     desired_school: string;
@@ -16,10 +17,11 @@ export interface Student {
 export interface StudentDetail {
     id: number;
     name: string;
-    birth_date: string;
+    birth_date: Date;
     phone_number: string;
     current_school_name: string;
     school_histories: SchoolHistory[];
+    consultation_date: Date | null;
 }
 
 // 학교 이력
@@ -31,6 +33,8 @@ export interface SchoolHistory {
 export interface StudentInfo {
     id: number;
     name: string;
+    birth_date: Date;
+    phone_number: string;
     current_school_name: string;
     desired_school: DesiredSchool[];
     desired_department: DesiredSchool[];
