@@ -10,7 +10,6 @@ export const addRecommendationItem = async (
     data: AddRecommendationItemRequest
 ): Promise<SaveRecommendationResponse> => {
     try {
-        console.log('API Request Data:', data);
         const response = await api.post<SaveRecommendationResponse>(
             `/api/v1/admin/recommendations/${recommendationId}/items`,
             data,
@@ -22,14 +21,10 @@ export const addRecommendationItem = async (
                 timeout: 10000,
             }
         );
-        console.log('API Response:', response.data);
 
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            console.error('API Error:', error.response?.data);
-            console.error('Error Details:', error.response?.data?.detail);
-
             // detail 배열에서 구체적인 에러 메시지 추출
             const errorDetails = error.response?.data?.detail;
             if (Array.isArray(errorDetails) && errorDetails.length > 0) {

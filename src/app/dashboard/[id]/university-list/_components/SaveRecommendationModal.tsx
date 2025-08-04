@@ -2,12 +2,10 @@ import { FC } from 'react';
 
 interface SaveRecommendationModalProps {
     open: boolean;
-    isSaving: boolean;
 }
 
 const SaveRecommendationModal: FC<SaveRecommendationModalProps> = ({
     open,
-    isSaving
 }) => {
     if (!open) return null;
 

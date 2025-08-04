@@ -75,7 +75,7 @@ export interface SaveRecommendationItem {
 export interface SaveRecommendationRequest {
     student_id: number;
     title: string;
-    criteria: Record<string, any>;
+    criteria: Record<string, string>;
     note: string;
     items: SaveRecommendationItem[];
 }
@@ -83,6 +83,25 @@ export interface SaveRecommendationRequest {
 export interface SavedUniversityItem extends UniversityInfo {
     id: number;
     rank: number;
+    admission_id: number;
+    university_name: string;
+    major_name: string;
+    admission_category: string;
+    admission_type: string;
+    recruitment_count: string;
+    previous_year_recruitment_count: string;
+    element1_name: string;
+    element1_percentage: number;
+    element2_name: string;
+    element2_percentage: number;
+    element3_name: string;
+    element3_percentage: number;
+    element1_score: number;
+    element2_score: number;
+    element3_score: number;
+    total_element_score: number;
+    target_year: number;
+    region: string;
     competition_ratio_cy: string;
     grade_cutoff_cy: string;
     add_recruit_cy: string;
@@ -92,12 +111,16 @@ export interface SavedUniversityItem extends UniversityInfo {
     competition_ratio_cy_minus_2: string;
     grade_cutoff_cy_minus_2: string;
     add_recruit_cy_minus_2: string;
+    admission_method: string;
     minimum_qualification: string;
     university_exam_date: string;
+    suitability_type: string;
     subject_suitability: string;
     non_subject_suitability: string;
     overall_evaluation: string;
+    note: string;
     is_final_choice: boolean;
+    is_hidden: boolean;
     created_at: string;
     updated_at: string;
 }
@@ -108,7 +131,7 @@ export interface SaveRecommendationResponse {
     student_name: string;
     title: string;
     status: string;
-    criteria: Record<string, any>;
+    criteria: Record<string, string>;
     note: string;
     items: SavedUniversityItem[];
     created_at: string;
@@ -130,6 +153,19 @@ export interface SavedRecommendationItem {
     admission_category: string;
     admission_type: string;
     recruitment_count: string;
+    previous_year_recruitment_count: string;
+    element1_name: string;
+    element1_percentage: number;
+    element2_name: string;
+    element2_percentage: number;
+    element3_name: string;
+    element3_percentage: number;
+    element1_score: number;
+    element2_score: number;
+    element3_score: number;
+    total_element_score: number;
+    target_year: number;
+    region: string;
     competition_ratio_cy: string;
     grade_cutoff_cy: string;
     add_recruit_cy: string;
@@ -159,7 +195,7 @@ export interface SavedRecommendation {
     student_name: string;
     title: string;
     status: string;
-    criteria: Record<string, any>;
+    criteria: Record<string, string>;
     note: string;
     items: SavedRecommendationItem[];
     created_at: string;

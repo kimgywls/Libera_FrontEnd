@@ -10,7 +10,7 @@ import { useUniversityHide } from '../_hooks/use-university-hide';
 import { useUniversityListFilter } from '../_hooks/use-university-list-filter';
 import { useUniversityListSearch } from '../_hooks/use-university-list-search';
 import { useUniversityListTab } from '../_hooks/use-university-list-tab';
-import { useSaveRecommendations } from '../_hooks/use-save-recommendations';
+import { useCreateOrAddRecommendations } from '../_hooks/use-create-or-add-recommendations';
 
 import FloatingActionButton from './FloatingActionButton';
 import HiddenToggleButton from './HiddenToggleButton';
@@ -126,7 +126,7 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
         );
 
         // 저장 관련 훅
-        const { isSaving, error: saveError, handleSaveRecommendations } = useSaveRecommendations({
+        const { isSaving, error: saveError, handleCreateOrAddRecommendations } = useCreateOrAddRecommendations({
             selectedItems,
             universityList: visibleUniversityList
         });
@@ -138,7 +138,7 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
             setSaveModal({ open: true });
 
             try {
-                await handleSaveRecommendations();
+                await handleCreateOrAddRecommendations();
 
                 // 성공 시 선택된 아이템들을 저장된 목록에 추가
                 if (onUniversitiesSaved) {
@@ -156,7 +156,7 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
                     description: '추천 학교가 성공적으로 저장되었습니다.',
                     onConfirm: () => setSaveAlert({ open: false, title: '', description: '', onConfirm: () => { } })
                 });
-            } catch (error) {
+            } catch {
                 setSaveModal({ open: false });
 
                 // 에러 알림
@@ -297,7 +297,6 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
                 {/* 저장 모달 */}
                 <SaveRecommendationModal
                     open={saveModal.open}
-                    isSaving={isSaving}
                 />
             </>
         );
