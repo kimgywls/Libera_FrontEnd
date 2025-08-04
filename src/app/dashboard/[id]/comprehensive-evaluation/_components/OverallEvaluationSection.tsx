@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useCallback } from "react";
 
 import Section from "@/app/dashboard/_components/Section";
 import DataState from "@/app/dashboard/_components/DataState";
@@ -23,10 +23,10 @@ const OverallEvaluationSection: FC<OverallEvaluationSectionProps> = ({
     const [editingOverall, setEditingOverall] = useState(false);
     const [editOverallContent, setEditOverallContent] = useState<string>('');
 
-    const handleOverallEditToggle = () => {
+    const handleOverallEditToggle = useCallback(() => {
         if (editingOverall) {
-            // 완료 버튼 클릭 시 수정 내용 저장
-            const newContent = editOverallContent || overallEvaluation || '';
+            // 완료 버튼 클릭 시에만 수정 내용 저장
+            const newContent = editOverallContent ?? overallEvaluation ?? '';
 
             if (onOverallEvaluationUpdate) {
                 onOverallEvaluationUpdate(newContent);
@@ -37,13 +37,14 @@ const OverallEvaluationSection: FC<OverallEvaluationSectionProps> = ({
         } else {
             // 수정 모드 진입
             setEditingOverall(true);
-            setEditOverallContent(overallEvaluation || '');
+            setEditOverallContent(overallEvaluation ?? '');
         }
-    };
+    }, [editingOverall, editOverallContent, overallEvaluation, onOverallEvaluationUpdate]);
 
-    const handleContentChange = (content: string) => {
+    const handleContentChange = useCallback((content: string) => {
+        // 로컬 상태만 업데이트 (API 호출 없음)
         setEditOverallContent(content);
-    };
+    }, []);
 
     return (
         <div className="space-y-6">

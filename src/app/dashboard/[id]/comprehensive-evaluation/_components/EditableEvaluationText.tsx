@@ -22,10 +22,11 @@ const EditableEvaluationText: FC<EditableEvaluationTextProps> = ({
         }
     }, [isEditing, content]);
 
-    const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onContentChange(e.target.value);
-        e.currentTarget.style.height = 'auto';
-        e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const target = e.currentTarget;
+        onContentChange(target.value);
+        target.style.height = 'auto';
+        target.style.height = `${target.scrollHeight}px`;
     };
 
     if (isEditing) {
@@ -35,7 +36,11 @@ const EditableEvaluationText: FC<EditableEvaluationTextProps> = ({
                 className="w-full p-1 rounded-md focus:outline-none transition-all resize-none overflow-hidden"
                 placeholder={placeholder}
                 value={content}
-                onChange={handleTextareaChange}
+                onChange={handleChange}
+                spellCheck={false}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
             />
         );
     }

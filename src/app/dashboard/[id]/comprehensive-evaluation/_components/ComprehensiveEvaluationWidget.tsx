@@ -7,6 +7,7 @@ import StudentInfoSection from '@/app/dashboard/_components/StudentInfoSection';
 import { useFinalEvaluation } from '../_hooks/use-final-evaluation';
 import { useUpdateCategoryEvaluation } from '../_hooks/use-update-category-evaluation';
 import { useUpdateOverallEvaluation } from '../_hooks/use-update-overall-evaluation';
+import { useSavedRecommendations } from '../_hooks/use-saved-recommendations';
 import FinalRecommendedSchoolsSection from './FinalRecommendedSchoolsSection';
 import CategoryEvaluationSection from './CategoryEvaluationSection';
 import OverallEvaluationSection from './OverallEvaluationSection';
@@ -17,6 +18,12 @@ const ComprehensiveEvaluationWidget: FC = () => {
     const { data: finalEvaluationData, isLoading, isError, isFetching } = useFinalEvaluation(studentId);
     const updateCategoryMutation = useUpdateCategoryEvaluation();
     const updateOverallMutation = useUpdateOverallEvaluation();
+
+    // 추천 학교 데이터 가져오기
+    const { data: savedRecommendations, isLoading: isRecommendationsLoading, error: recommendationsError } = useSavedRecommendations({
+        student_id: studentId,
+        rec_status: 'active'
+    });
 
     const handleCategoryEvaluationUpdate = (categoryId: number, newContent: string) => {
         if (!studentInfo) return;
@@ -56,7 +63,11 @@ const ComprehensiveEvaluationWidget: FC = () => {
             <StudentInfoSection student={studentInfo} />
 
             <div id="final-recommended-schools-section">
-                <FinalRecommendedSchoolsSection />
+                <FinalRecommendedSchoolsSection
+                    savedRecommendations={savedRecommendations}
+                    isLoading={isRecommendationsLoading}
+                    error={recommendationsError}
+                />
             </div>
 
             <div id="category-evaluation-section">

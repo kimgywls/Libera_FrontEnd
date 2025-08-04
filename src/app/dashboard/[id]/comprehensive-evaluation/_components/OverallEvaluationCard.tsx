@@ -43,7 +43,7 @@ const OverallEvaluationCard: FC<OverallEvaluationCardProps> = ({
                     <div className="flex-1 min-w-0">
                         <EditableEvaluationText
                             isEditing={isEditing}
-                            content={isEditing ? editContent : overallEvaluation || ''}
+                            content={isEditing ? editContent : (overallEvaluation || '')}
                             placeholder="전체 종합 의견을 입력하세요..."
                             onContentChange={onContentChange}
                         />
