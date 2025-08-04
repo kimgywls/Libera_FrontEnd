@@ -26,6 +26,9 @@ export function useChecklistSubmit() {
 
                 // 체크리스트 점수 변경 시 종합평가 문구 자동 갱신을 위해 final-evaluation 쿼리 무효화
                 queryClient.invalidateQueries({ queryKey: ['final-evaluation', variables.student_id] });
+
+                // 체크리스트 점수 변경 시 추천 학교 분석 점수 자동 갱신을 위해 saved-recommendations 쿼리 무효화
+                queryClient.invalidateQueries({ queryKey: ['saved-recommendations', variables.student_id] });
             }
         },
         onError: (error: Error) => {

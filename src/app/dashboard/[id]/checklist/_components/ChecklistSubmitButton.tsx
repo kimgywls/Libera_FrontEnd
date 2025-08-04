@@ -51,11 +51,14 @@ export default function ChecklistSubmitButton({ responses, totalQuestions, onSuc
     return (
         <div className="flex justify-end">
             <button
-                className="bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-md"
+                className={`px-6 py-2 rounded-md transition-colors ${mutation.isPending
+                    ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                    : 'bg-violet-500 hover:bg-violet-600 text-white'
+                    }`}
                 onClick={handleSubmit}
                 disabled={mutation.isPending}
             >
-                제출
+                {mutation.isPending ? '제출 중...' : '제출'}
             </button>
             <AlertModal
                 open={isModalOpen('alert')}

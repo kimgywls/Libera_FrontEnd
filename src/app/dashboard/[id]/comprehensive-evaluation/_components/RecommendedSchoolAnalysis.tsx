@@ -21,7 +21,6 @@ const RecommendedSchoolAnalysis: FC<RecommendedSchoolAnalysisProps> = ({
             </Section>
         );
     }
-    console.log(savedRecommendations);
 
     return (
         <Section title="추천 대학교 분석">

@@ -2,6 +2,7 @@ import { FC } from "react";
 import FinalRecommendedSchoolsList from "./FinalRecommendedSchoolsList";
 import RecommendedSchoolAnalysis from "./RecommendedSchoolAnalysis";
 import type { SavedRecommendation } from '@/app/types/university';
+import RecommendedSchoolSummary from "./RecommendedSchoolSummary";
 
 interface FinalRecommendedSchoolsSectionProps {
     savedRecommendations: SavedRecommendation[] | undefined;
@@ -22,6 +23,9 @@ const FinalRecommendedSchoolsSection: FC<FinalRecommendedSchoolsSectionProps> = 
                 error={error}
             />
             <RecommendedSchoolAnalysis
+                savedRecommendations={savedRecommendations}
+            />
+            <RecommendedSchoolSummary
                 savedRecommendations={savedRecommendations}
             />
         </div>

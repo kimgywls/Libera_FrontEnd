@@ -8,7 +8,9 @@ export const useSavedRecommendations = (params: GetRecommendationsParams) => {
         queryKey: ['saved-recommendations', params.student_id, params.rec_status],
         queryFn: () => getSavedRecommendations(params),
         enabled: !!params.student_id,
-        staleTime: 5 * 60 * 1000, // 5분
+        staleTime: 0, // 체크리스트 점수 변경 시 즉시 업데이트
         refetchOnWindowFocus: false,
+        // 체크리스트 점수 변경 시 자동으로 refetch
+        refetchOnMount: true,
     });
 }; 
