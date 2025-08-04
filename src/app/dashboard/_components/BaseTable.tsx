@@ -61,7 +61,7 @@ const BaseTable = <T,>({
                                 return (
                                     <td
                                         key={column.key}
-                                        className="px-4 py-2 whitespace-nowrap text-gray-900 border-x border-gray-200"
+                                        className="px-4 py-2 whitespace-pre-line text-gray-900 border-x border-gray-200"
                                     >
                                         {cellContent as ReactNode}
                                     </td>
