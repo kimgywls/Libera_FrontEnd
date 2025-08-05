@@ -24,19 +24,21 @@ const DetailedAbilitiesSection: FC<DetailedAbilitiesSectionProps> = ({
         return acc;
     }, {} as Record<number, DetailedAbility[]>);
 
-    const formatSemester = (semester: string) => {
-        // 이미 '학기'가 포함된 경우 그대로 반환
-        if (semester.includes('학기')) return semester;
+    const formatSemester = (semester: string | null | undefined) => {
+        if (semester == null || semester === "") return "선택하세요";
 
-        // 숫자만 있는 경우 '학기' 추가
+        if (semester.includes("학기")) return semester;
+
         const semesterDisplayMap = {
             "1": "1학기",
             "2": "2학기",
             "1,2": "1,2학기",
             "": "선택하세요"
         };
+
         return semesterDisplayMap[semester as keyof typeof semesterDisplayMap] || semester;
     };
+
 
     return (
         <Section title="세부능력 및 특기사항">
