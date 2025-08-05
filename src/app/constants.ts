@@ -14,7 +14,7 @@ export const SEMESTER_TREND_CATEGORY_LABELS: Record<string, string> = {
     'overall': '전과목',
     'main_with_science': '국어+수학+영어+사회(한국사)+과학',
     'main_with_science_only': '국어+수학+영어+과학',
-    'main_with_social': '국어+영어+사회(한국사)',
+    'main_with_social': '국어+수학+영어+사회(한국사)',
     'math_science': '수학+과학',
     'math_english_science': '수학+영어+과학',
     'korean_english_social': '국어+영어+사회(한국사)',
