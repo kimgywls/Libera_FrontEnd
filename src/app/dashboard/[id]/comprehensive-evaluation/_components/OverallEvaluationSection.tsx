@@ -1,4 +1,4 @@
-import { FC, useState, useCallback } from "react";
+import { FC, useState, useCallback, useEffect, useRef } from "react";
 
 import Section from "@/app/dashboard/_components/Section";
 import DataState from "@/app/dashboard/_components/DataState";
@@ -22,18 +22,49 @@ const OverallEvaluationSection: FC<OverallEvaluationSectionProps> = ({
 }) => {
     const [editingOverall, setEditingOverall] = useState(false);
     const [editOverallContent, setEditOverallContent] = useState<string>('');
+    const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // 디바운스 자동 저장 기능
+    useEffect(() => {
+        if (editingOverall && editOverallContent !== (overallEvaluation ?? '')) {
+            // 이전 타이머가 있다면 클리어
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+
+            // 5초 후 자동 저장
+            autoSaveTimeoutRef.current = setTimeout(() => {
+                if (onOverallEvaluationUpdate) {
+                    onOverallEvaluationUpdate(editOverallContent);
+                }
+            }, 5000);
+        }
+
+        // 컴포넌트 언마운트 시 타이머 클리어
+        return () => {
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+        };
+    }, [editingOverall, editOverallContent, overallEvaluation, onOverallEvaluationUpdate]);
 
     const handleOverallEditToggle = useCallback(() => {
         if (editingOverall) {
             // 완료 버튼 클릭 시에만 수정 내용 저장
             const newContent = editOverallContent ?? overallEvaluation ?? '';
 
+            // 자동 저장 타이머 클리어
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+
             if (onOverallEvaluationUpdate) {
                 onOverallEvaluationUpdate(newContent);
             }
 
             setEditingOverall(false);
-            setEditOverallContent('');
+            // 저장 완료 후 로컬 상태 초기화하지 않음
+            // setEditOverallContent('');
         } else {
             // 수정 모드 진입
             setEditingOverall(true);

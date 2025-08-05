@@ -13,7 +13,7 @@ export const useUpdateOverallEvaluation = () => {
         onMutate: async (variables) => {
             // 낙관적 업데이트를 위해 이전 데이터를 백업
             const previousData = queryClient.getQueryData<FinalEvaluationResponse>([
-                "final-evaluation", 
+                "final-evaluation",
                 variables.studentId
             ]);
 
@@ -22,7 +22,7 @@ export const useUpdateOverallEvaluation = () => {
                 ["final-evaluation", variables.studentId],
                 (oldData) => {
                     if (!oldData) return oldData;
-                    
+
                     return {
                         ...oldData,
                         overall_evaluation: variables.overallEvaluation
@@ -34,22 +34,14 @@ export const useUpdateOverallEvaluation = () => {
             return { previousData };
         },
         onSuccess: (data, variables) => {
-            // 성공 시에도 데이터를 다시 설정하여 확실히 반영
-            queryClient.setQueryData<FinalEvaluationResponse>(
-                ["final-evaluation", variables.studentId],
-                (oldData) => {
-                    if (!oldData) return oldData;
-                    
-                    return {
-                        ...oldData,
-                        overall_evaluation: variables.overallEvaluation
-                    };
-                }
-            );
+            // 성공 시 쿼리를 무효화하여 최신 데이터를 다시 가져옴
+            queryClient.invalidateQueries({
+                queryKey: ["final-evaluation", variables.studentId]
+            });
         },
         onError: (error, variables, context) => {
             console.error("Failed to update overall evaluation:", error);
-            
+
             // 에러 발생 시 이전 데이터로 롤백
             if (context?.previousData) {
                 queryClient.setQueryData(
