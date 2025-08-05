@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: '#ffffff',
-        padding: 0,
+        paddingTop: 30,
+        paddingBottom: 30,
         fontFamily: 'NanumGothic',
     },
 
@@ -134,6 +135,12 @@ const styles = StyleSheet.create({
     },
     table: {
         width: '100%',
+    },
+    tableTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#1e293b',
+        textAlign: 'center',
     },
     tableHeader: {
         flexDirection: 'row',
@@ -292,17 +299,13 @@ const styles = StyleSheet.create({
         margin: '20 20 0 20',
     },
     summaryBox: {
-        backgroundColor: '#e0f2fe',
         padding: 20,
-        borderRadius: 8,
-        border: '1px solid #0284c7',
-        borderLeft: '4px solid #0284c7',
     },
     summaryTitle: {
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 12,
-        color: '#0c4a6e',
+        color: '#1e293b',
         textAlign: 'center',
     },
     summaryGrid: {
@@ -314,19 +317,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         padding: 10,
         borderRadius: 6,
-        width: '30%',
-        border: '1px solid #bae6fd',
+        width: '33%',
     },
     summaryItemLabel: {
         fontSize: 9,
-        color: '#0369a1',
+        color: '#1e293b',
         marginBottom: 4,
         textAlign: 'center',
     },
     summaryItemValue: {
         fontSize: 12,
         fontWeight: 'bold',
-        color: '#0c4a6e',
+        color: '#1e293b',
         textAlign: 'center',
     },
 
@@ -346,6 +348,154 @@ const styles = StyleSheet.create({
     gradeB: { color: '#0284c7', fontWeight: 'bold' },
     gradeC: { color: '#d97706', fontWeight: 'bold' },
     gradeD: { color: '#dc2626', fontWeight: 'bold' },
+
+    // 체크리스트 요약 테이블 스타일
+    summaryTableContainer: {
+        margin: '20 20 0 20',
+    },
+    summaryTable: {
+        width: '70%',
+    },
+    summaryTableHeader: {
+        flexDirection: 'row',
+        backgroundColor: '#7c3aed',
+        padding: 0,
+    },
+    summaryTableRow: {
+        flexDirection: 'row',
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid #f1f5f9',
+    },
+    summaryTableColHeader: {
+        flex: 1,
+        padding: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    summaryTableCol: {
+        flex: 1,
+        padding: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    summaryTableHeaderText: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#1e293b',
+        textAlign: 'center',
+    },
+    summaryTableValue: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#374151',
+        textAlign: 'center',
+    },
+
+    // 추천 대학 목록 테이블 스타일
+    recommendedTableContainer: {
+        marginBottom: 20,
+        backgroundColor: '#ffffff',
+        borderRadius: 8,
+        overflow: 'hidden',
+        border: '1px solid #e2e8f0',
+    },
+    recommendedTableTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        color: '#1e293b',
+        textAlign: 'center',
+        backgroundColor: '#f1f5f9',
+        padding: 8,
+        borderRadius: 4,
+    },
+    recommendedTable: {
+        width: '100%',
+    },
+    recommendedTableHeader: {
+        flexDirection: 'row',
+        backgroundColor: '#7c3aed',
+        padding: 0,
+    },
+    recommendedTableRow: {
+        flexDirection: 'row',
+        borderBottom: '1px solid #f1f5f9',
+    },
+    recommendedTableRowAlternate: {
+        flexDirection: 'row',
+        backgroundColor: '#f8fafc',
+        borderBottom: '1px solid #f1f5f9',
+    },
+    recommendedTableColHeader: {
+        padding: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    recommendedTableCol: {
+        padding: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    recommendedTableHeaderText: {
+        fontSize: 8,
+        fontWeight: 'bold',
+        color: '#ffffff',
+        textAlign: 'center',
+        lineHeight: 1.2,
+    },
+    recommendedTableCell: {
+        fontSize: 8,
+        color: '#374151',
+        textAlign: 'center',
+    },
+
+    // 평가요소 설명 스타일
+    evaluationDescriptionContainer: {
+        margin: '20 20 0 20',
+        backgroundColor: '#ffffff',
+        borderRadius: 8,
+        border: '1px solid #e2e8f0',
+        padding: 20,
+    },
+    evaluationDescriptionTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 15,
+        color: '#1e293b',
+        textAlign: 'center',
+        borderBottom: '2px solid #7c3aed',
+        paddingBottom: 8,
+    },
+    evaluationSection: {
+        marginBottom: 20,
+    },
+    evaluationSectionTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#7c3aed',
+        backgroundColor: '#f1f5f9',
+        padding: 8,
+        borderRadius: 4,
+    },
+    evaluationItem: {
+        marginBottom: 12,
+        padding: 10,
+        backgroundColor: '#f8fafc',
+        borderRadius: 6,
+        border: '1px solid #f1f5f9',
+    },
+    evaluationItemTitle: {
+        fontSize: 11,
+        fontWeight: 'bold',
+        color: '#1e293b',
+        marginBottom: 4,
+    },
+    evaluationItemDescription: {
+        fontSize: 10,
+        color: '#374151',
+        lineHeight: 1.4,
+    },
 });
 
 interface ReportPDFProps {
@@ -357,7 +507,9 @@ interface ReportPDFProps {
 }
 
 const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
-    const { studentInfo, scores, semesterTrend, checklistQuestions, checklistResponses, overallGpa } = data;
+    const { studentInfo, scores, semesterTrend, checklistQuestions, checklistResponses, checklistResult, recommendedUniversities } = data;
+
+    console.log(recommendedUniversities);
 
     // 성적 데이터를 학기별로 그룹화
     const scoresBySemester = scores.reduce((acc, score) => {
@@ -394,8 +546,6 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
         if (grade <= 6) return styles.gradeC;
         return styles.gradeD;
     };
-
-
 
     return (
         <Document>
@@ -444,6 +594,7 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                     </View>
                 </View>
 
+                {/* 출결 현황 섹션 */}
                 <View style={styles.section}>
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>학생 출결 현황</Text>
@@ -708,30 +859,38 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                         <Text style={styles.sectionTitle}>역량 평가 결과</Text>
                     </View>
 
-                    {/* 체크리스트 차트 */}
-                    <View style={styles.chartContainer}>
-                        <Text style={styles.chartTitle}>평가요소별 점수 차트</Text>
-                        {chartImages?.checklistChart ? (
-                            <>
-                                {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                                <Image
-                                    src={chartImages.checklistChart}
-                                    style={{
-                                        width: '100%',
-                                        height: 300,
-                                        marginBottom: 10,
-                                        objectFit: 'contain',
-                                        borderRadius: 6,
-                                    }}
-                                />
-                            </>
-                        ) : (
-                            <View style={styles.chartPlaceholder}>
-                                <Text style={styles.chartPlaceholderText}>
-                                    역량 평가 차트를 생성하려면 체크리스트 페이지를 먼저 방문해주세요
-                                </Text>
+                    {/* 체크리스트 요약 결과 테이블 */}
+                    <View style={styles.summaryTableContainer}>
+                        <View style={styles.summaryTable}>
+                            <View style={styles.summaryTableHeader}>
+                                <View style={styles.summaryTableColHeader}>
+                                    <Text style={styles.summaryTableHeaderText}>학업역량</Text>
+                                </View>
+                                <View style={styles.summaryTableColHeader}>
+                                    <Text style={styles.summaryTableHeaderText}>진로역량</Text>
+                                </View>
+                                <View style={styles.summaryTableColHeader}>
+                                    <Text style={styles.summaryTableHeaderText}>공동체역량</Text>
+                                </View>
+                                <View style={styles.summaryTableColHeader}>
+                                    <Text style={styles.summaryTableHeaderText}>총점</Text>
+                                </View>
                             </View>
-                        )}
+                            <View style={styles.summaryTableRow}>
+                                <View style={styles.summaryTableCol}>
+                                    <Text style={styles.summaryTableValue}>{checklistResult["학업역량"]}</Text>
+                                </View>
+                                <View style={styles.summaryTableCol}>
+                                    <Text style={styles.summaryTableValue}>{checklistResult["진로역량"]}</Text>
+                                </View>
+                                <View style={styles.summaryTableCol}>
+                                    <Text style={styles.summaryTableValue}>{checklistResult["공동체역량"]}</Text>
+                                </View>
+                                <View style={styles.summaryTableCol}>
+                                    <Text style={styles.summaryTableValue}>{checklistResult.total}</Text>
+                                </View>
+                            </View>
+                        </View>
                     </View>
 
                     {/* 카테고리별 체크리스트 테이블 */}
@@ -817,35 +976,214 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
                             </View>
                         </View>
                     ))}
-                </View>
 
-                {/* 종합 평가 요약 */}
-                <View style={styles.summaryContainer}>
-                    <View style={styles.summaryBox}>
-                        <Text style={styles.summaryTitle}>종합 평가 요약</Text>
-                        <View style={styles.summaryGrid}>
-                            <View style={styles.summaryItem}>
-                                <Text style={styles.summaryItemLabel}>전체교과 내신</Text>
-                                <Text style={[styles.summaryItemValue, getGradeStyle(overallGpa || 0)]}>
-                                    {overallGpa}등급
+                    {/* 체크리스트 차트 */}
+                    <View style={styles.chartContainer}>
+                        <Text style={styles.chartTitle}>평가요소별 점수 차트</Text>
+                        {chartImages?.checklistChart ? (
+                            <>
+                                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                                <Image
+                                    src={chartImages.checklistChart}
+                                    style={{
+                                        width: '100%',
+                                        height: 300,
+                                        marginBottom: 10,
+                                        objectFit: 'contain',
+                                        borderRadius: 6,
+                                    }}
+                                />
+                            </>
+                        ) : (
+                            <View style={styles.chartPlaceholder}>
+                                <Text style={styles.chartPlaceholderText}>
+                                    역량 평가 차트를 생성하려면 체크리스트 페이지를 먼저 방문해주세요
                                 </Text>
                             </View>
-                            <View style={styles.summaryItem}>
-                                <Text style={styles.summaryItemLabel}>역량 평가 항목</Text>
-                                <Text style={styles.summaryItemValue}>
-                                    {checklistResponses.length}개
-                                </Text>
-                            </View>
-                            <View style={styles.summaryItem}>
-                                <Text style={styles.summaryItemLabel}>평가 완료율</Text>
-                                <Text style={styles.summaryItemValue}>
-                                    {Math.round((checklistResponses.length / checklistQuestions.length) * 100)}%
-                                </Text>
-                            </View>
-                        </View>
+                        )}
                     </View>
                 </View>
 
+                {/* 종합 평가 요약 */}
+                <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>종합 평가 결과</Text>
+                    </View>
+
+                    {/* 추천 대학 목록 */}
+                    <View style={styles.tableContainer}>
+                        <Text style={styles.chartTitle}>추천 대학 목록</Text>
+                        <View style={styles.tableContainer}>
+                            <View style={styles.table}>
+                                <View style={styles.tableHeader}>
+                                    <View style={[styles.tableColHeader, { width: '6%' }]}>
+                                        <Text style={styles.tableCellHeader}>순서</Text>
+                                    </View>
+                                    <View style={[styles.tableColHeader, { width: '20%' }]}>
+                                        <Text style={styles.tableCellHeader}>대학명</Text>
+                                    </View>
+                                    <View style={[styles.tableColHeader, { width: '18%' }]}>
+                                        <Text style={styles.tableCellHeader}>전형명</Text>
+                                    </View>
+                                    <View style={[styles.tableColHeader, { width: '16%' }]}>
+                                        <Text style={styles.tableCellHeader}>유형구분</Text>
+                                    </View>
+                                    <View style={[styles.tableColHeader, { width: '28%' }]}>
+                                        <Text style={styles.tableCellHeader}>학과명</Text>
+                                    </View>
+                                    <View style={[styles.tableColHeader, { width: '12%' }]}>
+                                        <Text style={styles.tableCellHeader}>지원적정성</Text>
+                                    </View>
+                                </View>
+                                {(() => {
+                                    // 모든 추천 학교의 items를 평면화
+                                    const allItems = recommendedUniversities.flatMap(rec => rec.items || []);
+                                    return allItems.map((university, index) => (
+                                        <View key={index} style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlternate}>
+                                            <View style={[styles.tableCol, { width: '6%' }]}>
+                                                <Text style={styles.tableCell}>{university.rank}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '20%' }]}>
+                                                <Text style={styles.tableCell}>{university.university_name}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '18%' }]}>
+                                                <Text style={styles.tableCell}>{university.admission_type}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '16%' }]}>
+                                                <Text style={styles.tableCell}>{university.admission_category}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '28%' }]}>
+                                                <Text style={styles.tableCell}>{university.major_name}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '12%' }]}>
+                                                <Text style={styles.tableCell}>{university.overall_evaluation}</Text>
+                                            </View>
+                                        </View>
+                                    ));
+                                })()}
+                            </View>
+                        </View>
+                    </View>
+
+                    {/* 추천 대학 세부 분석 */}
+                    {(() => {
+                        const allItems = recommendedUniversities.flatMap(rec => rec.items || []);
+                        if (allItems.length === 0) return null;
+
+                        return allItems.map((university, universityIndex) => (
+                            <View key={universityIndex} style={styles.chartContainer}>
+                                <Text style={styles.chartTitle}>
+                                    {university.university_name} - {university.major_name} / {university.admission_category} 결과 분석
+                                </Text>
+
+                                {/* 추천 대학 결과 분석 테이블 */}
+                                <View style={styles.tableContainer}>
+                                    <View style={styles.table}>
+                                        <View style={styles.tableHeader}>
+                                            <View style={[styles.tableColHeader, { width: '15%' }]}>
+                                                <Text style={styles.tableCellHeader}>요소</Text>
+                                            </View>
+                                            <View style={[styles.tableColHeader, { width: '15%' }]}>
+                                                <Text style={styles.tableCellHeader}>반영비율</Text>
+                                            </View>
+                                            <View style={[styles.tableColHeader, { width: '15%' }]}>
+                                                <Text style={styles.tableCellHeader}>반영점수</Text>
+                                            </View>
+                                            <View style={[styles.tableColHeader, { width: '55%' }]}>
+                                                <Text style={styles.tableCellHeader}>세부 평가 요소</Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={styles.tableRow}>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element1_name}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element1_percentage ? Math.round(university.element1_percentage) : 0}%</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element1_score ? university.element1_score.toFixed(2) : '0.00'}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '55%', alignItems: 'flex-start', paddingLeft: 8 }]}>
+                                                <Text style={[styles.tableCell, { textAlign: 'left' }]}>
+                                                    - 학업 성취도{'\n'}
+                                                    - 기초 학업 역량{'\n'}
+                                                    - 심화 학업 역량{'\n'}
+                                                    - 학업 태도
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={styles.tableRowAlternate}>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element2_name}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element2_percentage ? Math.round(university.element2_percentage) : 0}%</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element2_score ? university.element2_score.toFixed(2) : '0.00'}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '55%', alignItems: 'flex-start', paddingLeft: 8 }]}>
+                                                <Text style={[styles.tableCell, { textAlign: 'left' }]}>
+                                                    - 진로 탐색 활동과 경험{'\n'}
+                                                    - 진로 탐색 역량{'\n'}
+                                                    - 지식 탐구 역량{'\n'}
+                                                    - 문제 해결 능력{'\n'}
+                                                    - 협업과 소통능력{'\n'}
+                                                    - 리더십
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={styles.tableRow}>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element3_name}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element3_percentage ? Math.round(university.element3_percentage) : 0}%</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}>{university.element3_score ? university.element3_score.toFixed(2) : '0.00'}</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '55%', alignItems: 'flex-start', paddingLeft: 8 }]}>
+                                                <Text style={[styles.tableCell, { textAlign: 'left' }]}>
+                                                    - 성실성 및 책임감{'\n'}
+                                                    - 나눔과 배려{'\n'}
+                                                    - 의사소통역량
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={styles.tableRowAlternate}>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCellBold}>환산점수</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCell}></Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCellBold}>{university.total_element_score ? university.total_element_score.toFixed(2) : '0.00'}/100</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '30%' }]}>
+                                                <Text style={styles.tableCellBold}>배치점수</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={styles.tableCellBold}>80점</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '10%' }]}>
+                                                <Text style={styles.tableCellBold}>비교 판정</Text>
+                                            </View>
+                                            <View style={[styles.tableCol, { width: '15%' }]}>
+                                                <Text style={[styles.tableCellBold, { color: '#0284c7' }]}>추천</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                        ));
+                    })()}
+                </View>
 
                 {/* 페이지 번호 */}
                 <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (
@@ -856,4 +1194,4 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ data, chartImages }) => {
     );
 };
 
-export default ReportPDF;
+export default ReportPDF; 
