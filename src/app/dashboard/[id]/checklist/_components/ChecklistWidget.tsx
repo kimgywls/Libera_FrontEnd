@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { HighschoolTypeEnum } from '@/app/types/checklist';
 import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
@@ -15,7 +15,6 @@ import ChecklistMetaSection from './ChecklistMetaSection';
 import ChecklistScoreChart from './ChecklistScoreChart';
 import ChecklistScoreSummary from './ChecklistScoreSummary';
 import ChecklistSection from './ChecklistSection';
-
 
 export default function ChecklistWidget() {
     const { studentInfo } = useStudentInfoContext();
@@ -34,6 +33,7 @@ export default function ChecklistWidget() {
     const { data: resultData, refetch: refetchResult } = useChecklistResult(studentId);
     const { data: questionsData, isLoading: isQuestionsLoading } = useChecklistQuestions();
     const { data: detailedResult, isLoading: isDetailedLoading, isError: isDetailedError, refetch: refetchDetailed } = useChecklistDetailedResult(studentId);
+    const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // 메타 정보가 로드되면 저장 상태 업데이트
     useEffect(() => {
@@ -46,19 +46,7 @@ export default function ChecklistWidget() {
         }
     }, [meta]);
 
-    // 학생 정보가 로딩 중인 경우 로딩 상태 표시
-    if (!studentInfo) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                    <p className="text-gray-500">학생 정보를 불러오는 중...</p>
-                </div>
-            </div>
-        );
-    }
-
-    const handleSaveChecklistMeta = async () => {
+    const handleSaveChecklistMeta = useCallback(async () => {
         if (!studentId) return;
         const now = new Date().toISOString();
         const body = {
@@ -85,7 +73,46 @@ export default function ChecklistWidget() {
             });
         }
         openModal('meta-alert');
-    };
+    }, [studentId, schoolType, curriculumCompleted, meta, mutation, closeModal, openModal]);
+
+    // 디바운스 자동 저장 기능 (메타 정보)
+    useEffect(() => {
+        // 메타 정보가 이미 저장되어 있으면 자동 저장 비활성화
+        if (isMetaSaved) {
+            return;
+        }
+
+        if (schoolType !== '' || curriculumCompleted !== '') {
+            // 이전 타이머가 있다면 클리어
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+
+            // 5초 후 자동 저장
+            autoSaveTimeoutRef.current = setTimeout(() => {
+                handleSaveChecklistMeta();
+            }, 5000);
+        }
+
+        // 컴포넌트 언마운트 시 타이머 클리어
+        return () => {
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+        };
+    }, [schoolType, curriculumCompleted, handleSaveChecklistMeta, isMetaSaved]);
+
+    // 학생 정보가 로딩 중인 경우 로딩 상태 표시
+    if (!studentInfo) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p className="text-gray-500">학생 정보를 불러오는 중...</p>
+                </div>
+            </div>
+        );
+    }
 
     const handleSubmissionSuccess = () => {
         // 제출 성공 시 관련 데이터를 다시 불러옴

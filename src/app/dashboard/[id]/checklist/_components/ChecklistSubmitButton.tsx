@@ -49,17 +49,64 @@ export default function ChecklistSubmitButton({ responses, totalQuestions, onSuc
     const handleAlertClose = () => closeModal('alert');
 
     return (
-        <div className="flex justify-end">
-            <button
-                className={`px-6 py-2 rounded-md transition-colors ${mutation.isPending
-                    ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                    : 'bg-violet-500 hover:bg-violet-600 text-white'
-                    }`}
-                onClick={handleSubmit}
-                disabled={mutation.isPending}
+        <>
+
+            {/* 플로팅 제출 버튼 */}
+            <div
+                className="fixed bottom-8 right-8 z-50 w-[350px]"
+                style={{
+                    animation: 'slideInFromBottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                }}
             >
-                {mutation.isPending ? '제출 중...' : '제출'}
-            </button>
+                <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="w-full">
+                            {/* 진행률 표시 */}
+                            <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                                <div
+                                    className="bg-indigo-500/70 h-2 rounded-full transition-all duration-300 ease-out"
+                                    style={{
+                                        width: `${Math.min((responses.length / totalQuestions) * 100, 100)}%`
+                                    }}
+                                ></div>
+                            </div>
+
+                            <button
+                                onClick={handleSubmit}
+                                disabled={mutation.isPending}
+                                className="relative overflow-hidden bg-violet-500 hover:bg-violet-600 disabled:bg-gray-400 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-200 flex items-center gap-3 shadow-lg hover:shadow-xl disabled:cursor-not-allowed hover:scale-105 min-w-[140px] justify-center w-full"
+                            >
+                                {/* 버튼 배경 애니메이션 */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-200"></div>
+
+                                {/* 버튼 내용 */}
+                                <div className="relative flex items-center gap-2">
+                                    {mutation.isPending ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                            <span className="text-white">제출 중...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="text-white">
+                                                체크리스트 제출 ({responses.length}/{totalQuestions})
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
+                            </button>
+                        </div>
+                        {/* 자동 저장 안내 메시지 */}
+                        <div className="text-sm text-gray-700 text-center">
+                            <span>* 5초마다 자동 저장됩니다.</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 글로우 효과 */}
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-purple-600/20 rounded-3xl blur-xl -z-10 opacity-60"></div>
+            </div>
+
             <AlertModal
                 open={isModalOpen('alert')}
                 title={alert.title}
@@ -67,6 +114,20 @@ export default function ChecklistSubmitButton({ responses, totalQuestions, onSuc
                 onConfirm={handleAlertClose}
                 onCancel={handleAlertClose}
             />
-        </div>
+
+            {/* 애니메이션을 위한 CSS */}
+            <style jsx>{`
+                @keyframes slideInFromBottom {
+                    from {
+                        transform: translateY(100%) scale(0.9);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateY(0) scale(1);
+                        opacity: 1;
+                    }
+                }
+            `}</style>
+        </>
     );
 }

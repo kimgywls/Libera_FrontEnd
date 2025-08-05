@@ -12,6 +12,7 @@ interface ChecklistMetaSectionProps {
     curriculumCompleted: string;
     setCurriculumCompleted: (value: string) => void;
     meta: ChecklistMetaResponse;
+    isAutoSaving?: boolean;
     alert: {
         open: boolean;
         title: string;
@@ -27,6 +28,7 @@ export default function ChecklistMetaSection({
     curriculumCompleted,
     setCurriculumCompleted,
     meta,
+    isAutoSaving = false,
     alert,
     handleSave,
 }: ChecklistMetaSectionProps) {
@@ -34,7 +36,13 @@ export default function ChecklistMetaSection({
         <section className="flex flex-col w-full justify-between items-end border border-gray-200 rounded-xl p-4 bg-white shadow-sm text-sm text-black">
             <div className="flex flex-row w-full mb-2 justify-between items-center">
                 <h3 className="text-2xl font-bold mb-1 text-gray-900">학생 정보 체크</h3>
-                <div className="flex justify-end h-10">
+                <div className="flex justify-end h-10 items-center gap-2">
+                    {isAutoSaving && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-violet-500"></div>
+                            <span>자동 저장 중...</span>
+                        </div>
+                    )}
                     {!meta && (
                         <button
                             onClick={handleSave}

@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 
 import type { ChecklistQuestion, ChecklistResponseItem, ChecklistSubmitResponse } from "@/app/types/checklist";
 import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
 
 import { useChecklistResponses } from '../_hooks/use-checklist-responses';
+import { useChecklistSubmit } from '../_hooks/use-checklist-submit';
 
 import AcademicCompetencySection from "./AcademicCompetencySection";
 import CareerCompetencySection from "./CareerCompetencySection";
@@ -19,6 +20,8 @@ export default function ChecklistSection({ questions, onSubmissionSuccess }: Che
     const { studentInfo } = useStudentInfoContext();
     const studentId = studentInfo!.id;
     const { data: prevResponses } = useChecklistResponses(studentId);
+    const submitMutation = useChecklistSubmit();
+    const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const academicQuestions = useMemo(
         () => questions.filter(q => q.main_category_id === 1),
@@ -40,6 +43,40 @@ export default function ChecklistSection({ questions, onSubmissionSuccess }: Che
         }
     }, [prevResponses]);
 
+
+
+    // 디바운스 자동 저장 기능
+    useEffect(() => {
+        if (Object.keys(scores).length > 0) {
+            // 이전 타이머가 있다면 클리어
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+
+            // 5초 후 자동 저장
+            autoSaveTimeoutRef.current = setTimeout(() => {
+                const responses: ChecklistResponseItem[] = Object.entries(scores).map(([id, score]) => ({
+                    checklist_question_id: Number(id),
+                    score
+                }));
+
+                if (responses.length > 0) {
+                    submitMutation.mutate({
+                        student_id: studentId,
+                        responses
+                    });
+                }
+            }, 5000);
+        }
+
+        // 컴포넌트 언마운트 시 타이머 클리어
+        return () => {
+            if (autoSaveTimeoutRef.current) {
+                clearTimeout(autoSaveTimeoutRef.current);
+            }
+        };
+    }, [scores, studentId, submitMutation]);
+
     const handleScoreChange = useCallback((questionId: number, score: number) => {
         setScores(prev => ({ ...prev, [questionId]: score }));
     }, []);
@@ -50,6 +87,10 @@ export default function ChecklistSection({ questions, onSubmissionSuccess }: Che
     );
 
     const handleSubmissionSuccess = useCallback(() => {
+        // 자동 저장 타이머 클리어
+        if (autoSaveTimeoutRef.current) {
+            clearTimeout(autoSaveTimeoutRef.current);
+        }
         onSubmissionSuccess?.();
     }, [onSubmissionSuccess]);
 
