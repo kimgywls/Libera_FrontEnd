@@ -9,6 +9,9 @@ export interface HideUniversitiesResponse {
     success: boolean;
     message?: string;
     hidden_count?: number;
+    actually_hidden?: number;
+    requested_count?: number;
+    valid_count?: number;
 }
 
 export const hideUniversities = async (studentId: number, admissionIds: number[]): Promise<HideUniversitiesResponse> => {

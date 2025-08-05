@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { SchoolRecommendationResponse, UniversityItem } from '@/app/types/university';
@@ -53,6 +53,12 @@ export function useUniversityHide(
         refetchOnReconnect: true,
     });
 
+    // 숨김 목록이 비어있을 때 자동으로 숨김 목록 닫기
+    useEffect(() => {
+        if (hiddenList.length === 0 && showHidden) {
+            setShowHidden(false);
+        }
+    }, [hiddenList.length, showHidden]);
 
 
     // 숨기기 뮤테이션
@@ -112,19 +118,39 @@ export function useUniversityHide(
             const response = await hideMutation.mutateAsync(uniqueItems);
 
             // 서버 응답에 따라 캐시 업데이트
-            if (response.hidden_count && response.hidden_count > 0) {
-                // 숨기기 성공 시 캐시 무효화하여 서버에서 최신 데이터 가져오기
+            if (response.actually_hidden !== undefined) {
+                // 서버에서 반환된 실제 숨김 개수 사용
                 await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
+
+                setAlert({
+                    open: true,
+                    title: '성공',
+                    description: `${response.actually_hidden}개 학교가 숨겨졌습니다.`,
+                    onConfirm: () => setAlert(prev => ({ ...prev, open: false })),
+                });
+            } else if (response.hidden_count !== undefined) {
+                // 기존 hidden_count 필드도 지원
+                await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
+
+                setAlert({
+                    open: true,
+                    title: '성공',
+                    description: `${response.hidden_count}개 학교가 숨겨졌습니다.`,
+                    onConfirm: () => setAlert(prev => ({ ...prev, open: false })),
+                });
+            } else {
+                // 서버 응답에 숨김 개수가 없으면 요청한 개수로 표시
+                await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
+
+                setAlert({
+                    open: true,
+                    title: '성공',
+                    description: `${uniqueItems.length}개 학교가 숨겨졌습니다.`,
+                    onConfirm: () => setAlert(prev => ({ ...prev, open: false })),
+                });
             }
 
             setSelectedItems([]);
-
-            setAlert({
-                open: true,
-                title: '성공',
-                description: `${response.hidden_count || 0}개 학교가 숨겨졌습니다.`,
-                onConfirm: () => setAlert(prev => ({ ...prev, open: false })),
-            });
         } catch (error) {
             console.error('숨기기 에러:', error);
             const errorMessage = error instanceof Error ? error.message : '학교 숨기기에 실패했습니다.';
@@ -140,6 +166,9 @@ export function useUniversityHide(
     const handleUnhide = useCallback(async (admissionId: number) => {
         try {
             await unhideMutation.mutateAsync(admissionId);
+
+            // 즉시 캐시 무효화하여 최신 데이터 가져오기
+            await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
 
             setAlert({
                 open: true,
@@ -157,7 +186,7 @@ export function useUniversityHide(
                 onConfirm: () => setAlert(prev => ({ ...prev, open: false })),
             });
         }
-    }, [unhideMutation]);
+    }, [unhideMutation, queryClient, studentId]);
 
     const handleUnhideAll = useCallback(async () => {
         if (!studentId || hiddenList.length === 0) return;
