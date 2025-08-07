@@ -1,5 +1,5 @@
 // Components
-export { ReportPDF, ReportPDFViewer } from './components';
+export { } from './components';
 
 // Hooks
 export { useReportData } from './hooks';

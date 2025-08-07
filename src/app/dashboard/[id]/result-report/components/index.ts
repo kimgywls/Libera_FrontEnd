@@ -1,2 +1,1 @@
-export { default as ReportPDF } from './ReportPDF';
-export { default as ReportPDFViewer } from './ReportPDFViewer'; 
+export { default as ResultReportWidget } from './ResultReportWidget';
