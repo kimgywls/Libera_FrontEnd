@@ -29,36 +29,88 @@ export const CATEGORY_OPTIONS = ['일반선택', '진로선택', '체육/예술'
 
 export const CATEGORY_COLUMNS = {
     '일반선택': [
-        { key: 'subject_type', label: '이수 구분' },
+        { key: 'subject_type', label: `이수\n구분` },
         { key: 'curriculum', label: '교과' },
         { key: 'subject', label: '과목' },
-        { key: 'credit_hours', label: '단위수' },
+        { key: 'credit_hours', label: `단위\n수` },
         { key: 'raw_score', label: '원점수' },
-        { key: 'subject_average', label: '과목평균' },
-        { key: 'standard_deviation', label: '표준편차' },
+        { key: 'subject_average', label: `과목\n평균` },
+        { key: 'standard_deviation', label: `표준\n편차` },
         { key: 'achievement_level', label: '성취도' },
-        { key: 'student_count', label: '수강자 수' },
-        { key: 'grade_rank', label: '석차 등급' },
+        { key: 'student_count', label: `수강자\n수` },
+        { key: 'grade_rank', label: '석차\n등급' },
     ],
     '진로선택': [
-        { key: 'subject_type', label: '이수 구분' },
+        { key: 'subject_type', label: `이수\n구분` },
         { key: 'curriculum', label: '교과' },
         { key: 'subject', label: '과목' },
-        { key: 'credit_hours', label: '단위수' },
+        { key: 'credit_hours', label: `단위\n수` },
         { key: 'raw_score', label: '원점수' },
-        { key: 'subject_average', label: '과목평균' },
+        { key: 'subject_average', label: `과목\n평균` },
         { key: 'achievement_level', label: '성취도' },
-        { key: 'student_count', label: '수강자 수' },
+        { key: 'student_count', label: `수강자수` },
         { key: 'achievement_distribution', label: '성취도별 분포 비율' },
     ],
     '체육/예술': [
-        { key: 'subject_type', label: '이수 구분' },
+        { key: 'subject_type', label: `이수\n구분` },
         { key: 'curriculum', label: '교과' },
         { key: 'subject', label: '과목' },
-        { key: 'credit_hours', label: '단위수' },
+        { key: 'credit_hours', label: `단위\n수` },
         { key: 'achievement_level', label: '성취도' },
     ],
 } as const;
+
+export const RESULT_REPORT_CATEGORY_COLUMNS = {
+    '일반선택': [
+        { key: 'curriculum', label: '교과' },
+        { key: 'subject', label: '과목' },
+        { key: 'credit_hours', label: `단위수` },
+        { key: 'raw_score', label: '원점수' },
+        { key: 'subject_average', label: `과목\n평균` },
+        { key: 'standard_deviation', label: `표준\n편차` },
+        { key: 'achievement_level', label: '성취도' },
+        { key: 'student_count', label: `수강자수` },
+        { key: 'grade_rank', label: '석차\n등급' },
+    ],
+    '진로선택': [
+        { key: 'curriculum', label: '교과' },
+        { key: 'subject', label: '과목' },
+        { key: 'credit_hours', label: `단위수` },
+        { key: 'raw_score', label: '원점수' },
+        { key: 'subject_average', label: `과목\n평균` },
+        { key: 'achievement_level', label: '성취도' },
+        { key: 'student_count', label: `수강자수` },
+        { key: 'achievement_distribution', label: '성취도별 분포 비율' },
+    ],
+    '체육/예술': [
+        { key: 'curriculum', label: '교과' },
+        { key: 'subject', label: '과목' },
+        { key: 'credit_hours', label: `단위수` },
+        { key: 'achievement_level', label: '성취도' },
+    ],
+} as const;
+
+export const CHECKLIST_MAIN_CATEGORY_LABELS: Record<string, string> = {
+    1: '학업역량',
+    2: '진로역량',
+    3: '공동체역량',
+};
+
+export const CHECKLIST_SUB_CATEGORY_LABELS: Record<string, string> = {
+    1: '학업성취도',
+    2: '기초학업역량',
+    3: '심화학업역량',
+    4: '학업태도',
+    5: '진로탐색활동과 경험',
+    6: '진로탐색역량',
+    7: '지식탐구역량',
+    8: '문제해결능력',
+    9: '협업과 소통능력',
+    10: '리더십',
+    11: '성실성 및 책임감',
+    12: '나눔과 배려',
+    13: '의사소통능력',
+};
 
 export const ALL_COLUMNS = Array.from(
     new Set(Object.values(CATEGORY_COLUMNS).flat().map(col => col.key))

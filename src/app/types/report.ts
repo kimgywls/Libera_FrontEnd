@@ -1,20 +1,25 @@
 import { Score } from './score';
 import { SemesterTrendResponse } from './semesterTrend';
-import { ChecklistQuestion, ChecklistResponseItem, ChecklistResultScores } from './checklist';
+import { ChecklistQuestion, ChecklistResponseItem, ChecklistResultScores, ChecklistDetailedResultResponse } from './checklist';
 import { StudentInfo } from './student';
 import { Attendance } from './attendance';
 import { SavedRecommendation } from './university';
+import { FinalEvaluationResponse } from './comprehensiveEvaluation';
+import { OverallEvaluationResponse } from './comprehensiveEvaluation';
 
 export interface StudentReportData {
     studentInfo: StudentInfo;
     attendance: Attendance[];
     scores: Score[];
     semesterTrend?: SemesterTrendResponse;
+    overallGpa: number;
     checklistQuestions: ChecklistQuestion[];
     checklistResponses: ChecklistResponseItem[];
     checklistResult: ChecklistResultScores;
-    overallGpa: number;
+    checklistDetailedResult?: ChecklistDetailedResultResponse;
     recommendedUniversities: SavedRecommendation[];
+    finalEvaluation: FinalEvaluationResponse | null;
+    overallEvaluation: OverallEvaluationResponse | null;
 }
 
 export interface ReportSection {
