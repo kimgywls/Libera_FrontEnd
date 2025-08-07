@@ -13,6 +13,8 @@ import {
 
 import { SEMESTER_TREND_CATEGORY_LABELS } from '@/app/constants';
 import { SemesterTrendPeriod, SemesterTrendResponse } from '@/app/types/semesterTrend';
+import Section from '../../../_components/Section';
+import DataState from '../../../_components/DataState';
 
 const CATEGORY_COLORS: Record<string, string> = {
     overall: '#8884d8',
@@ -121,38 +123,47 @@ const SemesterTrendChartSection: FC<SemesterTrendChartSectionProps> = ({
     isLoading,
     isError,
 }) => {
-    if (isLoading) return <div className="py-4 text-center text-gray-500">로딩 중...</div>;
-    if (isError) return <div className="py-4 text-center text-red-500">석차등급 정보를 불러오는 데 실패했습니다.</div>;
-    if (!semesterTrend?.categories) return <div className="py-4 text-center text-gray-400">석차등급 정보가 없습니다.</div>;
+    const isEmpty = !semesterTrend?.categories || semesterTrend.categories.length === 0;
 
     return (
-        <div id="semester-trend-charts" className="grid grid-cols-3 gap-3 mb-6">
-            {semesterTrend.categories.map((category) => {
-                const periodMap = Object.fromEntries(
-                    category.periods.map((data: SemesterTrendPeriod) => [
-                        `${data.grade}-${data.semester}`,
-                        data.gpa,
-                    ])
-                );
-                const data = ALL_SEMESTERS.map(sem => {
-                    const gpa = periodMap[`${sem.grade}-${sem.semester}`];
-                    return {
-                        semester: `${sem.grade}-${sem.semester}`,
-                        barValue: gpa !== undefined && gpa !== null ? 10 - gpa : null,
-                        originalValue: gpa ?? null,
-                    };
-                });
-                return (
-                    <CategoryTrendChart
-                        key={category.id}
-                        categoryId={category.id}
-                        categoryName={category.name}
-                        data={data}
-                        chartId={`chart-${category.id}`}
-                    />
-                );
-            })}
-        </div>
+        <Section title="석차등급 추이 분석">
+            <DataState
+                isLoading={isLoading}
+                isError={isError}
+                isEmpty={isEmpty}
+                loadingMessage="석차등급 정보를 불러오는 중..."
+                errorMessage="석차등급 정보를 불러오는 데 실패했습니다."
+                emptyMessage="석차등급 정보가 없습니다."
+            >
+                <div id="semester-trend-charts" className="grid grid-cols-3 gap-3 mb-6">
+                    {semesterTrend?.categories.map((category) => {
+                        const periodMap = Object.fromEntries(
+                            category.periods.map((data: SemesterTrendPeriod) => [
+                                `${data.grade}-${data.semester}`,
+                                data.gpa,
+                            ])
+                        );
+                        const data = ALL_SEMESTERS.map(sem => {
+                            const gpa = periodMap[`${sem.grade}-${sem.semester}`];
+                            return {
+                                semester: `${sem.grade}-${sem.semester}`,
+                                barValue: gpa !== undefined && gpa !== null ? 10 - gpa : null,
+                                originalValue: gpa ?? null,
+                            };
+                        });
+                        return (
+                            <CategoryTrendChart
+                                key={category.id}
+                                categoryId={category.id}
+                                categoryName={category.name}
+                                data={data}
+                                chartId={`chart-${category.id}`}
+                            />
+                        );
+                    })}
+                </div>
+            </DataState>
+        </Section>
     );
 };
 
