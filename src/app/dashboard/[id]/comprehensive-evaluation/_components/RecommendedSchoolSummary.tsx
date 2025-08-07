@@ -20,8 +20,8 @@ const RecommendedSchoolSummary: FC<RecommendedSchoolSummaryProps> = ({ savedReco
         if (!recommendation) return "";
 
         switch (dataKey) {
-            case "suitability_type":
-                return recommendation.suitability_type || "";
+            case "overall_evaluation":
+                return recommendation.overall_evaluation || "";
             case "university_name":
                 return recommendation.university_name || "";
             case "major_name":
@@ -83,7 +83,7 @@ const RecommendedSchoolSummary: FC<RecommendedSchoolSummaryProps> = ({ savedReco
     ];
 
     const dataKeys = [
-        "suitability_type",
+        "overall_evaluation",
         "university_name",
         "major_name",
         "admission_category",

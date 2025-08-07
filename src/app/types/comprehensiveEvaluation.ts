@@ -29,3 +29,11 @@ export interface UpdateCategoryEvaluationParams {
     evaluationContent: string;
     isFinal?: boolean;
 }
+
+export interface OverallEvaluationResponse {
+    student_id: number;
+    overall_content: string | null;
+    overall_evaluation_id: number;
+    created_at: string;
+    updated_at: string;
+}
