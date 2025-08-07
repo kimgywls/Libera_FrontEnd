@@ -68,15 +68,15 @@ export const useCreateOrAddRecommendations = ({ selectedItems, universityList }:
                         case '안정':
                             return '안정';
                         case '없음':
-                            return '적합';
+                            return '적정';
                         case '신설':
-                            return '적합';
+                            return '신설';
                         default:
-                            return '적합'; // 기본값
+                            return '적정'; // 기본값
                     }
                 };
 
-                const suitabilityType = getSuitabilityType(university.recommendation_type || '적합');
+                const suitabilityType = getSuitabilityType(university.recommendation_type || '적정');
 
                 const item = {
                     admission_id: admissionId,

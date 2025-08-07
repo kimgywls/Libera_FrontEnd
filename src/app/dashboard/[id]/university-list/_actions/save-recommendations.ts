@@ -14,7 +14,6 @@ export const saveRecommendations = async (
             data
         );
 
-        // console.log('Response:', response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
