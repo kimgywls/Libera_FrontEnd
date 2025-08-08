@@ -36,38 +36,7 @@ const DashboardContent = ({ children, selectedStudent }: DashboardContentProps) 
     const isResultReportPage = pathname.includes('/result-report');
 
     useEffect(() => {
-        const style = document.createElement('style');
-        style.textContent = `
-            @media print {
-                body {
-                    margin: 0;
-                    padding: 0;
-                    background: white !important;
-                }
-    
-                .no-print {
-                    display: none !important;
-                }
-    
-                .print-content {
-                    margin-left: 0 !important;
-                    width: 100% !important;
-                    padding: 0 !important;
-                }
-    
-                * {
-                    -webkit-print-color-adjust: exact !important;
-                    color-adjust: exact !important;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-
-        return () => {
-            if (document.head.contains(style)) {
-                document.head.removeChild(style);
-            }
-        };
+        // 인쇄 스타일은 globals.css에서 전역으로 관리하므로 제거
     }, []);
 
     useEffect(() => {
@@ -123,30 +92,55 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/scores` : "/main",
             icon: BookOpen,
             description: "교과 성적 관리",
+            subItems: [
+                { name: "출석", href: selectedStudent ? `/dashboard/${selectedStudent.id}/scores#attendance-section` : "/main", description: "출석 현황" },
+                { name: "내신 성적", href: selectedStudent ? `/dashboard/${selectedStudent.id}/scores#scores-section` : "/main", description: "학년별 내신 성적" },
+                { name: "내신성적 추이", href: selectedStudent ? `/dashboard/${selectedStudent.id}/scores#trend-section` : "/main", description: "성적 추이 분석" },
+            ]
         },
         {
             name: "비교과",
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/extracurricular` : "/main",
             icon: FileText,
             description: "비교과 활동 관리",
+            subItems: [
+                { name: "창의체험활동", href: selectedStudent ? `/dashboard/${selectedStudent.id}/extracurricular#creative-section` : "/main", description: "창의적 체험활동" },
+                { name: "세부능력 및 특기사항", href: selectedStudent ? `/dashboard/${selectedStudent.id}/extracurricular#detailed-section` : "/main", description: "세부능력 및 특기사항" },
+                { name: "행동특성 및 종합의견", href: selectedStudent ? `/dashboard/${selectedStudent.id}/extracurricular#behavioral-section` : "/main", description: "행동특성 및 종합의견" },
+            ]
         },
         {
             name: "학교 리스트",
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/university-list` : "/main",
             icon: School,
             description: "대학 진학 추천",
+            subItems: [
+                { name: "추천 대학 리스트", href: selectedStudent ? `/dashboard/${selectedStudent.id}/university-list` : "/main", description: "대학 진학 추천" },
+                { name: "숨긴 대학 리스트", href: selectedStudent ? `/dashboard/${selectedStudent.id}/university-list#hidden-section` : "/main", description: "숨긴 대학 리스트" },
+            ]
         },
         {
             name: "체크리스트",
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist` : "/main",
             icon: ListCheck,
             description: "학생부 종합 체크리스트",
+            subItems: [
+                { name: "학업역량", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#academic-section` : "/main", description: "학업역량" },
+                { name: "진로역량", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#career-section` : "/main", description: "진로역량" },
+                { name: "공동체역량", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#community-section` : "/main", description: "공동체역량" },
+                { name: "체크리스트 점수", href: selectedStudent ? `/dashboard/${selectedStudent.id}/checklist#checklist-score-summary-section` : "/main", description: "체크리스트 점수 요약" },
+            ]
         },
         {
             name: "종합 평가",
             href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation` : "/main",
             icon: BarChart3,
             description: "종합 성적 분석",
+            subItems: [
+                { name: "최종 학교 추천 리스트", href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation#final-recommended-schools-section` : "/main", description: "최종 학교 추천 리스트" },
+                { name: "학생부 종합 평가", href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation#category-evaluation-section` : "/main", description: "학생부 종합 평가" },
+                { name: "전체 종합 의견", href: selectedStudent ? `/dashboard/${selectedStudent.id}/comprehensive-evaluation#overall-evaluation-section` : "/main", description: "전체 종합 의견" },
+            ]
         },
         {
             name: "결과보고서",
@@ -174,25 +168,59 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                         const isActive = isActivePath(item.href);
 
                         return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={`
-                                    group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all
-                                    ${isActive
-                                        ? 'bg-violet-100 text-gray-700'
-                                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
-                                `}
-                            >
-                                <IconComponent className={`
-                                    mr-3 h-5 w-5
-                                    ${isActive ? 'text-violet-600' : 'text-gray-500 group-hover:text-gray-700'}
-                                `} />
-                                <div className="flex-1">
-                                    <div className="font-medium">{item.name}</div>
-                                    <div className="text-xs text-gray-500">{item.description}</div>
-                                </div>
-                            </Link>
+                            <div key={item.name}>
+                                <Link
+                                    href={item.href}
+                                    className={`
+                                        group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+                                        ${isActive
+                                            ? 'bg-violet-100 text-gray-700'
+                                            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                                        }
+                                    `}
+                                >
+                                    <IconComponent className={`
+                                        mr-3 flex-shrink-0 h-5 w-5 transition-colors duration-200
+                                        ${isActive ? 'text-violet-600' : 'text-gray-500 group-hover:text-gray-700'}
+                                    `} />
+                                    <div className="flex-1">
+                                        <div className="font-medium">{item.name}</div>
+                                        <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
+                                    </div>
+                                </Link>
+
+                                {/* 서브 아이템 렌더링 */}
+                                {item.subItems && (
+                                    <div className={`mt-2 space-y-1 transition-all duration-300 overflow-hidden ${isActive ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                                        }`}>
+                                        {item.subItems.map((subItem) => {
+                                            const isSubActive = pathname.includes(subItem.href.split('#')[0]) &&
+                                                (subItem.href.includes('#') ? pathname.includes(subItem.href.split('#')[1]) : true);
+                                            return (
+                                                <Link
+                                                    key={subItem.name}
+                                                    href={subItem.href}
+                                                    className={`
+                                                        block pl-10 py-2 text-sm rounded-md transition-all duration-200 hover:bg-violet-50
+                                                        ${isSubActive
+                                                            ? 'bg-violet-50 text-violet-700 border-l-2 border-violet-500 font-medium'
+                                                            : 'text-gray-600 hover:text-gray-800'
+                                                        }
+                                                    `}
+                                                >
+                                                    <div className="flex items-center">
+                                                        <span className="text-gray-400 mr-2 text-xs">•</span>
+                                                        <span className="flex-1">{subItem.name}</span>
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 mt-0.5 ml-4">
+                                                        {subItem.description}
+                                                    </div>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
                         );
                     })}
                 </nav>
