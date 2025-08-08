@@ -19,7 +19,11 @@ interface NavItem {
     href: string;
     icon: React.ComponentType<{ className?: string }>;
     description: string;
-    subItems?: Array<{ name: string; href: string; description: string }>;
+    subItems?: Array<{
+        name: string;
+        href: string;
+        description: string;
+    }>;
 }
 
 interface DashboardLayoutProps {
@@ -34,10 +38,6 @@ interface DashboardContentProps {
 const DashboardContent = ({ children, selectedStudent }: DashboardContentProps) => {
     const pathname = usePathname();
     const isResultReportPage = pathname.includes('/result-report');
-
-    useEffect(() => {
-        // 인쇄 스타일은 globals.css에서 전역으로 관리하므로 제거
-    }, []);
 
     useEffect(() => {
         if (selectedStudent?.name && isResultReportPage) {
@@ -84,7 +84,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     const { id } = useParams();
     const { students } = useAllStudentsList();
     const selectedStudent = students.find((s) => s.id === Number(id));
-    const isActivePath = (href: string) => pathname.startsWith(href);
+
+    // 현재 경로 확인 함수
+    const isActivePath = (href: string) => {
+        if (href === '/dashboard') {
+            return pathname === '/dashboard' || pathname === `/dashboard/${selectedStudent?.id}`;
+        }
+        return pathname.startsWith(href);
+    };
 
     const navigation: NavItem[] = [
         {
@@ -190,30 +197,24 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                 </Link>
 
                                 {/* 서브 아이템 렌더링 */}
-                                {item.subItems && (
-                                    <div className={`mt-2 space-y-1 transition-all duration-300 overflow-hidden ${isActive ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                                        }`}>
+                                {item.subItems && isActive && (
+                                    <div className="mt-2 space-y-1">
                                         {item.subItems.map((subItem) => {
-                                            const isSubActive = pathname.includes(subItem.href.split('#')[0]) &&
-                                                (subItem.href.includes('#') ? pathname.includes(subItem.href.split('#')[1]) : true);
+                                            const isSubActive = pathname.includes(subItem.href.split('#')[0]) && pathname.includes(subItem.href.split('#')[1]);
                                             return (
                                                 <Link
                                                     key={subItem.name}
                                                     href={subItem.href}
                                                     className={`
-                                                        block pl-10 py-2 text-sm rounded-md transition-all duration-200 hover:bg-violet-50
+                                                        block pl-10 py-1 text-sm rounded-md transition-all duration-200
                                                         ${isSubActive
-                                                            ? 'bg-violet-50 text-violet-700 border-l-2 border-violet-500 font-medium'
-                                                            : 'text-gray-600 hover:text-gray-800'
+                                                            ? 'bg-violet-50 text-violet-700 border-l-2 border-violet-500'
+                                                            : 'text-gray-600 hover:bg-violet-50 hover:text-gray-800'
                                                         }
                                                     `}
                                                 >
-                                                    <div className="flex items-center">
-                                                        <span className="text-gray-400 mr-2 text-xs">•</span>
-                                                        <span className="flex-1">{subItem.name}</span>
-                                                    </div>
-                                                    <div className="text-xs text-gray-500 mt-0.5 ml-4">
-                                                        {subItem.description}
+                                                    <div className="font-medium">
+                                                        <span className="text-gray-500 mr-1">-</span> {subItem.name}
                                                     </div>
                                                 </Link>
                                             );
