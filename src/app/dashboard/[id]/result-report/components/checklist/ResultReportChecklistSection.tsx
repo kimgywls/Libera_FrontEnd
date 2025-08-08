@@ -56,18 +56,17 @@ export default function ResultReportChecklistSection({ questions, responses, res
                     questions={academicQuestions}
                     responses={responsesMap}
                 />
-
-
+                <div className="result-report-page-break" />
                 <ResultReportCareerCompetencySection
                     questions={careerQuestions}
                     responses={responsesMap}
                 />
-
+                <div className="result-report-page-break" />
                 <ResultReportCommunityCompetencySection
                     questions={communityQuestions}
                     responses={responsesMap}
                 />
-
+                <div className="result-report-page-break" />
                 <ResultReportChecklistScoreChart
                     data={detailedResult}
                 />
