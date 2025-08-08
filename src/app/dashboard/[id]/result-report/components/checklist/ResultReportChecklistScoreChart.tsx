@@ -4,7 +4,6 @@ import {
     Bar,
     XAxis,
     YAxis,
-    ResponsiveContainer,
     LabelList,
     Cell,
     ReferenceLine,
@@ -129,57 +128,57 @@ const ResultReportChecklistScoreChart: FC<ChecklistScoreChartProps> = ({ data })
     return (
         <ResultReportSection title="평가요소별 점수">
             <div id="checklist-score-chart" className="flex justify-center">
-                <ResponsiveContainer width="100%" height={480}>
-                    <BarChart
-                        data={chartData}
-                        margin={{ top: 30, right: 10, left: -30, bottom: 30 }}
-                        barCategoryGap={10}
-                    >
-                        <XAxis
-                            dataKey="sub"
-                            interval={0}
-                            textAnchor="middle"
-                            height={80}
-                            tickLine={true}
-                            axisLine={{ stroke: '#e5e7eb', strokeWidth: 1 }}
-                            tick={renderTick}
-                        />
-                        <YAxis
-                            domain={[0, 100]}
-                            ticks={[0, 20, 40, 60, 80, 100]}
-                            tick={{ fontSize: 11, fill: '#6b7280' }}
-                            tickLine={false}
-                            axisLine={{ stroke: '#e5e7eb', strokeWidth: 1 }}
-                        />
-                        <Legend content={renderCustomLegend} />
-                        {data.categories.map((category, catIndex) => {
-                            if (catIndex === data.categories.length - 1) return null;
-                            const cumulativeCount = data.categories
-                                .slice(0, catIndex + 1)
-                                .reduce((sum, cat) => sum + cat.sub_categories.length, 0);
-                            return (
-                                <ReferenceLine
-                                    key={`category-divider-${catIndex}`}
-                                    x={cumulativeCount - 0.5}
-                                    stroke="#ef4444"
-                                    strokeWidth={3}
-                                    strokeDasharray="8 4"
-                                    opacity={1}
-                                />
-                            );
-                        })}
-                        <Bar dataKey="score" >
-                            {chartData.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={CATEGORY_COLORS[entry.main] || "#6b7280"}
-                                    className="transition-opacity duration-200"
-                                />
-                            ))}
-                            <LabelList content={renderCustomLabel} />
-                        </Bar>
-                    </BarChart>
-                </ResponsiveContainer>
+                <BarChart
+                    width={1000}
+                    height={480}
+                    data={chartData}
+                    margin={{ top: 30, right: 0, left: -30, bottom: 30 }}
+                    barCategoryGap={5}
+                >
+                    <XAxis
+                        dataKey="sub"
+                        interval={0}
+                        textAnchor="middle"
+                        height={80}
+                        tickLine={true}
+                        axisLine={{ stroke: '#e5e7eb', strokeWidth: 1 }}
+                        tick={renderTick}
+                    />
+                    <YAxis
+                        domain={[0, 100]}
+                        ticks={[0, 20, 40, 60, 80, 100]}
+                        tick={{ fontSize: 11, fill: '#6b7280' }}
+                        tickLine={false}
+                        axisLine={{ stroke: '#e5e7eb', strokeWidth: 1 }}
+                    />
+                    <Legend content={renderCustomLegend} />
+                    {data.categories.map((category, catIndex) => {
+                        if (catIndex === data.categories.length - 1) return null;
+                        const cumulativeCount = data.categories
+                            .slice(0, catIndex + 1)
+                            .reduce((sum, cat) => sum + cat.sub_categories.length, 0);
+                        return (
+                            <ReferenceLine
+                                key={`category-divider-${catIndex}`}
+                                x={cumulativeCount - 0.5}
+                                stroke="#ef4444"
+                                strokeWidth={3}
+                                strokeDasharray="8 4"
+                                opacity={1}
+                            />
+                        );
+                    })}
+                    <Bar dataKey="score" >
+                        {chartData.map((entry, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={CATEGORY_COLORS[entry.main] || "#6b7280"}
+                                className="transition-opacity duration-200"
+                            />
+                        ))}
+                        <LabelList content={renderCustomLabel} />
+                    </Bar>
+                </BarChart>
             </div>
         </ResultReportSection>
     );

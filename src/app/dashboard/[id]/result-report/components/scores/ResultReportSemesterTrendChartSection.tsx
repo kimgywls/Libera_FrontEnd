@@ -8,7 +8,6 @@ import {
     YAxis,
     Tooltip,
     LabelList,
-    ResponsiveContainer,
 } from 'recharts';
 
 import { SEMESTER_TREND_CATEGORY_LABELS } from '@/app/constants';
@@ -52,66 +51,66 @@ interface CategoryTrendChartProps {
 
 const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data, chartId }) => (
     <div id={chartId} className="rounded-lg pl-2 pt-4 pb-2" style={{ backgroundColor: '#ffffff' }}>
-        <div className="font-bold mb-2 ml-2 text-lg flex items-center" style={{ color: '#7f22fe' }}>
+        <div className="font-bold mb-2 ml-2 text-lg flex items-center" style={{ color: '#1e293b' }}>
             <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: CATEGORY_COLORS[categoryId] || '#6b7280' }} />
-            {SEMESTER_TREND_CATEGORY_LABELS[categoryId] || categoryName}
+            <span style={{ color: '#374151' }} className="text-sm">
+                {SEMESTER_TREND_CATEGORY_LABELS[categoryId] || categoryName}
+            </span>
         </div>
-        <ResponsiveContainer width={380} height={300}>
-            <BarChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
-                <XAxis dataKey="semester" />
-                <YAxis
-                    type="number"
-                    domain={[5.5, 9]} // 1~5등급만 보이게 설정
-                    tickFormatter={(v) => `${10 - v}등급`}
-                    tickCount={5}
-                    allowDecimals={false}
-                />
-                <Tooltip
-                    labelFormatter={(label: string) => {
-                        const [grade, semester] = label.split('-');
-                        return `${grade}학년 ${semester}학기`;
+        <BarChart width={300} height={270} data={data} margin={{ top: 20, right: 0, left: 0, bottom: 20 }}>
+            <XAxis dataKey="semester" />
+            <YAxis
+                type="number"
+                domain={[5.5, 9]} // 1~5등급만 보이게 설정
+                tickFormatter={(v) => `${10 - v}`}
+                tickCount={5}
+                allowDecimals={false}
+            />
+            <Tooltip
+                labelFormatter={(label: string) => {
+                    const [grade, semester] = label.split('-');
+                    return `${grade}학년 ${semester}학기`;
+                }}
+                formatter={(
+                    _v: number,
+                    _name: string,
+                    props: { payload?: { originalValue?: number | null } }
+                ) => {
+                    const original = props?.payload?.originalValue;
+                    return [
+                        original !== undefined && original !== null ? `${original}등급` : '',
+                        '',
+                    ];
+                }}
+                separator=""
+            />
+            <Bar dataKey="barValue" fill={CATEGORY_COLORS[categoryId] || '#6b7280'}>
+                <LabelList
+                    dataKey="barValue"
+                    content={({ x, y, width, index }) => {
+                        if (
+                            typeof x !== 'number' ||
+                            typeof y !== 'number' ||
+                            typeof width !== 'number' ||
+                            typeof index !== 'number'
+                        )
+                            return null;
+                        const originalValue = data[index]?.originalValue;
+                        if (originalValue == null) return null;
+                        return (
+                            <text
+                                x={x + width / 2}
+                                y={y - 6}
+                                textAnchor="middle"
+                                style={{ fill: '#444444', fontSize: 12 }}
+                            >
+                                {originalValue}등급
+                            </text>
+                        );
                     }}
-                    formatter={(
-                        _v: number,
-                        _name: string,
-                        props: { payload?: { originalValue?: number | null } }
-                    ) => {
-                        const original = props?.payload?.originalValue;
-                        return [
-                            original !== undefined && original !== null ? `${original}등급` : '',
-                            '',
-                        ];
-                    }}
-                    separator=""
                 />
-                <Bar dataKey="barValue" fill={CATEGORY_COLORS[categoryId] || '#6b7280'}>
-                    <LabelList
-                        dataKey="barValue"
-                        content={({ x, y, width, index }) => {
-                            if (
-                                typeof x !== 'number' ||
-                                typeof y !== 'number' ||
-                                typeof width !== 'number' ||
-                                typeof index !== 'number'
-                            )
-                                return null;
-                            const originalValue = data[index]?.originalValue;
-                            if (originalValue == null) return null;
-                            return (
-                                <text
-                                    x={x + width / 2}
-                                    y={y - 6}
-                                    textAnchor="middle"
-                                    style={{ fill: '#444444', fontSize: 12 }}
-                                >
-                                    {originalValue}등급
-                                </text>
-                            );
-                        }}
-                    />
-                </Bar>
-            </BarChart>
-        </ResponsiveContainer>
+            </Bar>
+        </BarChart>
     </div>
 );
 
@@ -130,7 +129,7 @@ const ResultReportSemesterTrendChartSection: FC<SemesterTrendChartSectionProps> 
                 errorMessage="석차등급 정보를 불러오는 데 실패했습니다."
                 emptyMessage="석차등급 정보가 없습니다."
             >
-                <div id="semester-trend-charts" className="grid grid-cols-3 gap-1">
+                <div id="semester-trend-charts" className="grid grid-cols-3 gap-2">
                     {semesterTrend?.categories.map((category) => {
                         const periodMap = Object.fromEntries(
                             category.periods.map((data: SemesterTrendPeriod) => [

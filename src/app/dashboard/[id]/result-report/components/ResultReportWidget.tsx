@@ -63,14 +63,20 @@ const ResultReportWidget: FC = () => {
                 />
             ))}
 
+            <div className="page-break" />
+
             <ResultReportSemesterTrendSection
                 overallGpa={reportData.overallGpa}
                 semesterTrend={reportData.semesterTrend}
             />
 
+            <div className="page-break" />
+
             <ResultReportSemesterTrendChartSection
                 semesterTrend={reportData.semesterTrend}
             />
+
+            <div className="page-break" />
 
             <ResultReportChecklistSection
                 questions={reportData.checklistQuestions}
@@ -79,14 +85,17 @@ const ResultReportWidget: FC = () => {
                 detailedResult={reportData.checklistDetailedResult}
             />
 
+            <div className="page-break" />
+
             <ResultReportRecommendedSchoolsSection
                 savedRecommendations={reportData.recommendedUniversities || []}
             />
 
+            <div className="page-break" />
+
             <ResultReportComprehensiveEvaluationSection
                 finalEvaluation={reportData.finalEvaluation}
                 overallEvaluation={reportData.overallEvaluation?.overall_content || null}
-
             />
         </div>
     );

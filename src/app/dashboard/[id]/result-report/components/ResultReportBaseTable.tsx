@@ -32,6 +32,19 @@ const ResultReportBaseTable = <T,>({
             return column.render(value, row, index);
         }
 
+        // 성취도별 분포 비율 특별 처리
+        if (column.key === 'achievement_distribution') {
+            if (typeof value === 'string') {
+                // 문자열을 줄바꿈으로 변환
+                return value.replace(/, /g, '\n').replace(/,/g, '\n');
+            } else if (typeof value === 'object' && value !== null) {
+                // 객체를 줄바꿈으로 변환
+                return Object.entries(value as Record<string, string | number>)
+                    .map(([k, v]) => `${k}: ${v}`)
+                    .join('\n');
+            }
+        }
+
         if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
             // 특별한 객체 형태 처리 (value와 isLongText 속성을 가진 객체)
             if (isLongTextObject(value)) {
@@ -87,12 +100,13 @@ const ResultReportBaseTable = <T,>({
 
                                 // isLongText가 true인지 확인
                                 const isLongTextCell = isLongTextObject(value) && value.isLongText;
+                                const isAchievementDistributionCell = column.key === 'achievement_distribution';
                                 const cellPaddingClass = isLongTextCell ? 'px-2 py-1.5' : 'px-4 py-1.5';
 
                                 return (
                                     <td
                                         key={column.key}
-                                        className={`${cellPaddingClass} whitespace-pre-line`}
+                                        className={`${cellPaddingClass} ${isAchievementDistributionCell ? 'whitespace-pre-line' : ''}`}
                                         style={{
                                             color: '#111827',
                                             borderColor: '#d1d5db',

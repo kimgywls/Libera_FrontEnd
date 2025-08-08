@@ -6,8 +6,8 @@ import {
 import { StudentInfo as StudentInfoType } from "@/app/types/student";
 import { formatDate } from '@/app/dashboard/_components/StudentInfo/utils';
 import ResultReportStudentStatus from './ResultReportStudentStatus';
-import DesiredSchoolList from '@/app/dashboard/_components/StudentInfo/DesiredSchoolList';
 import ResultReportSection from '../ResultReportSection';
+import ResultReportDesiredSchoolList from './ResultReportDesiredSchoolList';
 
 interface StudentInfoProps {
     student: StudentInfoType;
@@ -16,7 +16,7 @@ interface StudentInfoProps {
 const ResultReportStudentInfo: FC<StudentInfoProps> = ({ student }) => {
     return (
         <ResultReportSection title="학생 정보">
-            <div className="px-4 py-3 border border-gray-200 rounded-lg" style={{ borderColor: '#e5e7eb', backgroundColor: '#f5f3ff' }}>
+            <div className="px-4 py-3 border border-gray-200 rounded-lg min-w-full" style={{ borderColor: '#e5e7eb', backgroundColor: '#f5f3ff' }}>
                 <div className="flex flex-row space-x-2 w-full justify-between">
                     <div className="flex flex-col space-y-2 w-full">
                         <h1 className="text-2xl font-bold mb-1" style={{ color: '#111827' }}>{student.name}</h1>
@@ -45,11 +45,9 @@ const ResultReportStudentInfo: FC<StudentInfoProps> = ({ student }) => {
                                 <GraduationCap className="w-5 h-5 mt-0.5" style={{ color: '#ef4444' }} />
                                 <div className="flex-1">
                                     <p className="font-semibold mb-3" style={{ color: '#374151' }}>목표 대학 및 학과</p>
-                                    <div className="space-y-3">
-
-                                        <DesiredSchoolList
+                                    <div className="">
+                                        <ResultReportDesiredSchoolList
                                             desiredSchools={student.desired_school}
-                                            onDelete={() => { }}
                                         />
                                     </div>
                                 </div>

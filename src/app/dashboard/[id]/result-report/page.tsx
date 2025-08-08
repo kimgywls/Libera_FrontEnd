@@ -4,7 +4,7 @@ import ResultReportWidget from './components/ResultReportWidget';
 
 export default function ResultReport2Page() {
     return (
-        <div className="relative">
+        <div id="report-root" className="relative">
             <ResultReportWidget />
         </div>
     );
