@@ -2,7 +2,6 @@
 import { FC } from "react";
 import type { SavedRecommendation } from '@/app/types/university';
 import { School } from "lucide-react";
-import { NON_SCORE_RECOMMEND_TYPE_COLOR } from "@/app/constants";
 import evaluationFactors from "@/app/data/DetailedEvaluationFactors.json";
 import ResultReportSection from "../ResultReportSection";
 
@@ -84,14 +83,6 @@ const ResultReportRecommendedSchoolAnalysis: FC<ResultReportRecommendedSchoolAna
                                                         <tr className="font-medium" style={{ backgroundColor: '#f5f3ff' }}>
                                                             <td className="px-4 py-2 border-x border-gray-200 text-gray-900" colSpan={2}>환산점수</td>
                                                             <td className="px-4 py-2 border-x border-gray-200 text-gray-900 bg-white">{item.total_element_score.toFixed(2)}/100</td>
-                                                            <td className="px-4 py-2 border-x border-gray-200 text-gray-900">배치점수</td>
-                                                            <td className="px-4 py-2 border-x border-gray-200 text-gray-900 bg-white">80점</td>
-                                                            <td className="px-4 py-2 border-x border-gray-200 text-gray-900">비교과 판정</td>
-                                                            <td className="px-4 py-2 border-x border-gray-200 text-gray-900 bg-white">
-                                                                <span className={`inline-block text-sm font-medium px-2 py-1 rounded ${NON_SCORE_RECOMMEND_TYPE_COLOR[item.non_subject_suitability] || 'bg-gray-100 text-gray-800'}`}>
-                                                                    {item.non_subject_suitability}
-                                                                </span>
-                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

@@ -13,6 +13,7 @@ const ResultReportRecommendedSchoolsSection: FC<ResultReportRecommendedSchoolsSe
 }) => {
     return (
         <div className="space-y-10">
+
             <ResultReportFinalRecommendedSchoolsList
                 savedRecommendations={savedRecommendations}
             />
