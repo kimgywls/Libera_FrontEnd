@@ -38,16 +38,16 @@ const ResultReportDesiredSchoolList: FC<DesiredSchoolListProps> = ({ desiredScho
     };
 
     return (
-        <div className="flex flex-wrap gap-2">
+        <div className="result-report-desired-school-list">
             {desiredSchools.length === 0 ? (
-                <span className="text-gray-500 italic">설정된 진학 목표가 없습니다</span>
+                <span className="result-report-desired-school-empty">설정된 진학 목표가 없습니다</span>
             ) : desiredSchools.map((department, index) => {
                 const displayText = formatSchoolDepartment(department.school_name, department.department_name);
 
                 return (
-                    <div key={department.id ? `dep-${department.id}` : `dep-tmp-${index}`} className="group relative">
-                        <div className="flex items-center bg-white border border-red-200 rounded-full px-3 py-2 transition-all duration-200 cursor-pointer">
-                            <span className="text-sm font-medium text-gray-800 select-none whitespace-nowrap">
+                    <div key={department.id ? `dep-${department.id}` : `dep-tmp-${index}`} className="result-report-desired-school-item">
+                        <div className="result-report-desired-school-tag">
+                            <span className="result-report-desired-school-text">
                                 {displayText}
                             </span>
                         </div>
