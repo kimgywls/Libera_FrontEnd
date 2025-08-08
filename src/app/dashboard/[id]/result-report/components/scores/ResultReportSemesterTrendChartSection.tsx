@@ -50,14 +50,14 @@ interface CategoryTrendChartProps {
 }
 
 const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data, chartId }) => (
-    <div id={chartId} className="rounded-lg pl-2 pt-4 pb-2" style={{ backgroundColor: '#ffffff' }}>
-        <div className="font-bold mb-2 ml-2 text-lg flex items-center" style={{ color: '#1e293b' }}>
-            <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: CATEGORY_COLORS[categoryId] || '#6b7280' }} />
-            <span style={{ color: '#374151' }} className="text-sm">
+    <div id={chartId} className="rounded-lg pl-1 pt-2 pb-1 pr-1" style={{ backgroundColor: '#ffffff' }}>
+        <div className="font-bold mb-1 ml-1 text-xs flex items-center" style={{ color: '#1e293b' }}>
+            <span className="inline-block w-1.5 h-1.5 rounded-full mr-1" style={{ background: CATEGORY_COLORS[categoryId] || '#6b7280' }} />
+            <span style={{ color: '#374151' }} className="text-xs">
                 {SEMESTER_TREND_CATEGORY_LABELS[categoryId] || categoryName}
             </span>
         </div>
-        <BarChart width={300} height={270} data={data} margin={{ top: 20, right: 0, left: 0, bottom: 20 }}>
+        <BarChart width={250} height={185} data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
             <XAxis dataKey="semester" />
             <YAxis
                 type="number"
@@ -100,9 +100,9 @@ const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryN
                         return (
                             <text
                                 x={x + width / 2}
-                                y={y - 6}
+                                y={y - 4}
                                 textAnchor="middle"
-                                style={{ fill: '#444444', fontSize: 12 }}
+                                style={{ fill: '#444444', fontSize: 9 }}
                             >
                                 {originalValue}등급
                             </text>
@@ -129,7 +129,7 @@ const ResultReportSemesterTrendChartSection: FC<SemesterTrendChartSectionProps> 
                 errorMessage="석차등급 정보를 불러오는 데 실패했습니다."
                 emptyMessage="석차등급 정보가 없습니다."
             >
-                <div id="semester-trend-charts" className="grid grid-cols-3 gap-2">
+                <div id="semester-trend-charts" className="grid grid-cols-4 gap-2">
                     {semesterTrend?.categories.map((category) => {
                         const periodMap = Object.fromEntries(
                             category.periods.map((data: SemesterTrendPeriod) => [
