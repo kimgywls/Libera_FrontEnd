@@ -16,26 +16,28 @@ const ResultReportSection: FC<SectionProps> = ({
     className = ''
 }) => {
     return (
-        <section className={`${className}`}>
-            <div className="flex flex-row space-x-2 justify-between items-center px-1 mb-3 mr-5">
-                <div>
-                    <div className="flex flex-row space-x-2 items-center mb-1">
-                        <span className="w-1.5 h-7 mr-2 rounded-sm" style={{ backgroundColor: '#615fff' }} />
-                        <h2 className="text-2xl font-bold text-gray-800 ">{title}</h2>
+        <section className={`result-report-section ${className}`}>
+            <div className="result-report-section-header">
+                <div className="result-report-section-title-container">
+                    <div className="result-report-section-title-row">
+                        <span className="result-report-section-indicator" />
+                        <h2 className="result-report-section-title">{title}</h2>
                     </div>
                     {subtitle && (
-                        <div className="text-lg font-semibold text-gray-700 mb-4">
+                        <div className="result-report-section-subtitle">
                             {subtitle}
                         </div>
                     )}
                 </div>
                 {headerContent && (
-                    <div className="flex flex-row space-x-2">
+                    <div className="result-report-section-header-content">
                         {headerContent}
                     </div>
                 )}
             </div>
-            {children}
+            <div className="result-report-section-body">
+                {children}
+            </div>
         </section>
     );
 };

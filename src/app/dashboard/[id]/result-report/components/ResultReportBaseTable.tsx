@@ -32,24 +32,11 @@ const ResultReportBaseTable = <T,>({
             return column.render(value, row, index);
         }
 
-        // 성취도별 분포 비율 특별 처리
-        if (column.key === 'achievement_distribution') {
-            if (typeof value === 'string') {
-                // 문자열을 줄바꿈으로 변환
-                return value.replace(/, /g, '\n').replace(/,/g, '\n');
-            } else if (typeof value === 'object' && value !== null) {
-                // 객체를 줄바꿈으로 변환
-                return Object.entries(value as Record<string, string | number>)
-                    .map(([k, v]) => `${k}: ${v}`)
-                    .join('\n');
-            }
-        }
-
         if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
             // 특별한 객체 형태 처리 (value와 isLongText 속성을 가진 객체)
             if (isLongTextObject(value)) {
                 const cellData = value;
-                const className = cellData.isLongText ? 'text-xs leading-tight' : '';
+                const className = cellData.isLongText ? 'result-report-text-small' : 'result-report-text-normal';
                 return (
                     <span className={className}>
                         {cellData.value !== undefined && cellData.value !== null && cellData.value !== '' ? cellData.value : '-'}
@@ -66,32 +53,23 @@ const ResultReportBaseTable = <T,>({
     };
 
     return (
-        <div className={`overflow-x-auto rounded-lg border border-gray-200 bg-white ${className}`} style={{ borderColor: '#e5e7eb', backgroundColor: '#ffffff' }}>
-            <table className="min-w-full" style={{ borderCollapse: 'collapse' }}>
-                <thead style={{ backgroundColor: '#f5f3ff' }}>
-                    <tr>
+        <div className={`result-report-table-container ${className}`}>
+            <table className="result-report-table">
+                <thead className="result-report-table-head">
+                    <tr className="result-report-table-row">
                         {columns.map(column => (
                             <th
                                 key={column.key}
-                                className={`px-3 py-1.5 text-left font-semibold whitespace-pre-line ${headerClassName}`}
-                                style={{
-                                    color: '#374151',
-                                    borderColor: '#d1d5db',
-                                    borderLeftWidth: '1px',
-                                    borderRightWidth: '1px'
-                                }}
+                                className={`result-report-table-header-cell ${headerClassName}`}
                             >
                                 {column.label}
                             </th>
                         ))}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="result-report-table-body">
                     {data.map((row, index) => (
-                        <tr key={index} style={{
-                            backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb',
-                            borderBottom: '1px solid #f3f4f6'
-                        }}>
+                        <tr key={index} className="result-report-table-data-row">
                             {columns.map(column => {
                                 const value = row[column.key];
                                 const cellContent = renderCell
@@ -100,21 +78,14 @@ const ResultReportBaseTable = <T,>({
 
                                 // isLongText가 true인지 확인
                                 const isLongTextCell = isLongTextObject(value) && value.isLongText;
-                                const isAchievementDistributionCell = column.key === 'achievement_distribution';
-                                const cellPaddingClass = isLongTextCell ? 'px-2 py-1.5' : 'px-4 py-1.5';
+                                const cellClassName = isLongTextCell
+                                    ? 'result-report-table-cell result-report-table-cell-long-text'
+                                    : 'result-report-table-cell result-report-table-cell-normal';
 
                                 return (
                                     <td
                                         key={column.key}
-                                        className={`${cellPaddingClass} ${isAchievementDistributionCell ? 'whitespace-pre-line' : ''}`}
-                                        style={{
-                                            color: '#111827',
-                                            borderColor: '#d1d5db',
-                                            borderLeftWidth: '1px',
-                                            borderRightWidth: '1px',
-                                            wordBreak: 'break-all',
-                                            overflowWrap: 'break-word'
-                                        }}
+                                        className={cellClassName}
                                     >
                                         {cellContent as ReactNode}
                                     </td>
