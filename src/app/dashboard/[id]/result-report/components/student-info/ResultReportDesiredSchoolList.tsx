@@ -1,0 +1,61 @@
+import { FC } from 'react';
+import { DesiredSchool } from '@/app/types/university';
+
+interface DesiredSchoolListProps {
+    desiredSchools: DesiredSchool[];
+}
+
+const ResultReportDesiredSchoolList: FC<DesiredSchoolListProps> = ({ desiredSchools }) => {
+    const formatSchoolDepartment = (school: string, department: string) => {
+        // 빈 값과 "none" 값 정규화
+        const normalizeText = (text: string) => {
+            if (!text || text.trim() === "" || text.toLowerCase() === "none") {
+                return "";
+            }
+            return text.trim();
+        };
+
+        const schoolText = normalizeText(school);
+        const departmentText = normalizeText(department);
+
+        // 둘 다 없는 경우
+        if (!schoolText && !departmentText) {
+            return "설정된 진학 목표가 없습니다";
+        }
+
+        // 학교만 있는 경우
+        if (schoolText && !departmentText) {
+            return schoolText;
+        }
+
+        // 학과만 있는 경우
+        if (!schoolText && departmentText) {
+            return departmentText;
+        }
+
+        // 둘 다 있는 경우 - 일반 공백과 bullet point 사용
+        return `${schoolText} • ${departmentText}`;
+    };
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {desiredSchools.length === 0 ? (
+                <span className="text-gray-500 italic">설정된 진학 목표가 없습니다</span>
+            ) : desiredSchools.map((department, index) => {
+                const displayText = formatSchoolDepartment(department.school_name, department.department_name);
+
+                return (
+                    <div key={department.id ? `dep-${department.id}` : `dep-tmp-${index}`} className="group relative">
+                        <div className="flex items-center bg-white border border-red-200 rounded-full px-3 py-2 transition-all duration-200 cursor-pointer">
+                            <span className="text-sm font-medium text-gray-800 select-none whitespace-nowrap">
+                                {displayText}
+                            </span>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+export default ResultReportDesiredSchoolList; 
