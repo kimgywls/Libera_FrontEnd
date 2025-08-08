@@ -130,21 +130,27 @@ body {
 }
 
 @media print {
+  @page {
+    size: A4 landscape;
+    margin: 1cm;
+  }
+
+  html,
   body {
     margin: 0;
     padding: 0;
-    background: white !important;
-    font-family: Arial, sans-serif !important;
+    background: white;
+    font-family: Arial, sans-serif;
   }
 
   .no-print {
-    display: none !important;
+    display: none;
   }
 
   .print-content {
-    margin-left: 0 !important;
-    width: 100% !important;
-    padding: 0 !important;
+    margin-left: 0;
+    width: 100%;
+    padding: 0;
   }
 
   .page-break {
@@ -152,79 +158,9 @@ body {
     break-before: page;
   }
 
-  /* PDF 인쇄 시 텍스트 렌더링 개선 */
   * {
-    -webkit-print-color-adjust: exact !important;
-    color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* 텍스트 선택 및 복사 방지 */
-  .select-none {
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
-  }
-
-  /* 폰트 렌더링 최적화 */
-  body {
-    font-family: Arial, sans-serif !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-
-  /* 텍스트 렌더링 최적화 */
-  span,
-  div,
-  p {
-    font-feature-settings: "liga" 1, "kern" 1 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-
-  /* 특수 문자 처리 개선 */
-  .text-gray-800,
-  .text-gray-700,
-  .text-gray-600 {
-    color: #374151 !important;
-  }
-
-  /* 텍스트 줄바꿈 방지 */
-  .whitespace-nowrap {
-    white-space: nowrap !important;
-  }
-
-  /* bullet point 문자 처리 */
-  .text-gray-800 span {
-    font-family: inherit !important;
-  }
-
-  /* 강제 폰트 렌더링 */
-  .text-sm {
-    font-size: 0.875rem !important;
-    line-height: 1.25rem !important;
-  }
-
-  /* 특수 문자 안정화 */
-  .text-gray-800 span {
-    font-family: Arial, sans-serif !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-
-  /* 모든 텍스트 요소에 대한 강제 스타일 */
-  .text-gray-800 div {
-    font-family: Arial, sans-serif !important;
-    font-size: 12pt !important;
-    line-height: 16pt !important;
-    color: #1f2937 !important;
-    font-weight: 500 !important;
-  }
-
-  /* 배율 고정 */
-  .text-gray-800 div {
-    transform: scale(1) !important;
-    transform-origin: left top !important;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
