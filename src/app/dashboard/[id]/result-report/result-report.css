@@ -22,7 +22,7 @@
 }
 
 .result-report-section-wrapper:not(:first-child) {
-    margin-top: 40px;
+    margin-top: 15px;
 }
 
 .result-report-loading {
