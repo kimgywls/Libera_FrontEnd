@@ -41,7 +41,7 @@ const DashboardContent = ({ children, selectedStudent }: DashboardContentProps) 
 
     useEffect(() => {
         if (selectedStudent?.name && isResultReportPage) {
-            document.title = `${selectedStudent.name}_결과보고서`;
+            document.title = `[리베라]${new Date().getFullYear()}년 수시 전략 분석 레포트_${selectedStudent.name}`;
         }
     }, [selectedStudent, isResultReportPage]);
 
