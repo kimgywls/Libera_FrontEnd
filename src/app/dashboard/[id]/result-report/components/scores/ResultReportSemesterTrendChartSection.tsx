@@ -57,7 +57,7 @@ const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryN
                 {SEMESTER_TREND_CATEGORY_LABELS[categoryId] || categoryName}
             </span>
         </div>
-        <BarChart width={250} height={185} data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+        <BarChart width={250} height={175} data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
             <XAxis dataKey="semester" />
             <YAxis
                 type="number"

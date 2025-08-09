@@ -47,14 +47,14 @@ export default function ResultReportBaseCompetencyChecklist({
                                 <tr key={q.checklist_question_id} className="hover:bg-gray-50">
                                     {qIdx === 0 ? (
                                         <td
-                                            className="border px-4 py-3 font-semibold text-center align-middle"
+                                            className="border px-4 py-3 font-semibold text-center align-middle whitespace-nowrap"
                                             style={{ borderColor: '#e5e7eb', backgroundColor: '#f3f4f6', color: '#374151' }}
                                         >
                                             {subCategoryLabels[Number(subCategoryId)] || `카테고리 ${subCategoryId}`}
                                         </td>
                                     ) : (
                                         <td
-                                            className="border px-4 py-3 text-center align-middle"
+                                            className="border px-4 py-3 text-center align-middle whitespace-nowrap"
                                             style={{ borderColor: '#e5e7eb', backgroundColor: '#f9fafb' }}
                                         >
                                         </td>

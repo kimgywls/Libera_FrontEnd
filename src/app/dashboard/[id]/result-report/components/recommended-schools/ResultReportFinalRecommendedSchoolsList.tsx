@@ -35,8 +35,8 @@ const ResultReportFinalRecommendedSchoolsList: FC<ResultReportFinalRecommendedSc
             label: `지원\n적정성`,
             render: (value: string | number | boolean | undefined, row: EditableItem) => {
 
-                const displayText = row.suitability_type === '신설' ? '적정' : row.suitability_type;
-                const colorKey = row.suitability_type === '신설' ? '적정' : row.suitability_type;
+                const displayText = row.overall_evaluation === '신설' ? '적정' : row.overall_evaluation;
+                const colorKey = row.overall_evaluation === '신설' ? '적정' : row.overall_evaluation;
 
                 return (
                     <span className={`inline-block text-xs font-medium px-2 py-1 rounded ${RECOMMEND_TYPE_COLOR[colorKey]} `}>

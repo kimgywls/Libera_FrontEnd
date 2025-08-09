@@ -42,9 +42,9 @@ const ResultReportCover: FC<ResultReportCoverProps> = ({ student }) => {
     };
 
     return (
-        <div className="w-full h-[297mm] flex flex-col" style={{ backgroundColor: '#ffffff' }}>
+        <div className="w-full flex flex-col" style={{ backgroundColor: '#ffffff' }}>
             {/* 상단 헤더 */}
-            <div className="flex justify-between items-center px-12 py-8">
+            <div className="flex justify-between items-center px-12 py-6">
                 <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center"
                         style={{ backgroundColor: '#7c3aed' }}>
@@ -52,31 +52,25 @@ const ResultReportCover: FC<ResultReportCoverProps> = ({ student }) => {
                     </div>
                     <span className="text-2xl font-light" style={{ color: '#1e1b4b' }}>Libera</span>
                 </div>
-                <div className="text-right">
-                    <div className="text-sm" style={{ color: '#6b7280' }}>Report</div>
-                    <div className="text-xs" style={{ color: '#9ca3af' }}>{new Date().toLocaleDateString('ko-KR')}</div>
-                </div>
             </div>
 
             {/* 메인 컨텐츠 */}
-            <div className="flex flex-col p-12">
-
+            <div className="flex flex-col px-12 py-4 flex-1">
                 {/* 제목 섹션 */}
-                <div className="mb-16">
+                <div className="mb-2">
                     <div className="text-sm font-medium mb-4 tracking-wider uppercase"
                         style={{ color: '#7c3aed' }}>
                         University Admission Consulting
                     </div>
                     <h1 className="text-7xl font-light mb-6 leading-tight" style={{ color: '#1e1b4b' }}>
-                        진학 상담<br />
-                        <span className="font-normal" style={{ color: '#7c3aed' }}>보고서</span>
+                        <span className="font-normal" style={{ color: '#7c3aed' }}> {new Date().getFullYear() + 1}</span>학년도 <br />
+                        수시 전략 분석 레포트
                     </h1>
                     <div className="w-24 h-px mb-8" style={{ backgroundColor: '#7c3aed' }}></div>
                 </div>
 
                 {/* 학생 정보 섹션 */}
-                <div className="grid grid-cols-2 gap-16 py-20">
-
+                <div className="grid grid-cols-2 gap-8">
                     {/* 학생 기본 정보 */}
                     <div>
                         <div className="mb-8">
@@ -122,8 +116,6 @@ const ResultReportCover: FC<ResultReportCoverProps> = ({ student }) => {
                 </div>
             </div>
 
-            {/* 하단 장식 */}
-            <div className="border-t" style={{ borderColor: '#7c3aed' }} />
         </div>
     );
 };

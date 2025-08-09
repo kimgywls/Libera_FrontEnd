@@ -2,6 +2,8 @@ import { FC } from "react";
 import { useStudentInfoContext } from "@/app/contexts/StudentInfoContext";
 import { useReportData } from "../hooks/use-report-data";
 import { PERIODS } from "@/app/constants";
+import ResultReportCover from "./ResultReportCover";
+import ResultReportIndex from "./ResultReportIndex";
 import ResultReportStudentInfo from "./student-info/ResultReportStudentInfo";
 import ResultReportAttendanceSection from "./attendance/ResultReportAttendanceSection";
 import ResultReportSemesterTrendSection from "./scores/ResultReportSemesterTrendSection";
@@ -39,6 +41,14 @@ const ResultReportWidget: FC = () => {
 
     return (
         <div className="result-report-widget">
+            <div className="result-report-section-wrapper">
+                <ResultReportCover student={studentInfo} />
+            </div>
+
+            <div className="result-report-section-wrapper">
+                <ResultReportIndex />
+            </div>
+
             <div className="result-report-section-wrapper">
                 <ResultReportStudentInfo student={studentInfo} />
             </div>
