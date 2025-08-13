@@ -144,19 +144,59 @@ const UpdateScoresModal: FC<UpdateScoresModalProps> = ({
     const handleAutoSave = useCallback(async () => {
         const currentScoresForm = scoresFormRef.current;
         const existingScores = currentScoresForm.filter(score => score.id);
-        if (existingScores.length === 0) return;
+        const newScores = currentScoresForm.filter(score => !score.id);
+
+        // 저장할 성적이 없으면 리턴
+        if (existingScores.length === 0 && newScores.length === 0) return;
 
         setIsAutoSaving(true);
         try {
-            await saveScores({ studentId, scores: existingScores });
+            // 기존 성적 업데이트
+            if (existingScores.length > 0) {
+                await saveScores({ studentId, scores: existingScores });
+            }
+
+            // 새로운 성적 생성
+            if (newScores.length > 0) {
+                const createdScores = await Promise.all(
+                    newScores.map(scoreForm =>
+                        createScore({
+                            studentId,
+                            score: toCreateScoreRequest(scoreForm)
+                        })
+                    )
+                );
+
+                // 새로 생성된 성적의 ID를 로컬 상태에 반영
+                const updatedScoresForm = [...currentScoresForm];
+                let newScoreIndex = 0;
+
+                for (let i = 0; i < updatedScoresForm.length; i++) {
+                    if (!updatedScoresForm[i].id) {
+                        // 새로 생성된 성적에 ID 할당
+                        if (createdScores[newScoreIndex]?.id) {
+                            updatedScoresForm[i] = {
+                                ...updatedScoresForm[i],
+                                id: createdScores[newScoreIndex].id
+                            };
+                        }
+                        newScoreIndex++;
+                    }
+                }
+
+                // 로컬 상태 업데이트
+                scoresFormRef.current = updatedScoresForm;
+            }
+
+            // 실제 저장 성공 시에만 lastSaved 업데이트
             setLastSaved(new Date());
-            // 자동 저장 시에는 onSuccess 호출하지 않음 (모달 닫힘 방지)
         } catch (error) {
             console.error('자동 저장 중 오류:', error);
+            // 저장 실패 시 lastSaved 업데이트하지 않음
         } finally {
             setIsAutoSaving(false);
         }
-    }, [saveScores, studentId]);
+    }, [saveScores, createScore, studentId, toCreateScoreRequest]);
 
     // 디바운스 자동 저장
     const { debouncedSave, cancelSave } = DebouncedSave({

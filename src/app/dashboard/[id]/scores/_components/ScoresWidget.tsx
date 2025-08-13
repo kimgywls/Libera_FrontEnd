@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 
 import type { Score, ScoreForm } from '@/app/types/score';
 import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
@@ -48,24 +48,11 @@ const ScoresWidget: FC = () => {
     const studentId = studentInfo?.id || 0;
 
     // 모든 hooks를 조건부 로직 전에 호출
-    const { overallGpa, refetch: refetchGpa } = useOverallGpa(studentId);
+    const { overallGpa } = useOverallGpa(studentId);
     const { attendance, isLoading: isAttendanceLoading, isError: isAttendanceError } = useAttendance(studentId);
-    const { scores, isLoading: isScoresLoading, isError: isScoresError, refetch: refetchScores } = useStudentScores(studentId);
-    const { semesterTrend, isLoading: isTrendLoading, isError: isTrendError, refetch: refetchTrend } = useSemesterTrend(studentId);
+    const { scores, isLoading: isScoresLoading, isError: isScoresError } = useStudentScores(studentId);
+    const { semesterTrend, isLoading: isTrendLoading, isError: isTrendError } = useSemesterTrend(studentId);
     const { openModal, closeModal, isModalOpen } = useModalState();
-
-    const onScoreChange = useCallback(async () => {
-        try {
-            // 모든 관련 데이터 리페치
-            await Promise.all([
-                refetchScores(),
-                refetchGpa(),
-                refetchTrend()
-            ]);
-        } catch (error) {
-            console.error('성적 데이터 리페치 실패:', error);
-        }
-    }, [refetchScores, refetchGpa, refetchTrend]);
 
     // studentId가 없으면 로딩 상태 표시
     if (!studentInfo) {
@@ -103,7 +90,6 @@ const ScoresWidget: FC = () => {
                         isModalOpen={isModalOpen}
                         studentId={studentId}
                         toScoreForm={toScoreForm}
-                        onScoreChange={onScoreChange}
                     />
                 ))}
             </div>

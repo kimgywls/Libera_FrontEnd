@@ -21,7 +21,6 @@ interface ScoresSectionProps {
     isModalOpen: (id: string) => boolean;
     studentId: number;
     toScoreForm: (score: Score) => ScoreForm;
-    onScoreChange: () => void;
 }
 
 const ScoresSection: FC<ScoresSectionProps> = ({
@@ -34,15 +33,13 @@ const ScoresSection: FC<ScoresSectionProps> = ({
     closeModal,
     isModalOpen,
     studentId,
-    toScoreForm,
-    onScoreChange
+    toScoreForm
 }) => {
     const modalId = `score-${grade}-${semester}`;
     const createModalId = `score-create-${grade}-${semester}`;
     const hasScores = scores.some((s) => s.grade === grade && s.semester === semester);
 
     const handleScoreSuccess = () => {
-        onScoreChange();
         closeModal(modalId);
         closeModal(createModalId);
     };
