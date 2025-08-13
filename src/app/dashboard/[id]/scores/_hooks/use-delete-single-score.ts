@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import type { ScoresResponse } from '@/app/types/score';
+
 import { deleteSingleScore } from '../_actions/delete-single-score';
 
 interface DeleteScoreParams {
@@ -15,15 +17,15 @@ export function useDeleteSingleScore() {
         onMutate: async ({ studentId, scoreId }) => {
             // 이전 데이터 백업
             await queryClient.cancelQueries({ queryKey: ['student-scores', studentId] });
-            const previousScores = queryClient.getQueryData(['student-scores', studentId]);
+            const previousScores = queryClient.getQueryData<ScoresResponse>(['student-scores', studentId]);
 
             // 낙관적 업데이트 - 해당 성적 제거
-            queryClient.setQueryData(['student-scores', studentId], (old: any) => {
+            queryClient.setQueryData<ScoresResponse>(['student-scores', studentId], (old) => {
                 if (!old?.scores) return old;
 
                 return {
                     ...old,
-                    scores: old.scores.filter((score: any) => score.id !== scoreId)
+                    scores: old.scores.filter((score) => score.id !== scoreId)
                 };
             });
 
@@ -32,7 +34,7 @@ export function useDeleteSingleScore() {
         onError: (_err, { studentId }, context) => {
             // 에러 시 이전 데이터로 롤백
             if (context?.previousScores) {
-                queryClient.setQueryData(['student-scores', studentId], context.previousScores);
+                queryClient.setQueryData<ScoresResponse>(['student-scores', studentId], context.previousScores);
             }
         },
         onSettled: (_data, _error, { studentId }) => {

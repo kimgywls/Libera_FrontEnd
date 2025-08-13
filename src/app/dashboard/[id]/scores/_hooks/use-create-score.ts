@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { CreateScoreRequest, Score } from '@/app/types/score';
+import type { CreateScoreRequest, Score, ScoresResponse } from '@/app/types/score';
 
 import { createScore } from '../_actions/create-score';
 
@@ -17,10 +17,10 @@ export function useCreateScore() {
         onMutate: async ({ studentId, score }) => {
             // 이전 데이터 백업
             await queryClient.cancelQueries({ queryKey: ['student-scores', studentId] });
-            const previousScores = queryClient.getQueryData(['student-scores', studentId]);
+            const previousScores = queryClient.getQueryData<ScoresResponse>(['student-scores', studentId]);
 
             // 낙관적 업데이트
-            queryClient.setQueryData(['student-scores', studentId], (old: any) => {
+            queryClient.setQueryData<ScoresResponse>(['student-scores', studentId], (old) => {
                 if (!old?.scores) return old;
 
                 const newScore: Score = {
@@ -55,7 +55,7 @@ export function useCreateScore() {
         onError: (_err, { studentId }, context) => {
             // 에러 시 이전 데이터로 롤백
             if (context?.previousScores) {
-                queryClient.setQueryData(['student-scores', studentId], context.previousScores);
+                queryClient.setQueryData<ScoresResponse>(['student-scores', studentId], context.previousScores);
             }
         },
         onSettled: (_data, _error, { studentId }) => {

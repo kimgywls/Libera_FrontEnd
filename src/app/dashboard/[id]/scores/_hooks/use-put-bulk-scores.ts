@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { ScoreForm, Score } from '@/app/types/score';
+import type { ScoreForm, Score, ScoresResponse } from '@/app/types/score';
 
 import { putBulkScores } from '../_actions/put-bulk-scores';
 
@@ -20,7 +20,7 @@ export function usePutBulkScores() {
             const previousScores = queryClient.getQueryData(['student-scores', studentId]);
 
             // 낙관적 업데이트
-            queryClient.setQueryData(['student-scores', studentId], (old: any) => {
+            queryClient.setQueryData(['student-scores', studentId], (old: ScoresResponse | undefined) => {
                 if (!old?.scores) return old;
 
                 const updatedScores = old.scores.map((existingScore: Score) => {
