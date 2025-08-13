@@ -11,13 +11,15 @@ interface UseAddRecommendationItemProps {
     universityList: UniversityItem[];
     recommendationId: number;
     currentItemCount: number;
+    allUniversityList?: UniversityItem[]; // 전체 학교 목록 추가
 }
 
 export const useAddRecommendationItem = ({
     selectedItems,
     universityList,
     recommendationId,
-    currentItemCount
+    currentItemCount,
+    allUniversityList = [] // 기본값으로 빈 배열
 }: UseAddRecommendationItemProps) => {
     const params = useParams();
     const queryClient = useQueryClient();
@@ -30,9 +32,12 @@ export const useAddRecommendationItem = ({
                 throw new Error('선택된 학교가 없습니다.');
             }
 
+            // 전체 학교 목록에서 선택된 학교들을 찾기 (우선순위: allUniversityList > universityList)
+            const searchList = allUniversityList.length > 0 ? allUniversityList : universityList;
+
             // 선택된 학교들을 순위별로 정렬하여 items 배열 생성
             const items = selectedItems.map((admissionId, index) => {
-                const university = universityList.find(uni => uni.admission_id === admissionId);
+                const university = searchList.find(uni => uni.admission_id === admissionId);
                 if (!university) {
                     throw new Error(`학교 정보를 찾을 수 없습니다: ${admissionId}`);
                 }

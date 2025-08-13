@@ -11,9 +11,14 @@ import type { SaveRecommendationRequest } from '@/app/types/university';
 interface UseCreateOrAddRecommendationsProps {
     selectedItems: number[];
     universityList: UniversityItem[];
+    allUniversityList?: UniversityItem[]; // 전체 학교 목록 추가
 }
 
-export const useCreateOrAddRecommendations = ({ selectedItems, universityList }: UseCreateOrAddRecommendationsProps) => {
+export const useCreateOrAddRecommendations = ({
+    selectedItems,
+    universityList,
+    allUniversityList = []
+}: UseCreateOrAddRecommendationsProps) => {
     const params = useParams();
     const queryClient = useQueryClient();
     const [error, setError] = useState<string | null>(null);
@@ -31,12 +36,16 @@ export const useCreateOrAddRecommendations = ({ selectedItems, universityList }:
     const firstRecommendation = existingRecommendations[0];
     const currentItemCount = firstRecommendation?.items?.length || 0;
 
+    // 전체 학교 목록에서 선택된 학교들을 찾기 (우선순위: allUniversityList > universityList)
+    const searchList = allUniversityList.length > 0 ? allUniversityList : universityList;
+
     // 새로운 학교 추가 훅 (기존 추천 리스트가 있을 때 사용)
     const addRecommendationHook = useAddRecommendationItem({
         selectedItems,
         universityList,
         recommendationId: firstRecommendation?.id || 0,
-        currentItemCount
+        currentItemCount,
+        allUniversityList
     });
 
     // 새로운 추천 리스트 생성 뮤테이션 (기존 추천 리스트가 없을 때 사용)
@@ -51,7 +60,7 @@ export const useCreateOrAddRecommendations = ({ selectedItems, universityList }:
 
             // 선택된 학교들을 순위별로 정렬하여 items 배열 생성
             const items = selectedItems.map((admissionId, index) => {
-                const university = universityList.find(uni => uni.admission_id === admissionId);
+                const university = searchList.find(uni => uni.admission_id === admissionId);
                 if (!university) {
                     throw new Error(`학교 정보를 찾을 수 없습니다: ${admissionId}`);
                 }

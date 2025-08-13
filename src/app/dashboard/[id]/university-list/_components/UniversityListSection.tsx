@@ -125,10 +125,18 @@ const UniversityListSection: FC<UniversityListSectionProps> = memo(
             (university) => !hiddenList.some((hidden) => hidden.admission_id === university.admission_id)
         );
 
+        // 전체 학교 목록 생성 (모든 탭의 학교들을 포함)
+        const allUniversityList = data?.departments.flatMap((dept) => [
+            ...dept.challenge,
+            ...dept.suitable,
+            ...dept.safe,
+        ]) as UniversityItem[] || [];
+
         // 저장 관련 훅
         const { isSaving, error: saveError, handleCreateOrAddRecommendations } = useCreateOrAddRecommendations({
             selectedItems,
-            universityList: visibleUniversityList
+            universityList: visibleUniversityList,
+            allUniversityList
         });
 
         // 선택된 학교 저장 함수

@@ -75,7 +75,12 @@ export function useUniversityHide(
     // 숨김 해제 뮤테이션
     const unhideMutation = useMutation({
         mutationFn: (admissionId: number) => unhideUniversities(studentId!, [admissionId]),
-        onSuccess: () => {
+        onSuccess: (_, admissionId) => {
+            // 즉시 캐시 업데이트
+            queryClient.setQueryData(['hiddenUniversities', studentId], (oldData: UniversityItem[] = []) => {
+                return oldData.filter(item => item.admission_id !== admissionId);
+            });
+            // 백그라운드에서 서버 데이터 동기화
             queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
         },
         onError: (error) => {
@@ -167,9 +172,6 @@ export function useUniversityHide(
         try {
             await unhideMutation.mutateAsync(admissionId);
 
-            // 즉시 캐시 무효화하여 최신 데이터 가져오기
-            await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
-
             setAlert({
                 open: true,
                 title: '성공',
@@ -186,7 +188,7 @@ export function useUniversityHide(
                 onConfirm: () => setAlert(prev => ({ ...prev, open: false })),
             });
         }
-    }, [unhideMutation, queryClient, studentId]);
+    }, [unhideMutation]);
 
     const handleUnhideAll = useCallback(async () => {
         if (!studentId || hiddenList.length === 0) return;
@@ -197,8 +199,10 @@ export function useUniversityHide(
             // 한 번의 API 호출로 모든 학교 숨김 해제
             await unhideUniversities(studentId, admissionIds);
 
-            // 캐시 무효화
-            await queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
+            // 즉시 캐시 업데이트
+            queryClient.setQueryData(['hiddenUniversities', studentId], []);
+            // 백그라운드에서 서버 데이터 동기화
+            queryClient.invalidateQueries({ queryKey: ['hiddenUniversities', studentId] });
 
             setAlert({
                 open: true,
