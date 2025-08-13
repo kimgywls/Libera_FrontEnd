@@ -3,7 +3,15 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from 'react';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            // Hydration mismatch 방지
+            refetchOnWindowFocus: false,
+            retry: false,
+        },
+    },
+});
 
 export default function ClientProviders({ children }: { children: ReactNode }) {
     return (

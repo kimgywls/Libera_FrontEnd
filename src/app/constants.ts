@@ -62,7 +62,6 @@ export const CATEGORY_COLUMNS = {
 
 export const RESULT_REPORT_CATEGORY_COLUMNS = {
     '일반선택': [
-        { key: 'subject_type', label: `이수구분` },
         { key: 'curriculum', label: '교과' },
         { key: 'subject', label: '과목' },
         { key: 'credit_hours', label: `단위수` },
@@ -74,7 +73,6 @@ export const RESULT_REPORT_CATEGORY_COLUMNS = {
         { key: 'grade_rank', label: '석차등급' },
     ],
     '진로선택': [
-        { key: 'subject_type', label: `이수구분` },
         { key: 'curriculum', label: '교과' },
         { key: 'subject', label: '과목' },
         { key: 'credit_hours', label: `단위수` },
@@ -85,7 +83,6 @@ export const RESULT_REPORT_CATEGORY_COLUMNS = {
         { key: 'achievement_distribution', label: '성취도별 분포 비율' },
     ],
     '체육/예술': [
-        { key: 'subject_type', label: `이수구분` },
         { key: 'curriculum', label: '교과' },
         { key: 'subject', label: '과목' },
         { key: 'credit_hours', label: `단위수` },

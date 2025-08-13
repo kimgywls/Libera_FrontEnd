@@ -5,7 +5,7 @@ import ClientProviders from './ClientProviders';
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
-      <body>
+      <body suppressHydrationWarning={true}>
         <ClientProviders>
           {children}
         </ClientProviders>
