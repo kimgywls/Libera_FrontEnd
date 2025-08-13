@@ -8,100 +8,18 @@ interface ScoresTableProps {
     scores?: Score[];
     grade: number;
     semester: number;
+    category: '일반선택' | '진로선택' | '체육/예술';
 }
 
-const ResultReportScoresTable: FC<ScoresTableProps> = memo(({ scores, grade, semester }) => {
+const ResultReportScoresTable: FC<ScoresTableProps> = memo(({ scores, grade, semester, category }) => {
     const { columns, filteredData } = useMemo(() => {
-        // 모든 카테고리의 컬럼을 통합
-        const allColumns = Object.values(RESULT_REPORT_CATEGORY_COLUMNS).flat();
-        const uniqueColumns = allColumns.filter((column, index, self) =>
-            index === self.findIndex(c => c.key === column.key)
-        );
-
-        // 교과 컬럼에 clamp 적용
-        const columnsWithClamp = uniqueColumns.map(column => {
-            if (column.key === 'curriculum') {
-                return {
-                    ...column,
-                    render: (value: string | number | Record<string, unknown> | null | undefined) => (
-                        <div style={{
-                            width: 'clamp(60px, 80px, 120px)',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap'
-                        }}>
-                            {String(value || '')}
-                        </div>
-                    )
-                };
-            }
-            if (column.key === 'subject_type') {
-                return {
-                    ...column,
-                    render: (value: string | number | Record<string, unknown> | null | undefined) => (
-                        <div style={{
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                        }}>
-                            {String(value || '')}
-                        </div>
-                    )
-                };
-            }
-            if (column.key === 'subject') {
-                return {
-                    ...column,
-                    render: (value: string | number | Record<string, unknown> | null | undefined) => {
-                        const subjectText = String(value || '');
-                        const fontSize = subjectText.length >= 7 ? '12px' : '14px';
-                        return (
-                            <div style={{
-                                fontSize: fontSize
-                            }}>
-                                {subjectText}
-                            </div>
-                        );
-                    }
-                };
-            }
-            if (column.key === 'achievement_distribution') {
-                return {
-                    ...column,
-                    render: (value: string | number | Record<string, unknown> | null | undefined) => {
-                        let displayText = '';
-                        if (!value || value === '-' || value === '') {
-                            displayText = '-';
-                        } else if (typeof value === 'object') {
-                            displayText = Object.entries(value)
-                                .map(([k, v]) => `${k}: ${v}`)
-                                .join(' ');
-                        } else {
-                            displayText = String(value);
-                        }
-                        return (
-                            <div style={{
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis'
-                            }}>
-                                {displayText}
-                            </div>
-                        );
-                    }
-                };
-            }
-            return column;
-        });
-
-        // 해당 학년/학기의 모든 성적 데이터 필터링
+        const columns = RESULT_REPORT_CATEGORY_COLUMNS[category];
         const filtered = scores?.filter(
-            s => s.grade === grade && s.semester === semester
+            s => s.grade === grade && s.semester === semester && s.subject_type === category
         ) || [];
 
-        return { columns: columnsWithClamp, filteredData: filtered };
-    }, [scores, grade, semester]);
-
+        return { columns, filteredData: filtered };
+    }, [scores, grade, semester, category]);
     const isEmpty = !filteredData.length;
 
     return (
