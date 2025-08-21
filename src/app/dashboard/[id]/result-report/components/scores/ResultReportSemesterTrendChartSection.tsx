@@ -40,6 +40,7 @@ const ALL_SEMESTERS = [
 
 interface SemesterTrendChartSectionProps {
     semesterTrend?: SemesterTrendResponse;
+    overallGpa: number;
 }
 
 interface CategoryTrendChartProps {
@@ -47,9 +48,10 @@ interface CategoryTrendChartProps {
     categoryName: string;
     data: { semester: string; barValue: number | null; originalValue: number | null }[];
     chartId: string;
+    overallGpa: number;
 }
 
-const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data, chartId }) => (
+const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data, chartId, overallGpa }) => (
     <div id={chartId} className="rounded-lg pl-1 pt-2 pb-1 pr-1" style={{ backgroundColor: '#ffffff' }}>
         <div className="font-bold mb-1 ml-1 text-xs flex items-center" style={{ color: '#1e293b' }}>
             <span className="inline-block w-1.5 h-1.5 rounded-full mr-1" style={{ background: CATEGORY_COLORS[categoryId] || '#6b7280' }} />
@@ -61,7 +63,7 @@ const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryN
             <XAxis dataKey="semester" />
             <YAxis
                 type="number"
-                domain={[5.5, 9]} // 1~5등급만 보이게 설정
+                domain={overallGpa > 4.00 ? [1, 9] : [5.5, 9]} // overallGpa가 4.00보다 크면 도메인 조정
                 tickFormatter={(v) => `${10 - v}`}
                 tickCount={5}
                 allowDecimals={false}
@@ -116,6 +118,7 @@ const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryN
 
 const ResultReportSemesterTrendChartSection: FC<SemesterTrendChartSectionProps> = ({
     semesterTrend,
+    overallGpa,
 }) => {
     const isEmpty = !semesterTrend?.categories || semesterTrend.categories.length === 0;
 
@@ -152,6 +155,7 @@ const ResultReportSemesterTrendChartSection: FC<SemesterTrendChartSectionProps> 
                                 categoryName={category.name}
                                 data={data}
                                 chartId={`chart-${category.id}`}
+                                overallGpa={overallGpa}
                             />
                         );
                     })}

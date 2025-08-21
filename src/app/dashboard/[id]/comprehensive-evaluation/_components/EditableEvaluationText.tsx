@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect } from "react";
+import { FC, useRef } from "react";
 
 interface EditableEvaluationTextProps {
     isEditing: boolean;
@@ -11,29 +11,19 @@ const EditableEvaluationText: FC<EditableEvaluationTextProps> = ({
     isEditing,
     content,
     placeholder = "내용을 입력하세요...",
-    onContentChange
+    onContentChange,
 }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    useEffect(() => {
-        if (isEditing && textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        }
-    }, [isEditing, content]);
-
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const target = e.currentTarget;
-        onContentChange(target.value);
-        target.style.height = 'auto';
-        target.style.height = `${target.scrollHeight}px`;
+        onContentChange(e.currentTarget.value);
     };
 
     if (isEditing) {
         return (
             <textarea
                 ref={textareaRef}
-                className="w-full p-1 rounded-md focus:outline-none transition-all resize-none overflow-hidden"
+                className="w-full rounded-md focus:outline-none resize-none"
                 placeholder={placeholder}
                 value={content}
                 onChange={handleChange}
@@ -41,15 +31,17 @@ const EditableEvaluationText: FC<EditableEvaluationTextProps> = ({
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
+                onFocus={(e) => e.currentTarget.focus({ preventScroll: true })}
+                style={{ height: "1000px", overflowY: "auto" }}
             />
         );
     }
 
     return (
         <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-            {content || '학생부 종합 의견 문구가 없습니다.'}
+            {content || "학생부 종합 의견 문구가 없습니다."}
         </div>
     );
 };
 
-export default EditableEvaluationText; 
+export default EditableEvaluationText;

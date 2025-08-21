@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Trash2 } from 'lucide-react';
+
 import { Student } from '@/app/types/student';
 import { useCheckThirdGradeScores } from '../_hooks/use-check-third-grade-scores';
 import {

@@ -5,6 +5,7 @@ import {
     Plus,
     Target,
 } from "lucide-react";
+
 import { StudentInfo as StudentInfoType } from "@/app/types/student";
 import { DesiredSchool } from "@/app/types/university";
 import { useAddDesiredSchool, useDeleteDesiredSchool } from "../../_hooks/use-desired-school"

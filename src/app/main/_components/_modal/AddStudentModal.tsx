@@ -2,7 +2,6 @@ import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 import { MultipleUploadResponse } from '../../_actions/upload-pdf';
-
 import { useUploadPdf } from '../../_hooks/use-upload-pdf';
 
 interface AddStudentModalProps {

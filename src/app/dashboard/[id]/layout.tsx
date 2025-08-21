@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useParams } from 'next/navigation';
+import { ReactNode, useEffect } from "react";
 import {
     BookOpen,
     FileText,
@@ -9,10 +10,10 @@ import {
     ListCheck,
     BarChart3,
 } from 'lucide-react';
-import { useAllStudentsList } from "@/app/main/_hooks/use-all-students-list";
-import { ReactNode, useEffect } from "react";
-import { StudentInfoProvider } from "@/app/contexts/StudentInfoContext";
+
 import { Student } from '@/app/types/student';
+import { useAllStudentsList } from "@/app/main/_hooks/use-all-students-list";
+import { StudentInfoProvider } from "@/app/contexts/StudentInfoContext";
 
 interface NavItem {
     name: string;

@@ -1,7 +1,8 @@
 import type { FC } from 'react';
-import StudentInfo from './StudentInfo/StudentInfo';
+
 import { StudentInfo as StudentInfoType } from '@/app/types/student';
 import { useStudentInfoContext } from '@/app/contexts/StudentInfoContext';
+import StudentInfo from './StudentInfo/StudentInfo';
 
 interface StudentInfoSectionProps {
     student: StudentInfoType;

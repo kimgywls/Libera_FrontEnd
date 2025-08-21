@@ -2,6 +2,7 @@
 
 import { createContext, useContext, ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
+
 import type { StudentInfo, StudentDetail } from '@/app/types/student';
 import type { DesiredSchool } from '@/app/types/university';
 import { useDesiredSchools } from '@/app/dashboard/_hooks/use-desired-schools';

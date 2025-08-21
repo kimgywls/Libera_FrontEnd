@@ -87,6 +87,7 @@ const ResultReportWidget: FC = () => {
 
             <div className="result-report-section-wrapper">
                 <ResultReportSemesterTrendChartSection
+                    overallGpa={reportData.overallGpa}
                     semesterTrend={reportData.semesterTrend}
                 />
             </div>

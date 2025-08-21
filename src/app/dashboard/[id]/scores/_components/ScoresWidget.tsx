@@ -101,6 +101,7 @@ const ScoresWidget: FC = () => {
                     isTrendError={isTrendError}
                 />
                 <SemesterTrendChartSection
+                    overallGpa={overallGpa ?? 0}
                     semesterTrend={semesterTrend}
                     isLoading={isTrendLoading}
                     isError={isTrendError}

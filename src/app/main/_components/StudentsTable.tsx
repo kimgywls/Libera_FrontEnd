@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { UserRoundX } from 'lucide-react';
 
 import { Student } from '@/app/types/student';
-
 import { AlertModal } from '@/app/components/modal/AlertModal';
 import { useModalState } from '@/app/hooks/useModalState';
-import { StudentsTableRow } from './StudentsTableRow';
 import { useDeleteStudent } from '../_hooks/use-delete-student';
+
+import { StudentsTableRow } from './StudentsTableRow';
 
 interface StudentsTableProps {
     students: Student[];

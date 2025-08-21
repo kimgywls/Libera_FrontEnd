@@ -1,6 +1,7 @@
 import { FC } from 'react';
-import { StudentInfo as StudentInfoType } from '@/app/types/student';
 import { MapPin, School, TrendingUp } from 'lucide-react';
+
+import { StudentInfo as StudentInfoType } from '@/app/types/student';
 
 const StudentStatus: FC<{ student: StudentInfoType }> = ({ student }) => (
     <div className="flex flex-col space-y-2">

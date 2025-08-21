@@ -43,6 +43,7 @@ interface SemesterTrendChartSectionProps {
     semesterTrend?: SemesterTrendResponse;
     isLoading: boolean;
     isError: boolean;
+    overallGpa: number;
 }
 
 interface CategoryTrendChartProps {
@@ -50,9 +51,10 @@ interface CategoryTrendChartProps {
     categoryName: string;
     data: { semester: string; barValue: number | null; originalValue: number | null }[];
     chartId: string;
+    overallGpa: number;
 }
 
-const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data, chartId }) => (
+const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryName, data, chartId, overallGpa }) => (
     <div id={chartId} className="bg-white rounded-lg shadow pl-2 pt-4 pb-2">
         <div className="font-bold mb-2 ml-2 text-lg text-gray-800 flex items-center">
             <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: CATEGORY_COLORS[categoryId] || '#ff7675' }} />
@@ -63,7 +65,7 @@ const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryN
                 <XAxis dataKey="semester" />
                 <YAxis
                     type="number"
-                    domain={[5.5, 9]} // 1~5등급만 보이게 설정
+                    domain={overallGpa > 4.00 ? [1, 9] : [5.5, 9]} // overallGpa가 4.00보다 크면 도메인 조정
                     tickFormatter={(v) => `${10 - v}등급`}
                     tickCount={5}
                     allowDecimals={false}
@@ -122,6 +124,7 @@ const SemesterTrendChartSection: FC<SemesterTrendChartSectionProps> = ({
     semesterTrend,
     isLoading,
     isError,
+    overallGpa,
 }) => {
     const isEmpty = !semesterTrend?.categories || semesterTrend.categories.length === 0;
 
@@ -158,6 +161,7 @@ const SemesterTrendChartSection: FC<SemesterTrendChartSectionProps> = ({
                                 categoryName={category.name}
                                 data={data}
                                 chartId={`chart-${category.id}`}
+                                overallGpa={overallGpa}
                             />
                         );
                     })}

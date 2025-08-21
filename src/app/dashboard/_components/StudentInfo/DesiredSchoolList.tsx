@@ -1,6 +1,7 @@
 import { FC } from 'react';
-import { DesiredSchool } from '@/app/types/university';
 import { X } from 'lucide-react';
+
+import { DesiredSchool } from '@/app/types/university';
 interface DesiredSchoolListProps {
     desiredSchools: DesiredSchool[];
     onDelete: (id: number) => void;
