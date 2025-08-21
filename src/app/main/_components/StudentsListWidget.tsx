@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react';
 
 import { AlertModal } from '../../components/modal/AlertModal';
 import { useModalState } from '../../hooks/useModalState';
-import { StudentsListParams } from '@/app/types/student';
+import { StudentListParams } from '@/app/types/common';
 
 import { useAllStudentsList } from '../_hooks/use-all-students-list';
 import { useDeleteStudent } from '../_hooks/use-delete-student';
@@ -16,7 +16,7 @@ import { StudentsTable } from './StudentsTable';
 
 export const StudentsListWidget: React.FC = React.memo(() => {
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const [searchParams, setSearchParams] = useState<StudentsListParams>({});
+    const [searchParams, setSearchParams] = useState<StudentListParams>({});
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     // 훅들을 사용하여 로직 분리
@@ -24,7 +24,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
     const { deleteStudents, isLoading: isDeleting } = useDeleteStudent();
     const { openModal, closeModal, isModalOpen } = useModalState();
 
-    const handleSearch = useCallback((params: StudentsListParams) => {
+    const handleSearch = useCallback((params: StudentListParams) => {
         setSearchParams(params);
     }, []);
 
@@ -74,6 +74,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
                 open={isModalOpen('addStudent')}
                 onClose={() => closeModal('addStudent')}
             />
+
             <AlertModal
                 open={isModalOpen('deleteStudent')}
                 title="정말 삭제하시겠습니까?"
@@ -83,6 +84,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => closeModal('deleteStudent')}
             />
+
             <AlertModal
                 open={isModalOpen('error')}
                 title="오류 발생"
@@ -91,6 +93,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
                 onConfirm={() => closeModal('error')}
                 onCancel={() => closeModal('error')}
             />
+
         </div>
     );
 });

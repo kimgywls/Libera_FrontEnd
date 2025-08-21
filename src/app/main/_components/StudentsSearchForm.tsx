@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { Search, X } from 'lucide-react';
 
-import { StudentsListParams } from '@/app/types/student';
+import { StudentListParams } from '@/app/types/common';
 
 interface StudentsSearchFormProps {
-    value: StudentsListParams;
-    onChange: (params: StudentsListParams) => void;
+    value: StudentListParams;
+    onChange: (params: StudentListParams) => void;
 }
 
 export const StudentsSearchForm: React.FC<StudentsSearchFormProps> = React.memo(
