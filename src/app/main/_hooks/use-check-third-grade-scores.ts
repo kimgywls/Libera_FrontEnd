@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchStudentScores } from '../_actions/fetch-student-scores';
+
 import { ThirdGradeScoresData } from '@/app/types/student';
+import { fetchStudentScores } from '../_actions/fetch-student-scores';
 
 export function useCheckThirdGradeScores(studentId: number) {
     return useQuery({

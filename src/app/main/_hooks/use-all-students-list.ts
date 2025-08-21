@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { StudentsListParams, StudentsListResponse } from '@/app/types/student';
-
+import { StudentsListResponse } from '@/app/types/student';
+import { StudentListParams } from '@/app/types/common';
 import { fetchAllStudents } from '../_actions/fetch-all-students';
 
-export function useAllStudentsList(params?: StudentsListParams) {
+export function useAllStudentsList(params?: StudentListParams) {
     const { data, error, isLoading, refetch } = useQuery<StudentsListResponse>({
         queryKey: ['all-students', params],
         queryFn: () => fetchAllStudents(params),

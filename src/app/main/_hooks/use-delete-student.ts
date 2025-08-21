@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteStudent } from '../_actions/delete-student';
+
 import { DeleteStudentResponse } from '@/app/types/student';
+import { deleteStudent } from '../_actions/delete-student';
 
 interface UseDeleteStudentReturn {
     deleteStudents: (studentIds: number[]) => Promise<DeleteStudentResponse>;
@@ -14,7 +15,7 @@ export function useDeleteStudent(): UseDeleteStudentReturn {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<DeleteStudentResponse, Error, number[]>({
-        mutationFn: deleteStudent,
+        mutationFn: (studentIds: number[]) => deleteStudent({ studentIds }),
         onSuccess: () => {
             // 모든 관련 쿼리 무효화
             queryClient.invalidateQueries({ queryKey: ['students'] });

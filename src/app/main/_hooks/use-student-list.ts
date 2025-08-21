@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchStudentDetail } from '../_actions/fetch-student-detail';
+
 import { StudentDetail } from '@/app/types/student';
+import { fetchStudentDetail } from '../_actions/fetch-student-detail';
 
 export function useStudentList(student_id: number) {
     const { data, error, isLoading, refetch } = useQuery<StudentDetail>({
