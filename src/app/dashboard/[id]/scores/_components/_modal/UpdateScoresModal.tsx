@@ -165,7 +165,7 @@ const UpdateScoresModal: FC<UpdateScoresModalProps> = ({
                             score: toCreateScoreRequest(scoreForm)
                         })
                     )
-                );
+                ) as Array<{ id: number }>;
 
                 // 새로 생성된 성적의 ID를 로컬 상태에 반영
                 const updatedScoresForm = [...currentScoresForm];
