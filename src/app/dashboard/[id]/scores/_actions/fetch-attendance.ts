@@ -1,14 +1,9 @@
-import axios from 'axios';
-
-import { API_URL } from '@/app/constants';
+import { attendanceApiService } from '@/app/lib/api-client';
 import { AttendanceApiResponse } from '@/app/types/attendance';
-
-const api = axios.create({ baseURL: API_URL });
 
 export async function fetchAttendance(studentId: number): Promise<AttendanceApiResponse> {
     try {
-        const { data }: { data: AttendanceApiResponse } = await api.get(`/api/v1/attendance/${studentId}`);
-        //console.log('[fetchAttendance] response:', data);
+        const data = await attendanceApiService.get<AttendanceApiResponse>(`api/v1/attendance/${studentId}`);
         return data;
     } catch (error) {
         console.error('[fetchAttendance] error:', error);

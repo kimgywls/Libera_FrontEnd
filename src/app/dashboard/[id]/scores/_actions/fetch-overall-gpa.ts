@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { scoreApiService } from '@/app/lib/api-client';
 
 export interface OverallGpaResponse {
     student_id: number;
@@ -12,8 +12,11 @@ export interface OverallGpaResponse {
 }
 
 export async function fetchOverallGpa(studentId: number): Promise<OverallGpaResponse> {
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/scores/students/${studentId}/gpa/overall`;
-    const { data } = await axios.get(apiUrl);
-    //console.log(data.data);
-    return data.data;
+    try {
+        const data = await scoreApiService.get<{ data: OverallGpaResponse }>(`api/v1/scores/students/${studentId}/gpa/overall`);
+        return data.data;
+    } catch (error) {
+        console.error('[fetchOverallGpa] error:', error);
+        throw error;
+    }
 } 

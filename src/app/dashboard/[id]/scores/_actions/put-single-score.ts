@@ -1,8 +1,5 @@
-import axios from 'axios';
+import { scoreApiService } from '@/app/lib/api-client';
 import { ScoreForm } from '@/app/types/score';
-import { API_URL } from '@/app/constants';
-
-const api = axios.create({ baseURL: API_URL });
 
 // 단일 성적 업데이트 시 사용할 수 있는 필드들
 interface SingleScoreUpdateRequest {
@@ -28,12 +25,10 @@ export async function putSingleScore(studentId: number, scoreId: number, score: 
             credit_hours: score.credit_hours,
         };
 
-        const response = await api.put(`/api/v1/scores/students/${studentId}/scores/${scoreId}`, updateData);
-        return response.data;
+        const response = await scoreApiService.put(`api/v1/scores/students/${studentId}/scores/${scoreId}`, updateData);
+        return response;
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('단일 성적 수정 실패:', error.response?.status, error.response?.data);
-        }
+        console.error('[putSingleScore] error:', error);
         throw error;
     }
 } 
