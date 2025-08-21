@@ -236,40 +236,6 @@ docker-compose down --rmi all --volumes --remove-orphans
 - 차트 및 그래프 포함
 - 리포트 다운로드 기능
 
-## 🔧 개발 가이드
-
-### API 클라이언트 사용
-```typescript
-import { studentApiService } from '@/app/lib/api-client';
-
-// 학생 목록 조회
-const students = await studentApiService.get<Student[]>('/students');
-
-// 학생 생성
-const newStudent = await studentApiService.post<Student>('/students', studentData);
-```
-
-### 타입 사용
-```typescript
-import { Student, ApiResponse } from '@/app/types';
-
-interface StudentsResponse extends ApiResponse<Student[]> {}
-```
-
-### 에러 처리
-```typescript
-import { ApiError, NetworkError } from '@/app/lib/api-client';
-
-try {
-  const data = await apiCall();
-} catch (error) {
-  if (error instanceof ApiError) {
-    // API 에러 처리
-  } else if (error instanceof NetworkError) {
-    // 네트워크 에러 처리
-  }
-}
-```
 
 ## 📝 코딩 컨벤션
 
@@ -289,7 +255,15 @@ try {
 - 도메인별 타입은 별도 파일로 분리
 - API 응답 타입은 명시적으로 정의
 
-## 🐛 문제 해결
+### 커밋 규칙
+- `feat`: 새로운 기능 추가
+- `fix`: 버그 수정
+- `docs`: 문서 수정
+- `style`: 코드 스타일 변경 (로직 변경 없음)
+- `refactor`: 코드 리팩토링
+- `chore`: 빌드/배포/환경설정 등 기타 변경
+
+## ✨ 문제 해결
 
 ### 일반적인 문제
 1. **타입 에러**: `npm run lint`로 타입 검사
