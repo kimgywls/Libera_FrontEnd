@@ -24,10 +24,10 @@ const DetailedAbilitiesSection: FC<DetailedAbilitiesSectionProps> = ({
         return acc;
     }, {} as Record<number, DetailedAbility[]>);
 
-    const formatSemester = (semester: string | null | undefined) => {
+    const formatSemester = (semester: string | number | null | undefined) => {
         if (semester == null || semester === "") return "선택하세요";
 
-        if (semester.includes("학기")) return semester;
+        if (typeof semester === 'string' && semester.includes("학기")) return semester;
 
         const semesterDisplayMap = {
             "1": "1학기",

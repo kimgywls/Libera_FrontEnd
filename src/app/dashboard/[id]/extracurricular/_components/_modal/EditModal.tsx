@@ -76,7 +76,7 @@ const EditModal: FC<EditModalProps> = ({
                 setFormData({
                     id: detailed.id,
                     grade: detailed.grade,
-                    semester: detailed.semester,
+                    semester: detailed.semester.toString(),
                     subject: detailed.subject,
                     content: detailed.content
                 });
