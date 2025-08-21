@@ -22,7 +22,7 @@ export interface GradeSemester {
 }
 
 // API 응답 기본 패턴
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
     success: boolean;
     message?: string;
     data?: T;
@@ -47,8 +47,6 @@ export interface StudentListParams extends ListParams {
     phone_number?: string;
     birth_date?: string;
     school?: string;
-    limit?: number;
-    offset?: number;
 }
 
 // 삭제 요청/응답 패턴

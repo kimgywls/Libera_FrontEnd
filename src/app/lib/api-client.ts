@@ -23,14 +23,15 @@ export class NetworkError extends Error {
 }
 
 // 에러 처리 유틸리티
-function handleApiError(error: any): never {
+function handleApiError(error: unknown): never {
     if (error instanceof ApiError) {
         throw error;
     }
 
-    if (error?.response) {
-        // Axios 에러
-        const { status, data } = error.response;
+    // Axios 에러 체크
+    if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response: { status: number; data?: { code?: string; message?: string } } };
+        const { status, data } = axiosError.response;
         throw new ApiError(
             status,
             data?.code || 'UNKNOWN_ERROR',
@@ -39,16 +40,17 @@ function handleApiError(error: any): never {
         );
     }
 
-    if (error?.request) {
-        // 네트워크 에러
+    // 네트워크 에러 체크
+    if (error && typeof error === 'object' && 'request' in error) {
         throw new NetworkError('네트워크 연결에 실패했습니다.');
     }
 
     // 기타 에러
+    const errorMessage = error instanceof Error ? error.message : '내부 서버 오류가 발생했습니다.';
     throw new ApiError(
         500,
         'INTERNAL_ERROR',
-        error?.message || '내부 서버 오류가 발생했습니다.'
+        errorMessage
     );
 }
 
