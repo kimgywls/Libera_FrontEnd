@@ -1,9 +1,4 @@
-import axios from 'axios';
-import { API_URL } from '@/app/constants';
-
-const api = axios.create({
-    baseURL: API_URL,
-});
+import { studentApiService } from '@/app/lib/api-client';
 
 interface UpdateStudentConsultationRequest {
     name: string;
@@ -22,15 +17,13 @@ export const updateStudentConsultation = async (
     data: UpdateStudentConsultationRequest
 ): Promise<UpdateStudentConsultationResponse> => {
     try {
-        const response = await api.put<UpdateStudentConsultationResponse>(
-            `/api/v1/students/${studentId}`,
+        const response = await studentApiService.put<UpdateStudentConsultationResponse>(
+            `api/v1/students/${studentId}`,
             data
         );
-        return response.data;
+        return response;
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data?.message || '상담 일정 업데이트에 실패했습니다.');
-        }
-        throw new Error('상담 일정 업데이트에 실패했습니다.');
+        console.error('[updateStudentConsultation] error:', error);
+        throw error;
     }
 }; 

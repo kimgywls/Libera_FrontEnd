@@ -1,10 +1,5 @@
-import axios from 'axios';
-import { API_URL } from '@/app/constants';
 import { DesiredSchool } from '@/app/types/university';
-
-const api = axios.create({
-    baseURL: API_URL,
-});
+import { desiredSchoolApiService } from '@/app/lib/api-client';
 
 export interface AddDesiredSchoolParams {
     school_name: string;
@@ -14,19 +9,18 @@ export interface AddDesiredSchoolParams {
 }
 
 export async function addDesiredSchool(params: AddDesiredSchoolParams) {
-    const response = await api.post(`/api/v1/desired-schools/`, params);
-    return response.data;
+    const response = await desiredSchoolApiService.addDesiredSchool(params);
+    return response;
 }
 
 export async function deleteDesiredSchool(desired_school_id: number) {
-    const response = await api.delete(`/api/v1/desired-schools/${desired_school_id}`);
-    return response.data;
+    const response = await desiredSchoolApiService.deleteDesiredSchool(desired_school_id);
+    return response;
 }
 
 export async function fetchDesiredSchools(studentId: number): Promise<DesiredSchool[]> {
     try {
-        const { data }: { data: DesiredSchool[] } = await api.get(`/api/v1/desired-schools/student/${studentId}`);
-        //console.log('[fetchDesiredSchools] response:', data);
+        const data = await desiredSchoolApiService.get<DesiredSchool[]>(`api/v1/desired-schools/student/${studentId}`);
         return data;
     } catch (error) {
         console.error('[fetchDesiredSchools] error:', error);
