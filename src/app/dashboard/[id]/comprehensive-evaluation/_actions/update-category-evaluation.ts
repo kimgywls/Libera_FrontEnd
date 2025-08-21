@@ -1,10 +1,5 @@
-import axios from 'axios';
-import { API_URL } from '@/app/constants';
+import { checklistApiService } from '@/app/lib/api-client';
 import { UpdateCategoryEvaluationParams } from '@/app/types/comprehensiveEvaluation';
-
-const api = axios.create({
-    baseURL: API_URL,
-});
 
 export const updateCategoryEvaluation = async ({
     studentId,
@@ -12,13 +7,18 @@ export const updateCategoryEvaluation = async ({
     evaluationContent,
     isFinal = false
 }: UpdateCategoryEvaluationParams) => {
-    const response = await api.put(
-        `/api/v1/checklist/student-evaluation/${studentId}/${mainCategoryId}`,
-        {
-            evaluation_content: evaluationContent,
-            is_final: isFinal
-        }
-    );
+    try {
+        const response = await checklistApiService.put(
+            `/api/v1/checklist/student-evaluation/${studentId}/${mainCategoryId}`,
+            {
+                evaluation_content: evaluationContent,
+                is_final: isFinal
+            }
+        );
 
-    return response.data;
+        return response;
+    } catch (error) {
+        console.error('[updateCategoryEvaluation] error:', error);
+        throw error;
+    }
 }; 

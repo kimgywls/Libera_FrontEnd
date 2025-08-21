@@ -1,7 +1,4 @@
-import axios from 'axios';
-import { API_URL } from '@/app/constants';
-
-const api = axios.create({ baseURL: API_URL });
+import { universityApiService } from '@/app/lib/api-client';
 
 interface UpdateRecommendationItemRequest {
     item_id: number;
@@ -16,7 +13,7 @@ interface UpdateRecommendationItemRequest {
 
 export const updateRecommendationItem = async (data: UpdateRecommendationItemRequest) => {
     try {
-        const response = await api.put(
+        const response = await universityApiService.put(
             `/api/v1/admin/recommendations/items/${data.item_id}/`,
             {
                 rank: data.rank,
@@ -28,27 +25,9 @@ export const updateRecommendationItem = async (data: UpdateRecommendationItemReq
                 is_hidden: data.is_hidden
             }
         );
-        return response.data;
+        return response;
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            // 서버에서 받은 상세 에러 메시지 처리
-            const errorDetail = error.response?.data?.detail;
-            const errorMessage = error.response?.data?.message;
-
-            if (Array.isArray(errorDetail) && errorDetail.length > 0) {
-                const firstError = errorDetail[0];
-                const detailMessage = firstError.msg || firstError.message || JSON.stringify(firstError);
-                throw new Error(`검증 오류: ${detailMessage}`);
-            } else if (errorDetail) {
-                throw new Error(`서버 오류: ${errorDetail}`);
-            } else if (errorMessage) {
-                throw new Error(errorMessage);
-            } else if (error.response?.status === 500) {
-                throw new Error('서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-            } else {
-                throw new Error('추천 아이템 업데이트에 실패했습니다.');
-            }
-        }
-        throw new Error('추천 아이템 업데이트에 실패했습니다.');
+        console.error('[updateRecommendationItem] error:', error);
+        throw error;
     }
 }; 

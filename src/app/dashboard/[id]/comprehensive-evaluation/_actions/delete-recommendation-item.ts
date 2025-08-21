@@ -1,7 +1,4 @@
-import axios from 'axios';
-import { API_URL } from '@/app/constants';
-
-const api = axios.create({ baseURL: API_URL });
+import { universityApiService } from '@/app/lib/api-client';
 
 interface DeleteRecommendationItemRequest {
     recommendation_id: number;
@@ -10,15 +7,12 @@ interface DeleteRecommendationItemRequest {
 
 export const deleteRecommendationItem = async (data: DeleteRecommendationItemRequest) => {
     try {
-        const response = await api.delete(
+        const response = await universityApiService.delete(
             `/api/v1/admin/recommendations/${data.recommendation_id}/items/${data.item_id}/`
         );
-        return response.data;
+        return response;
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('API Error:', error.response?.data);
-            throw new Error(error.response?.data?.message || '추천 아이템 삭제에 실패했습니다.');
-        }
-        throw new Error('추천 아이템 삭제에 실패했습니다.');
+        console.error('[deleteRecommendationItem] error:', error);
+        throw error;
     }
 }; 
