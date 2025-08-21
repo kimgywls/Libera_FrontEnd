@@ -1,7 +1,4 @@
-import axios from 'axios';
-import { API_URL } from '@/app/constants';
-
-const api = axios.create({ baseURL: API_URL });
+import { extracurricularApiService } from '@/app/lib/api-client';
 
 export interface CreateCreativeActivityData {
     grade: number;
@@ -25,25 +22,40 @@ export interface CreateBehavioralCharacteristicData {
 }
 
 export const createCreativeActivity = async (studentId: number, data: CreateCreativeActivityData) => {
-    const res = await api.post("/api/v1/extracurricular/creative-activities", {
-        ...data,
-        student_id: studentId
-    });
-    return res.data;
+    try {
+        const res = await extracurricularApiService.post("/api/v1/extracurricular/creative-activities", {
+            ...data,
+            student_id: studentId
+        });
+        return res;
+    } catch (error) {
+        console.error('[createCreativeActivity] error:', error);
+        throw error;
+    }
 };
 
 export const createDetailedAbility = async (studentId: number, data: CreateDetailedAbilityData) => {
-    const res = await api.post("/api/v1/extracurricular/detailed-abilities", {
-        ...data,
-        student_id: studentId
-    });
-    return res.data;
+    try {
+        const res = await extracurricularApiService.post("/api/v1/extracurricular/detailed-abilities", {
+            ...data,
+            student_id: studentId
+        });
+        return res;
+    } catch (error) {
+        console.error('[createDetailedAbility] error:', error);
+        throw error;
+    }
 };
 
 export const createBehavioralCharacteristic = async (studentId: number, data: CreateBehavioralCharacteristicData) => {
-    const res = await api.post("/api/v1/extracurricular/behavioral-characteristics", {
-        ...data,
-        student_id: studentId
-    });
-    return res.data;
+    try {
+        const res = await extracurricularApiService.post("/api/v1/extracurricular/behavioral-characteristics", {
+            ...data,
+            student_id: studentId
+        });
+        return res;
+    } catch (error) {
+        console.error('[createBehavioralCharacteristic] error:', error);
+        throw error;
+    }
 }; 

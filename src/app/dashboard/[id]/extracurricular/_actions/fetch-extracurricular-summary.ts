@@ -1,14 +1,9 @@
-import axios, { AxiosError } from 'axios';
-
-import { API_URL } from '@/app/constants';
+import { extracurricularApiService } from '@/app/lib/api-client';
 import { ExtracurricularSummary, ExtracurricularApiData } from '@/app/types/extracurricular';
-
-const api = axios.create({ baseURL: API_URL });
 
 export async function fetchExtracurricularSummary(studentId: number): Promise<ExtracurricularSummary> {
     try {
-        const response = await api.get<ExtracurricularApiData>(`/api/v1/extracurricular/student/${studentId}/summary`);
-        const data = response.data;
+        const data = await extracurricularApiService.get<ExtracurricularApiData>(`/api/v1/extracurricular/student/${studentId}/summary`);
 
         if (!data) {
             throw new Error('No data in API response');
@@ -23,20 +18,7 @@ export async function fetchExtracurricularSummary(studentId: number): Promise<Ex
 
         return summary;
     } catch (error) {
-        if (error instanceof AxiosError) {
-            console.error('[fetchExtracurricularSummary] Axios error:', {
-                message: error.message,
-                status: error.response?.status,
-                statusText: error.response?.statusText,
-                data: error.response?.data
-            });
-            throw new Error(`API 요청 실패: ${error.response?.status || 'Network Error'} - ${error.message}`);
-        } else if (error instanceof Error) {
-            console.error('[fetchExtracurricularSummary] Error:', error.message);
-            throw error;
-        } else {
-            console.error('[fetchExtracurricularSummary] Unknown error:', error);
-            throw new Error('알 수 없는 오류가 발생했습니다.');
-        }
+        console.error('[fetchExtracurricularSummary] error:', error);
+        throw error;
     }
 } 

@@ -1,9 +1,5 @@
-import axios, { AxiosError } from 'axios';
-
-import { API_URL } from '@/app/constants';
+import { extracurricularApiService } from '@/app/lib/api-client';
 import { CreativeActivity, DetailedAbility, BehavioralCharacteristic } from '@/app/types/extracurricular';
-
-const api = axios.create({ baseURL: API_URL });
 
 // 창의체험활동 업데이트
 export interface UpdateCreativeActivityRequest {
@@ -17,32 +13,19 @@ export async function updateCreativeActivity(
     updateData: UpdateCreativeActivityRequest
 ): Promise<CreativeActivity> {
     try {
-        const response = await api.put<CreativeActivity>(
+        const response = await extracurricularApiService.put<CreativeActivity>(
             `/api/v1/extracurricular/creative-activities/${activityId}`,
             updateData
         );
 
-        if (!response.data) {
+        if (!response) {
             throw new Error('No data in API response');
         }
 
-        return response.data;
+        return response;
     } catch (error) {
-        if (error instanceof AxiosError) {
-            console.error('[updateCreativeActivity] Axios error:', {
-                message: error.message,
-                status: error.response?.status,
-                statusText: error.response?.statusText,
-                data: error.response?.data
-            });
-            throw new Error(`창의체험활동 수정 실패: ${error.response?.status || 'Network Error'} - ${error.message}`);
-        } else if (error instanceof Error) {
-            console.error('[updateCreativeActivity] Error:', error.message);
-            throw error;
-        } else {
-            console.error('[updateCreativeActivity] Unknown error:', error);
-            throw new Error('창의체험활동 수정 중 알 수 없는 오류가 발생했습니다.');
-        }
+        console.error('[updateCreativeActivity] error:', error);
+        throw error;
     }
 }
 
@@ -59,32 +42,19 @@ export async function updateDetailedAbility(
     updateData: UpdateDetailedAbilityRequest
 ): Promise<DetailedAbility> {
     try {
-        const response = await api.put<DetailedAbility>(
+        const response = await extracurricularApiService.put<DetailedAbility>(
             `/api/v1/extracurricular/detailed-abilities/${abilityId}`,
             updateData
         );
 
-        if (!response.data) {
+        if (!response) {
             throw new Error('No data in API response');
         }
 
-        return response.data;
+        return response;
     } catch (error) {
-        if (error instanceof AxiosError) {
-            console.error('[updateDetailedAbility] Axios error:', {
-                message: error.message,
-                status: error.response?.status,
-                statusText: error.response?.statusText,
-                data: error.response?.data
-            });
-            throw new Error(`세부능력 및 특기사항 수정 실패: ${error.response?.status || 'Network Error'} - ${error.message}`);
-        } else if (error instanceof Error) {
-            console.error('[updateDetailedAbility] Error:', error.message);
-            throw error;
-        } else {
-            console.error('[updateDetailedAbility] Unknown error:', error);
-            throw new Error('세부능력 및 특기사항 수정 중 알 수 없는 오류가 발생했습니다.');
-        }
+        console.error('[updateDetailedAbility] error:', error);
+        throw error;
     }
 }
 
@@ -99,31 +69,18 @@ export async function updateBehavioralCharacteristic(
     updateData: UpdateBehavioralCharacteristicRequest
 ): Promise<BehavioralCharacteristic> {
     try {
-        const response = await api.put<BehavioralCharacteristic>(
+        const response = await extracurricularApiService.put<BehavioralCharacteristic>(
             `/api/v1/extracurricular/behavioral-characteristics/${characteristicId}`,
             updateData
         );
 
-        if (!response.data) {
+        if (!response) {
             throw new Error('No data in API response');
         }
 
-        return response.data;
+        return response;
     } catch (error) {
-        if (error instanceof AxiosError) {
-            console.error('[updateBehavioralCharacteristic] Axios error:', {
-                message: error.message,
-                status: error.response?.status,
-                statusText: error.response?.statusText,
-                data: error.response?.data
-            });
-            throw new Error(`행동특성 및 종합의견 수정 실패: ${error.response?.status || 'Network Error'} - ${error.message}`);
-        } else if (error instanceof Error) {
-            console.error('[updateBehavioralCharacteristic] Error:', error.message);
-            throw error;
-        } else {
-            console.error('[updateBehavioralCharacteristic] Unknown error:', error);
-            throw new Error('행동특성 및 종합의견 수정 중 알 수 없는 오류가 발생했습니다.');
-        }
+        console.error('[updateBehavioralCharacteristic] error:', error);
+        throw error;
     }
 } 
