@@ -50,6 +50,7 @@ export default function ChecklistWidget() {
         if (!studentId) return;
         const now = new Date().toISOString();
         const body = {
+            id: meta?.id ?? 0,
             highschool_type: schoolType === '' ? null : schoolType,
             is_subject_sequence_completed: curriculumCompleted === '' ? null : curriculumCompleted === 'YES',
             student_id: studentId,
