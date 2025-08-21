@@ -58,6 +58,10 @@ export function StudentInfoProvider({ children, studentId }: StudentInfoProvider
         consultation_date: student.consultation_date ? (typeof student.consultation_date === 'string' ? new Date(student.consultation_date) : student.consultation_date) : null,
         overall_score: overallGpa ?? 0,
         main_subjects_score: mainSubjectsGpa ?? 0,
+        created_at: student.created_at,
+        updated_at: student.updated_at,
+        school_histories: student.school_histories || [],
+        completion_status: student.completion_status || '미완료',
     } : null;
 
     return (
