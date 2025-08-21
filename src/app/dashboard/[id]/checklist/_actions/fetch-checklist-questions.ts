@@ -1,16 +1,16 @@
-import axios from 'axios';
-
-import { API_URL } from '@/app/constants';
-import type { ChecklistQuestionsResponse } from '@/app/types/checklist';
-
-const api = axios.create({ baseURL: API_URL });
+import { checklistApiService } from '@/app/lib/api-client';
+import type { ChecklistQuestionsResponse, ChecklistQuestion } from '@/app/types/checklist';
 
 export async function fetchChecklistQuestions(): Promise<ChecklistQuestionsResponse> {
-    const res = await api.get('/api/v1/checklist/questions');
-    // console.log('[fetchChecklistQuestions] 응답:', res.data);
-    // 배열만 올 경우, 객체로 감싸서 반환
-    if (Array.isArray(res.data)) {
-        return { questions: res.data };
+    try {
+        const res = await checklistApiService.get<ChecklistQuestion[] | ChecklistQuestionsResponse>('/api/v1/checklist/questions');
+        // 배열만 올 경우, 객체로 감싸서 반환
+        if (Array.isArray(res)) {
+            return { questions: res };
+        }
+        return res as ChecklistQuestionsResponse;
+    } catch (error) {
+        console.error('[fetchChecklistQuestions] error:', error);
+        throw error;
     }
-    return res.data;
 } 

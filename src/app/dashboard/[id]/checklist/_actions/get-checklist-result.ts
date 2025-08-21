@@ -1,10 +1,12 @@
-import axios from 'axios';
-import { API_URL } from '@/app/constants';
+import { checklistApiService } from '@/app/lib/api-client';
 import type { ChecklistResultResponse } from '@/app/types/checklist';
 
-const api = axios.create({ baseURL: API_URL });
-
 export async function getChecklistResult(studentId: number): Promise<ChecklistResultResponse> {
-    const res = await api.get(`/api/v1/checklist/result/${studentId}`);
-    return res.data;
+    try {
+        const res = await checklistApiService.get<ChecklistResultResponse>(`/api/v1/checklist/result/${studentId}`);
+        return res;
+    } catch (error) {
+        console.error('[getChecklistResult] error:', error);
+        throw error;
+    }
 } 
