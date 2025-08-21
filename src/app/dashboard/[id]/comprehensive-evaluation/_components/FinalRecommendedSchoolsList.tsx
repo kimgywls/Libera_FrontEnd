@@ -1,7 +1,7 @@
 import { FC, useState, useEffect, useMemo } from "react";
 import { useUpdateRecommendationItem } from '../_hooks/use-update-recommendation-item';
 import { useDeleteRecommendationItem } from '../_hooks/use-delete-recommendation-item';
-import type { SavedRecommendationItem, SavedRecommendation } from '@/app/types/university';
+import type { SavedUniversityItem, SavedRecommendation } from '@/app/types/university';
 import BaseTable from '@/app/dashboard/_components/BaseTable';
 import Section from '@/app/dashboard/_components/Section';
 import DataState from '@/app/dashboard/_components/DataState';
@@ -9,7 +9,7 @@ import { AlertModal } from '@/app/components/modal/AlertModal';
 import { useModalState } from '@/app/hooks/useModalState';
 import { NON_SCORE_RECOMMEND_TYPE_COLOR, RECOMMEND_TYPE_COLOR } from '@/app/constants';
 
-interface EditableItem extends SavedRecommendationItem {
+interface EditableItem extends SavedUniversityItem {
     isModified?: boolean;
     recommendation_id: number;
 }
@@ -51,9 +51,11 @@ const FinalRecommendedSchoolsList: FC<FinalRecommendedSchoolsListProps> = ({
 
     // 순위 옵션 (동적으로 생성)
     const rankOptions = useMemo(() => {
-        const maxRank = Math.max(editableItems.length, 10);
+        // 실제 데이터의 최대 순위와 아이템 개수 중 더 큰 값 사용
+        const actualMaxRank = editableItems.length > 0 ? Math.max(...editableItems.map(item => item.rank)) : 0;
+        const maxRank = Math.max(actualMaxRank, editableItems.length, 10);
         return Array.from({ length: maxRank }, (_, i) => i + 1);
-    }, [editableItems.length]);
+    }, [editableItems]);
 
 
     // 지원적정성 옵션
@@ -135,9 +137,9 @@ const FinalRecommendedSchoolsList: FC<FinalRecommendedSchoolsListProps> = ({
 
     const columns = [
         {
-            key: 'rank',
+            key: 'rank' as const,
             label: '순서',
-            render: (value: string | number | boolean | undefined, row: EditableItem) => (
+            render: (value: string | number | boolean | null | undefined, row: EditableItem) => (
                 <select
                     value={row.rank}
                     onChange={(e) => handleFieldChange(row.id, 'rank', parseInt(e.target.value))}
@@ -149,14 +151,14 @@ const FinalRecommendedSchoolsList: FC<FinalRecommendedSchoolsListProps> = ({
                 </select>
             )
         },
-        { key: 'university_name', label: '대학명' },
-        { key: 'admission_type', label: '전형명' },
-        { key: 'admission_category', label: '유형구분' },
-        { key: 'major_name', label: '학과명' },
+        { key: 'university_name' as const, label: '대학명' },
+        { key: 'admission_type' as const, label: '전형명' },
+        { key: 'admission_category' as const, label: '유형구분' },
+        { key: 'major_name' as const, label: '학과명' },
         {
-            key: 'suitability_type',
+            key: 'suitability_type' as const,
             label: '교과 판정',
-            render: (value: string | number | boolean | undefined, row: EditableItem) => {
+            render: (value: string | number | boolean | null | undefined, row: EditableItem) => {
                 // 백엔드에서 '신설'로 저장된 것을 프론트엔드에서 '적정'으로 표시
                 const displayText = row.suitability_type === '신설' ? '적정' : row.suitability_type;
                 const colorKey = row.suitability_type === '신설' ? '적정' : row.suitability_type;
@@ -169,18 +171,18 @@ const FinalRecommendedSchoolsList: FC<FinalRecommendedSchoolsListProps> = ({
             }
         },
         {
-            key: 'non_subject_suitability',
+            key: 'non_subject_suitability' as const,
             label: '비교과 판정',
-            render: (value: string | number | boolean | undefined, row: EditableItem) => (
+            render: (value: string | number | boolean | null | undefined, row: EditableItem) => (
                 <span className={`inline-block text-xs font-medium px-2 py-1 rounded ${NON_SCORE_RECOMMEND_TYPE_COLOR[row.non_subject_suitability]}`}>
                     {row.non_subject_suitability}
                 </span>
             )
         },
         {
-            key: 'overall_evaluation',
+            key: 'overall_evaluation' as const,
             label: '지원적정성',
-            render: (value: string | number | boolean | undefined, row: EditableItem) => (
+            render: (value: string | number | boolean | null | undefined, row: EditableItem) => (
                 <select
                     value={row.overall_evaluation}
                     onChange={(e) => handleFieldChange(row.id, 'overall_evaluation', e.target.value)}
@@ -193,9 +195,9 @@ const FinalRecommendedSchoolsList: FC<FinalRecommendedSchoolsListProps> = ({
             )
         },
         {
-            key: 'id',
+            key: 'id' as const,
             label: '취소',
-            render: (value: string | number | boolean | undefined, row: EditableItem) => (
+            render: (value: string | number | boolean | null | undefined, row: EditableItem) => (
                 <button
                     onClick={() => handleDeleteConfirm(row)}
                     disabled={isDeleting}
@@ -205,7 +207,7 @@ const FinalRecommendedSchoolsList: FC<FinalRecommendedSchoolsListProps> = ({
                 </button>
             )
         }
-    ] as const;
+    ];
 
     return (
         <Section

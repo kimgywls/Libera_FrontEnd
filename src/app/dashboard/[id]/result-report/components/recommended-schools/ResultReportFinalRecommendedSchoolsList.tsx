@@ -1,11 +1,11 @@
 import { FC, useMemo } from "react";
-import type { SavedRecommendationItem, SavedRecommendation } from '@/app/types/university';
+import type { SavedUniversityItem, SavedRecommendation } from '@/app/types/university';
 import ResultReportBaseTable from '../ResultReportBaseTable';
 import DataState from '@/app/dashboard/_components/DataState';
 import { RECOMMEND_TYPE_COLOR } from '@/app/constants';
 import ResultReportSection from "../ResultReportSection";
 
-interface EditableItem extends SavedRecommendationItem {
+interface EditableItem extends SavedUniversityItem {
     recommendation_id: number;
 }
 
@@ -25,15 +25,15 @@ const ResultReportFinalRecommendedSchoolsList: FC<ResultReportFinalRecommendedSc
     }, [savedRecommendations]);
 
     const columns = [
-        { key: 'rank', label: '순서' },
-        { key: 'university_name', label: '대학명' },
-        { key: 'admission_type', label: '전형명' },
-        { key: 'admission_category', label: '유형구분' },
-        { key: 'major_name', label: '학과명' },
+        { key: 'rank' as const, label: '순서' },
+        { key: 'university_name' as const, label: '대학명' },
+        { key: 'admission_type' as const, label: '전형명' },
+        { key: 'admission_category' as const, label: '유형구분' },
+        { key: 'major_name' as const, label: '학과명' },
         {
-            key: 'overall_evaluation',
+            key: 'overall_evaluation' as const,
             label: `지원\n적정성`,
-            render: (value: string | number | boolean | undefined, row: EditableItem) => {
+            render: (value: string | number | boolean | null | undefined, row: EditableItem) => {
 
                 const displayText = row.overall_evaluation === '신설' ? '적정' : row.overall_evaluation;
                 const colorKey = row.overall_evaluation === '신설' ? '적정' : row.overall_evaluation;
@@ -45,7 +45,7 @@ const ResultReportFinalRecommendedSchoolsList: FC<ResultReportFinalRecommendedSc
                 );
             }
         }
-    ] as const;
+    ];
 
     return (
         <ResultReportSection title="최종 추천 대학 목록">

@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import { SavedRecommendation, SavedRecommendationItem } from "@/app/types/university";
+import { SavedRecommendation, SavedUniversityItem } from "@/app/types/university";
 import ResultReportBaseTable from "../ResultReportBaseTable";
 import ResultReportSection from "../ResultReportSection";
 
@@ -16,7 +16,7 @@ interface TableRow {
 const ResultReportRecommendedSchoolSummary: FC<ResultReportRecommendedSchoolSummaryProps> = ({ savedRecommendations }) => {
     const recommendations = savedRecommendations?.[0]?.items || [];
 
-    const getCellData = (recommendation: SavedRecommendationItem, dataKey: string): string | { value: string; isLongText?: boolean } => {
+    const getCellData = (recommendation: SavedUniversityItem, dataKey: string): string | { value: string; isLongText?: boolean } => {
         if (!recommendation) return "";
 
         switch (dataKey) {
