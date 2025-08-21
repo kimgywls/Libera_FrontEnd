@@ -1,7 +1,7 @@
-export interface SemesterTrendPeriod {
+import { StudentBase, GradeSemester } from './common';
+
+export interface SemesterTrendPeriod extends GradeSemester {
     period: string;
-    grade: number;
-    semester: number;
     gpa: number;
     score_count: number;
 }
@@ -13,7 +13,6 @@ export interface SemesterTrendCategory {
     periods: SemesterTrendPeriod[];
 }
 
-export interface SemesterTrendResponse {
-    student_id: number;
+export interface SemesterTrendResponse extends StudentBase {
     categories: SemesterTrendCategory[];
 } 

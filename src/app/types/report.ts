@@ -4,8 +4,7 @@ import { ChecklistQuestion, ChecklistResponseItem, ChecklistResultScores, Checkl
 import { StudentInfo } from './student';
 import { Attendance } from './attendance';
 import { SavedRecommendation } from './university';
-import { FinalEvaluationResponse } from './comprehensiveEvaluation';
-import { OverallEvaluationResponse } from './comprehensiveEvaluation';
+import { FinalEvaluationResponse, OverallEvaluationResponse } from './comprehensiveEvaluation';
 
 export interface StudentReportData {
     studentInfo: StudentInfo;

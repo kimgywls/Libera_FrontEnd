@@ -1,3 +1,5 @@
+import { BaseEntity, StudentBase } from './common';
+
 // checklist meta 관련 타입 및 enum
 export enum HighschoolTypeEnum {
     일반고 = '일반고',
@@ -6,22 +8,16 @@ export enum HighschoolTypeEnum {
     기타 = '기타',
 }
 
-export interface SaveChecklistMetaRequest {
+export interface SaveChecklistMetaRequest extends BaseEntity, StudentBase {
     highschool_type: HighschoolTypeEnum | null;
     is_subject_sequence_completed: boolean | null;
-    student_id: number;
     checklist_meta_id: number;
-    created_at: string;
-    updated_at: string;
 }
 
-export interface ChecklistMetaResponse {
+export interface ChecklistMetaResponse extends BaseEntity, StudentBase {
     checklist_meta_id: number;
-    student_id: number;
     highschool_type: HighschoolTypeEnum | null;
     is_subject_sequence_completed: boolean | null;
-    created_at: string;
-    updated_at: string;
 }
 
 export interface ChecklistScoreLabel {
@@ -49,8 +45,7 @@ export interface ChecklistResponseItem {
     score: number; // 1~5
 }
 
-export interface ChecklistSubmitRequest {
-    student_id: number;
+export interface ChecklistSubmitRequest extends StudentBase {
     responses: ChecklistResponseItem[];
 }
 
@@ -61,30 +56,21 @@ export interface ChecklistResultScores {
     total: number;
 }
 
-export interface ChecklistSubmitResponse {
-    student_id: number;
+export interface ChecklistSubmitResponse extends StudentBase {
     responses: Array<{
         checklist_question_id: number;
         score: number;
-        question: {
-            question_text: string;
-            main_category_id: number;
-            sub_category_id: number;
-            is_active: boolean;
-            checklist_question_id: number;
-        };
+        question: ChecklistQuestion;
     }>;
     result_scores: ChecklistResultScores;
 }
 
-export interface ChecklistResultResponse {
-    student_id: number;
+export interface ChecklistResultResponse extends StudentBase {
     result_scores: ChecklistResultScores;
 }
 
 // 상세 결과 타입 정의
-export interface ChecklistDetailedResultResponse {
-    student_id: number;
+export interface ChecklistDetailedResultResponse extends StudentBase {
     categories: {
         main_category_id: number;
         main_category_name: string;

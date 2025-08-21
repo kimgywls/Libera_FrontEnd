@@ -1,19 +1,6 @@
-export interface Attendance {
-    grade: number;
-    total_days: number;
-    absence_disease: number;
-    absence_unexcused: number;
-    absence_etc: number;
-    tardiness_disease: number;
-    tardiness_unexcused: number;
-    tardiness_etc: number;
-    early_leave_disease: number;
-    early_leave_unexcused: number;
-    early_leave_etc: number;
-    result_disease: number;
-    result_unexcused: number;
-    result_etc: number;
-    special_notes: string | null;
+import { BaseEntity, StudentBase, GradeSemester, AttendanceBase } from './common';
+
+export interface Attendance extends BaseEntity, StudentBase, GradeSemester, AttendanceBase {
     [key: string]: string | number | null | undefined;
 }
 

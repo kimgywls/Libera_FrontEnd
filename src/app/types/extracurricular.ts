@@ -1,34 +1,20 @@
+import { BaseEntity, StudentBase, GradeSemester } from './common';
+
 // 창의체험활동 항목
-export interface CreativeActivity {
-    id: number;
-    student_id: number;
-    grade: number;
+export interface CreativeActivity extends BaseEntity, StudentBase, GradeSemester {
     area: string; // 자율활동, 동아리활동, 진로활동 등
     details: string;
-    created_at: string;
-    updated_at: string;
 }
 
 // 세부능력 및 특기사항
-export interface DetailedAbility {
-    id: number;
-    student_id: number;
-    grade: number;
-    semester: string;
+export interface DetailedAbility extends BaseEntity, StudentBase, GradeSemester {
     subject: string;
     content: string;
-    created_at: string;
-    updated_at: string;
 }
 
 // 행동특성 및 종합의견
-export interface BehavioralCharacteristic {
-    id: number;
-    student_id: number;
-    grade: number;
+export interface BehavioralCharacteristic extends BaseEntity, StudentBase, GradeSemester {
     content: string;
-    created_at: string;
-    updated_at: string;
 }
 
 // API 응답 구조
