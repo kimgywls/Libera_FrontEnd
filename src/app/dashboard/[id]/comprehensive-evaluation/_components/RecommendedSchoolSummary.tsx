@@ -112,10 +112,11 @@ const RecommendedSchoolSummary: FC<RecommendedSchoolSummaryProps> = ({ savedReco
     });
 
     const columns = [
-        { key: "category", label: "구분" },
+        { key: "category", label: "구분", width: "w-32" },
         ...recommendations.map((_, index) => ({
             key: `preference_${index + 1}`,
-            label: `${index + 1}지망`
+            label: `${index + 1}지망`,
+            width: "w-40"
         }))
     ];
 
@@ -130,7 +131,7 @@ const RecommendedSchoolSummary: FC<RecommendedSchoolSummaryProps> = ({ savedReco
                         <BaseTable
                             columns={columns}
                             data={tableRows}
-
+                            className="w-full"
                         />
                     </div>
                 ) : (
