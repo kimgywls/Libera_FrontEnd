@@ -5,6 +5,7 @@ interface Column<T = any> {
     readonly key: keyof T & string;
     readonly label: string;
     readonly render?: (value: T[keyof T], row: T, index: number) => ReactNode;
+    readonly width?: string;
 }
 
 interface BaseTableProps<T> {
@@ -36,13 +37,13 @@ const BaseTable = <T,>({
 
     return (
         <div className={`overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm ${className}`}>
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full divide-y divide-gray-200 table-fixed">
                 <thead className="bg-gray-50">
                     <tr>
                         {columns.map(column => (
                             <th
                                 key={column.key}
-                                className="px-4 py-2 text-left text-sm font-semibold text-gray-700 border-x border-gray-200 whitespace-pre-line"
+                                className={`px-4 py-2 text-left text-sm font-semibold text-gray-700 border-x border-gray-200 whitespace-pre-line ${column.width || ''}`}
                             >
                                 {column.label}
                             </th>
@@ -61,7 +62,7 @@ const BaseTable = <T,>({
                                 return (
                                     <td
                                         key={column.key}
-                                        className="px-4 py-2 whitespace-pre-line text-gray-900 border-x border-gray-200"
+                                        className={`px-4 py-2 whitespace-pre-line text-gray-900 border-x border-gray-200 ${column.width || ''}`}
                                     >
                                         {cellContent as ReactNode}
                                     </td>
