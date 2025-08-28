@@ -26,7 +26,9 @@ export function useCheckThirdGradeScores(studentId: number) {
                 hasThirdGradeScores: !!hasValidScores
             };
         },
-        staleTime: 5 * 60 * 1000, // 5분
-        refetchOnWindowFocus: false,
+        staleTime: 0, // 데이터를 항상 stale로 간주하여 즉시 업데이트
+        refetchOnWindowFocus: true, // 창이 포커스될 때 리페치
+        refetchOnMount: true, // 컴포넌트가 마운트될 때 리페치
+        refetchOnReconnect: true, // 네트워크 재연결 시 리페치
     });
 } 
