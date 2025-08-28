@@ -120,10 +120,11 @@ const ResultReportRecommendedSchoolSummary: FC<ResultReportRecommendedSchoolSumm
     });
 
     const columns = [
-        { key: "category", label: "구분" },
+        { key: "category", label: "구분", width: "w-32" },
         ...recommendations.map((_, index) => ({
             key: `preference_${index + 1}`,
-            label: `${index + 1}지망`
+            label: `${index + 1}지망`,
+            width: "w-40"
         }))
     ];
 
@@ -131,10 +132,11 @@ const ResultReportRecommendedSchoolSummary: FC<ResultReportRecommendedSchoolSumm
     return (
         <ResultReportSection title="추천 대학교 요약">
             <div className="space-y-6">
-                <div className="">
+                <div className="w-full">
                     <ResultReportBaseTable
                         columns={columns}
                         data={tableRows}
+                        className="w-full"
                     />
                 </div>
             </div>

@@ -5,6 +5,7 @@ interface Column<T = any> {
     readonly key: keyof T & string;
     readonly label: string;
     readonly render?: (value: T[keyof T], row: T, index: number) => ReactNode;
+    readonly width?: string;
 }
 
 interface BaseTableProps<T> {
@@ -54,13 +55,13 @@ const ResultReportBaseTable = <T,>({
 
     return (
         <div className={`result-report-table-container ${className}`}>
-            <table className="result-report-table">
+            <table className="result-report-table table-fixed">
                 <thead className="result-report-table-head">
                     <tr className="result-report-table-row">
                         {columns.map(column => (
                             <th
                                 key={column.key}
-                                className={`result-report-table-header-cell ${headerClassName}`}
+                                className={`result-report-table-header-cell ${headerClassName} ${column.width || ''}`}
                             >
                                 {column.label}
                             </th>
@@ -85,7 +86,7 @@ const ResultReportBaseTable = <T,>({
                                 return (
                                     <td
                                         key={column.key}
-                                        className={cellClassName}
+                                        className={`${cellClassName} ${column.width || ''}`}
                                     >
                                         {cellContent as ReactNode}
                                     </td>
