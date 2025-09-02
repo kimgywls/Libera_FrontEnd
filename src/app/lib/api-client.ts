@@ -183,7 +183,11 @@ export class StudentApiService extends ApiService {
     }
 
     async deleteStudents(studentIds: number[]) {
-        return this.delete('api/v1/students/', { data: { studentIds } });
+        return this.delete('api/v1/students/', { data: studentIds });
+    }
+
+    async deleteStudent(studentId: number) {
+        return this.delete(`api/v1/students/${studentId}`);
     }
 }
 

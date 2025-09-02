@@ -21,7 +21,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
 
     // 훅들을 사용하여 로직 분리
     const { students, isLoading, isError } = useAllStudentsList(searchParams);
-    const { deleteStudents, isLoading: isDeleting } = useDeleteStudent();
+    const { deleteSelectedStudents, isLoading: isDeleting } = useDeleteStudent();
     const { openModal, closeModal, isModalOpen } = useModalState();
 
     const handleSearch = useCallback((params: StudentListParams) => {
@@ -30,7 +30,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
 
     const handleDeleteConfirm = useCallback(async () => {
         try {
-            const result = await deleteStudents(selectedIds);
+            const result = await deleteSelectedStudents(selectedIds);
             if (result.success) {
                 setSelectedIds([]);
                 closeModal('deleteStudent');
@@ -43,7 +43,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
             setErrorMessage('학생 삭제 중 오류가 발생했습니다.');
             openModal('error');
         }
-    }, [selectedIds, deleteStudents, closeModal, openModal]);
+    }, [selectedIds, deleteSelectedStudents, closeModal, openModal]);
 
     return (
         <div className="w-full h-full p-2">
@@ -83,6 +83,7 @@ export const StudentsListWidget: React.FC = React.memo(() => {
                 cancelText="취소"
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => closeModal('deleteStudent')}
+
             />
 
             <AlertModal

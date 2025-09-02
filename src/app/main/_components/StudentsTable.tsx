@@ -17,7 +17,7 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const { deleteStudents } = useDeleteStudent();
+    const { deleteStudent, isLoading: isDeleting } = useDeleteStudent();
     const { openModal, closeModal, isModalOpen } = useModalState();
 
     useEffect(() => {
@@ -41,7 +41,7 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
     const handleDeleteConfirm = async () => {
         if (!studentToDelete) return;
         try {
-            const result = await deleteStudents([studentToDelete.id]);
+            const result = await deleteStudent(studentToDelete.id);
             if (!result.success) {
                 setErrorMessage(result.message);
                 openModal('error');
@@ -120,6 +120,7 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
                                     selected={selectedIds.includes(student.id)}
                                     onSelect={handleCheckbox}
                                     onRequestDelete={handleDeleteRequest}
+                                    isDeleting={isDeleting}
                                 />
                             ))
                         )}
@@ -139,6 +140,7 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
                     closeModal('deleteConfirm');
                     setStudentToDelete(null);
                 }}
+
             />
 
             {/* 에러 모달 */}

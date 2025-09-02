@@ -17,10 +17,11 @@ interface StudentsTableRowProps {
     selected: boolean;
     onSelect: (id: number) => void;
     onRequestDelete: (student: Student) => void;
+    isDeleting?: boolean;
 }
 
 export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
-    ({ student, index, selected, onSelect, onRequestDelete }) => {
+    ({ student, index, selected, onSelect, onRequestDelete, isDeleting = false }) => {
         const router = useRouter();
 
         // 3학년 1학기 성적 확인
@@ -99,7 +100,7 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                 <td className="px-6 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>
                     <button
                         onClick={handleDeleteClick}
-                        disabled={false}
+                        disabled={isDeleting}
                         className="p-2 text-red-600 hover:text-red-800 hover:bg-red-100 rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Trash2 className="w-4 h-4" />

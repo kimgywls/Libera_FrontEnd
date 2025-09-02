@@ -59,6 +59,7 @@ export const DeleteStudentButton: React.FC<DeleteStudentButtonProps> = React.mem
                 cancelText="취소"
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
+
             />
             {error && <div className="text-red-500 text-sm mt-2">{error.message}</div>}
         </>

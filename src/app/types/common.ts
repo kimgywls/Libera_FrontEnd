@@ -59,6 +59,12 @@ export interface DeleteResponse {
     message: string;
 }
 
+// 실제 API 응답 타입 
+export interface ApiDeleteResponse {
+    success: boolean;
+    message: string;
+}
+
 // 상태 관련 타입
 export type CompletionStatus = '완료' | '성적만 완료' | '출결만 완료' | '미완료';
 export type RecommendationStatus = 'active' | 'archived' | 'deleted' | null;
