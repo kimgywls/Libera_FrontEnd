@@ -64,10 +64,10 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
     return (
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full table-fixed">
                     <thead className="bg-gray-100 border-b-2 border-gray-300">
                         <tr>
-                            <th className="px-6 py-4 text-left">
+                            <th className="w-12 px-2 py-4 text-left">
                                 <input
                                     type="checkbox"
                                     checked={selectedIds.length === students.length && students.length > 0}
@@ -75,28 +75,28 @@ export const StudentsTable: React.FC<StudentsTableProps> = React.memo(({ student
                                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                                 />
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="w-16 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 번호
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="w-20 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 이름
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                                휴대폰번호 (부모님)
+                            <th className="w-32 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                                휴대폰번호
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="w-40 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 현재 학교
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="w-40 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 희망학교
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="w-32 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 희망학과
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="w-24 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 완료상태
                             </th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="w-16 px-2 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
                                 삭제
                             </th>
                         </tr>

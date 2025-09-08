@@ -58,7 +58,7 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                 className={`hover:bg-gray-50 transition-colors duration-200 ${selected ? 'bg-blue-50' : ''} cursor-pointer`}
                 onClick={handleRowClick}
             >
-                <td className="px-6 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                <td className="w-12 px-2 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>
                     <input
                         type="checkbox"
                         checked={selected}
@@ -67,37 +67,45 @@ export const StudentsTableRow: React.FC<StudentsTableRowProps> = React.memo(
                         readOnly
                     />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td className="w-16 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {index + 1}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{student.name}</div>
+                <td className="w-20 px-2 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900 truncate">{student.name}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-700 font-mono">{student.phone_number}</div>
+                <td className="w-32 px-2 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-700 font-mono truncate">{student.phone_number}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-700">{student.current_school_name}</div>
+                <td className="w-40 px-2 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-700 truncate">{student.current_school_name}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
+                <td className="w-40 px-2 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900 truncate">
                         {student.desired_school === 'none' ? '-' : student.desired_school}
                     </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="w-32 px-2 py-4">
                     <div className="text-sm text-gray-700">
-                        {student.desired_department === 'none' ? '-' : student.desired_department}
+                        {!student.desired_department || student.desired_department === 'none' ? '-' :
+                            student.desired_department.split(',').map((dept, index) => (
+                                <div key={index} className="truncate">
+                                    {dept.trim()}
+                                </div>
+                            ))
+                        }
                     </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap flex flex-col gap-2">
-                    <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${getStatusStyle(student.completion_status)}`}>
-                        {completionStatusMap[student.completion_status]}
-                    </span>
-                    <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${thirdGradeStatusStyle}`}>
-                        {thirdGradeStatusText}
-                    </span>
+                <td className="w-24 px-2 py-4 whitespace-nowrap">
+                    <div className="flex flex-col gap-1">
+                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${getStatusStyle(student.completion_status)}`}>
+                            {completionStatusMap[student.completion_status]}
+                        </span>
+                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${thirdGradeStatusStyle}`}>
+                            {thirdGradeStatusText}
+                        </span>
+                    </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                <td className="w-16 px-2 py-4 whitespace-nowrap" onClick={e => e.stopPropagation()}>
                     <button
                         onClick={handleDeleteClick}
                         disabled={isDeleting}
