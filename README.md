@@ -302,9 +302,4 @@ docker-compose down --rmi all --volumes --remove-orphans
 - 개발 환경에서 API 요청/응답 로깅 활성화
 - React Developer Tools 사용
 - 브라우저 개발자 도구 활용
-- Docker 로그 확인: `docker-compose logs [service_name]`
-
-## 📄 라이선스
-
-이 프로젝트는 비공개 프로젝트입니다.
 
