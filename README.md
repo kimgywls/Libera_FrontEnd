@@ -77,13 +77,6 @@
 - **Lucide React 0.525.0** - 아이콘 라이브러리
 - **Recharts 3.1.0** - 차트 라이브러리
 
-### PDF & Document
-- **@react-pdf/renderer 4.3.0** - PDF 생성
-- **html2canvas 1.4.1** - HTML을 캔버스로 변환
-- **html2pdf.js 0.10.3** - HTML을 PDF로 변환
-- **jsPDF 3.0.1** - PDF 생성 라이브러리
-- **react-to-pdf 2.0.1** - React 컴포넌트를 PDF로 변환
-
 ### DevOps & Containerization
 - **Docker** - 컨테이너화
 - **Docker Compose** - 멀티 컨테이너 오케스트레이션
