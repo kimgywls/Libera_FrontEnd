@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useStudentInfoContext } from "@/app/contexts/StudentInfoContext";
-import { useReportData } from "../hooks/use-report-data";
+import { useReportData, useReportReadiness } from "../hooks/use-report-data";
+import { useMarkReportRendered } from "../hooks/use-report-rendered";
 import { PERIODS } from "@/app/constants";
 import ResultReportCover from "./ResultReportCover";
 import ResultReportIndex from "./ResultReportIndex";
@@ -17,6 +18,9 @@ import ResultReportCategoryEvaluationSection from "./comprehensive-evaluation/Re
 const ResultReportWidget: FC = () => {
     const { studentInfo } = useStudentInfoContext();
     const { reportData } = useReportData(studentInfo?.id || 0);
+    // 같은 렌더에서 읽은 쿼리 상태가 모두 성공이고 본문을 그렸을 때만 '반영 완료'를 알린다
+    const { readiness } = useReportReadiness(studentInfo?.id || 0);
+    useMarkReportRendered(studentInfo?.id || 0, readiness === 'ready' && !!reportData);
 
     if (!studentInfo) {
         return (

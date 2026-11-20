@@ -14,6 +14,7 @@ import {
 import { Student } from '@/app/types/student';
 import { useAllStudentsList } from "@/app/main/_hooks/use-all-students-list";
 import { StudentInfoProvider } from "@/app/contexts/StudentInfoContext";
+import PrintReportButton from './result-report/components/PrintReportButton';
 
 interface NavItem {
     name: string;
@@ -46,10 +47,6 @@ const DashboardContent = ({ children, selectedStudent }: DashboardContentProps) 
         }
     }, [selectedStudent, isResultReportPage]);
 
-    const handlePrint = () => {
-        window.print();
-    };
-
     return (
         <>
             <header className="bg-white shadow-sm border-b border-gray-200 no-print">
@@ -61,12 +58,7 @@ const DashboardContent = ({ children, selectedStudent }: DashboardContentProps) 
                     </div>
                     <div>
                         {isResultReportPage && (
-                            <button
-                                onClick={handlePrint}
-                                className="px-6 py-3 rounded-lg font-medium bg-violet-500 text-white hover:bg-violet-600 transition-colors no-print"
-                            >
-                                결과보고서 생성
-                            </button>
+                            <PrintReportButton studentId={selectedStudent.id} />
                         )}
                     </div>
                 </div>

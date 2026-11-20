@@ -168,7 +168,8 @@ const ResultReportChecklistScoreChart: FC<ChecklistScoreChartProps> = ({ data })
                             />
                         );
                     })}
-                    <Bar dataKey="score" >
+                    {/* 인쇄 시점에 애니메이션 중간 상태가 찍히지 않도록 리포트 차트는 애니메이션을 끈다 */}
+                    <Bar dataKey="score" isAnimationActive={false}>
                         {chartData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}

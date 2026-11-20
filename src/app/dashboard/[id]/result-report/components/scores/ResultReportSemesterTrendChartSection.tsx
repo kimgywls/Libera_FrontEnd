@@ -86,7 +86,8 @@ const CategoryTrendChart: FC<CategoryTrendChartProps> = ({ categoryId, categoryN
                 }}
                 separator=""
             />
-            <Bar dataKey="barValue" fill={CATEGORY_COLORS[categoryId] || '#6b7280'}>
+            {/* 인쇄 시점에 애니메이션 중간 상태가 찍히지 않도록 리포트 차트는 애니메이션을 끈다 */}
+            <Bar dataKey="barValue" fill={CATEGORY_COLORS[categoryId] || '#6b7280'} isAnimationActive={false}>
                 <LabelList
                     dataKey="barValue"
                     content={({ x, y, width, index }) => {
